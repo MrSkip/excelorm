@@ -18,6 +18,6 @@ public @interface CellMap {
 
     String keyCell();
 
-    String valueCell() default "";
+    String firstValueCell();
 
 }
