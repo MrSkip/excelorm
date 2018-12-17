@@ -82,4 +82,9 @@ public class ExcelUtils {
         return createOrGetCell(sheet, range.getFirstRow(), range.getFirstColumn());
     }
 
+    public static boolean isOneCellSelected(CellRangeAddress range) {
+        return range.getFirstRow() == range.getLastRow()
+                && range.getFirstColumn() == range.getLastColumn();
+    }
+
 }

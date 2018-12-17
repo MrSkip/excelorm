@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.annotation;
 
+import com.sombrainc.excelorm.enumeration.CellDirection;
 import com.sombrainc.excelorm.enumeration.DataQualifier;
 
 import java.lang.annotation.ElementType;
@@ -14,4 +15,6 @@ public @interface CellPosition {
     DataQualifier strategy() default DataQualifier.FIXED;
 
     String position();
+
+    CellDirection direction() default CellDirection.ROW;
 }
