@@ -10,30 +10,44 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.lang.reflect.Field;
 
 public class CellIndexTracker {
-    private int counter;
+    private int listItemCounter;
+//    private int stepCounter = 0;
+
+    private DataQualifier strategy;
 
     public CellIndexTracker() {
-        this.counter = 0;
+        this.listItemCounter = 0;
     }
 
-    public CellIndexTracker(int counter) {
-        this.counter = counter;
+    public CellIndexTracker(int listItemCounter, DataQualifier strategy) {
+        this.listItemCounter = listItemCounter;
+        this.strategy = strategy;
     }
 
     public CellIndexTracker incrementCounter() {
-        this.counter++;
+        this.listItemCounter++;
         return this;
+    }
+
+    public void setListItemCounter(int listItemCounter) {
+        this.listItemCounter = listItemCounter;
+    }
+
+    public DataQualifier chooseStrategy(DataQualifier fieldStrategy) {
+        return this.strategy == null
+                ? fieldStrategy
+                : this.strategy;
     }
 
     public CellRangeAddress rearrangeCell(Field field) {
         if (field.isAnnotationPresent(CellMap.class)) {
             CellMapLogic cellLogic = new CellMapLogic(field);
             DataQualifier strategy = cellLogic.getAnnotation().strategy();
-            return modifyRangeBasedOnStrategy(cellLogic, strategy);
+            return modifyRangeBasedOnStrategy(cellLogic, chooseStrategy(strategy));
         } else if (field.isAnnotationPresent(CellPosition.class)) {
             CellPositionLogic cellLogic = new CellPositionLogic(field);
             DataQualifier strategy = cellLogic.getAnnotation().strategy();
-            return modifyRangeBasedOnStrategy(cellLogic, strategy);
+            return modifyRangeBasedOnStrategy(cellLogic, chooseStrategy(strategy));
         }
         return null;
     }
@@ -66,22 +80,22 @@ public class CellIndexTracker {
         CellRangeAddress modifiedRange;
         if (strategy == DataQualifier.ROW_UNTIL_NULL) {
             modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + this.counter, range.getLastRow() + this.counter,
+                    range.getFirstRow() + this.listItemCounter, range.getLastRow() + this.listItemCounter,
                     range.getFirstColumn(), range.getLastColumn()
             );
         } else if (strategy == DataQualifier.COLUMN_UNTIL_NULL) {
             modifiedRange = new CellRangeAddress(
                     range.getFirstRow(), range.getLastRow(),
-                    range.getFirstColumn() + this.counter, range.getLastColumn() + this.counter
+                    range.getFirstColumn() + this.listItemCounter, range.getLastColumn() + this.listItemCounter
             );
         } else if (ExcelUtils.isOneCellSelected(range)) {
             modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + this.counter, range.getLastRow() + this.counter,
+                    range.getFirstRow() + this.listItemCounter, range.getLastRow() + this.listItemCounter,
                     range.getFirstColumn(), range.getLastColumn()
             );
         } else {
             modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + this.counter, range.getLastRow() + this.counter,
+                    range.getFirstRow() + this.listItemCounter, range.getLastRow() + this.listItemCounter,
                     range.getFirstColumn(), range.getLastColumn()
             );
         }

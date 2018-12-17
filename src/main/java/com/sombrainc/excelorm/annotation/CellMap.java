@@ -15,7 +15,7 @@ public @interface CellMap {
 
     DataQualifier strategy() default DataQualifier.FIXED;
 
-//    int step() default 1;
+    int step() default 1;
 
     String keyCell();
 
