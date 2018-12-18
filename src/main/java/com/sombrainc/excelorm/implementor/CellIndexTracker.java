@@ -112,8 +112,8 @@ public class CellIndexTracker {
         private CellMapLogic(Field field) {
             annotation = field.getAnnotation(CellMap.class);
             keyRange = CellRangeAddress.valueOf(annotation.keyCell());
-            if (!annotation.firstValueCell().isEmpty()) {
-                valueRange = CellRangeAddress.valueOf(annotation.firstValueCell());
+            if (!annotation.valueStartsAt().isEmpty()) {
+                valueRange = CellRangeAddress.valueOf(annotation.valueStartsAt());
             }
         }
 

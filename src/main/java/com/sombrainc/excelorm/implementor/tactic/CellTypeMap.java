@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.sombrainc.excelorm.implementor.ExcelReader.read;
-import static com.sombrainc.excelorm.utils.ExcelUtils.readSingleValueFromSheet;
-import static com.sombrainc.excelorm.utils.ExcelUtils.readStraightTypeFromExcel;
+import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
 import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
 
@@ -44,22 +43,48 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                 || annotation.strategy() == DataQualifier.COLUMN_UNTIL_NULL) {
             fieldValue = createMapIterateUtilEmptyCell(pair, annotation.strategy(), types);
         } else {
-            HashMap<Object, Object> map = new HashMap<>();
-            for (CellAddress cellKey : pair.getKey()) {
-                // for fixed range A11:A12
-            }
-//            Cell keyCell = createOrGetFirstCell(sheet, rangeKey);
-//            Object keyCellValue = readStraightTypeFromExcel(keyCell);
-//
-//            if (!StringUtils.isNullOrEmpty(keyCellValue)) {
-//                Cell valueCell = createOrGetFirstCell(sheet, rangeValue);
-//                Object valueCellValue = readStraightTypeFromExcel(valueCell);
-//                map.put(keyCellValue, valueCellValue);
-//            }
-            fieldValue = map;
+            fieldValue = createMapIterateOverFixedRange(pair, annotation.strategy(), types);
         }
 
         return fieldValue;
+    }
+
+    private Map<Object, Object> createMapIterateOverFixedRange(
+            Pair<CellRangeAddress, CellRangeAddress> pair, DataQualifier strategy, Type[] types) {
+        Class<?> clazzKey = (Class<?>) types[0];
+        Class<?> clazzValue = (Class<?>) types[1];
+
+        Map<Object, Object> map = new HashMap<>();
+
+        int simpleCounter = 0;
+        for (CellAddress keyCellAddress : pair.getKey()) {
+            final Cell keyCell = getOrCreateCell(sheet, keyCellAddress);
+
+            if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(keyCell))) {
+                break;
+            }
+
+            Object valueInKeyCell = readSingleValueFromSheet(clazzKey, keyCell);
+
+            // if object is composite then go ever all its fields
+            if (!ifTypeIsPureObject(clazzValue)) {
+                Object nestedObject = read(
+                        sheet, clazzValue, new CellIndexTracker(simpleCounter, strategy)
+                );
+                map.put(valueInKeyCell, nestedObject);
+            } else {
+                Cell valueCell = ExcelUtils.createOrGetCell(
+                        sheet, pair.getValue().getFirstRow() + simpleCounter, pair.getValue().getFirstColumn()
+                );
+
+                Object valueInValueCell = readSingleValueFromSheet(clazzValue, valueCell);
+                map.put(valueInKeyCell, valueInValueCell);
+            }
+
+            simpleCounter++;
+        }
+
+        return map;
     }
 
     private Map<Object, Object> createMapIterateUtilEmptyCell(Pair<CellRangeAddress, CellRangeAddress> pair,

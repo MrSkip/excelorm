@@ -18,7 +18,7 @@ public @interface CellMap {
 
     String keyCell();
 
-    String firstValueCell() default "";
+    String valueStartsAt() default "";
 
     CellDirection direction() default CellDirection.ROW;
 }

@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.model;
 
 import com.sombrainc.excelorm.annotation.CellMap;
 import com.sombrainc.excelorm.annotation.CellPosition;
+import com.sombrainc.excelorm.enumeration.DataQualifier;
 import lombok.Data;
 
 import java.util.List;
@@ -10,8 +11,8 @@ import java.util.Map;
 @Data
 public class TestDTO {
 //
-//    @CellPosition(position = "B2")
-//    private String title;
+    @CellPosition(position = "B2")
+    private String title;
 //
 //    @CellPosition(position = "C2")
 //    private Integer number;
@@ -19,7 +20,7 @@ public class TestDTO {
 //    @CellPosition(position = "E3:B4")
 //    private List<Integer> list;
 
-    @CellMap(keyCell = "B11:B11")
+    @CellMap(keyCell = "B11", strategy = DataQualifier.ROW_UNTIL_NULL)
     private Map<String, Student> students;
 
 //    @CellMap(strategy = DataQualifier.ROW_UNTIL_NULL, keyCell = "B11")
