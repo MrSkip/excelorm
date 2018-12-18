@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm.annotation;
 
 import com.sombrainc.excelorm.enumeration.CellDirection;
-import com.sombrainc.excelorm.enumeration.CellTarget;
 import com.sombrainc.excelorm.enumeration.DataQualifier;
 
 import java.lang.annotation.ElementType;

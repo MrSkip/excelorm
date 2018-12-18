@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
         return fieldValue;
     }
 
-    @NotNull
     private List<Object> createListAndIterateOverRange(CellRangeAddress range) {
         List<Object> list = new ArrayList<>();
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
