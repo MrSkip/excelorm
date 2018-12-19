@@ -15,7 +15,6 @@ public class ExcelOrm {
         try (XSSFWorkbook wb = new XSSFWorkbook(new File(ExcelOrm.class.getResource(PATH).getFile()))) {
             TestDTO model = ExcelReader.read(wb.getSheet("Sheet1"), TestDTO.class);
             System.out.println(model);
-//            model.getStudents().forEach((s, student) -> System.out.println(s + ": " + student));
         }
     }
 

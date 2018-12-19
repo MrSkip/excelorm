@@ -34,7 +34,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         }
 
         CellMap annotation = field.getAnnotation(CellMap.class);
-        Pair<CellRangeAddress, CellRangeAddress> pair = tracker.rearrangeMap(field);
+        Pair<CellRangeAddress, CellRangeAddress> pair = rearrangeForMap();
 
         Object fieldValue;
         Type[] types = getClassFromGenericField(field);

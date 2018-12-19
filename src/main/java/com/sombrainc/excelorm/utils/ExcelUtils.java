@@ -28,12 +28,14 @@ public class ExcelUtils {
     }
 
     public static Object readSingleValueFromSheet(Class<?> type, Cell cell) {
-        if (Double.class.equals(type)) {
+        if (Double.class.equals(type) || double.class.equals(type)) {
             return cell.getNumericCellValue();
         } else if (Integer.class.equals(type) || int.class.equals(type)) {
             return (int) cell.getNumericCellValue();
         } else if (String.class.equals(type)) {
             return cell.getStringCellValue();
+        } else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
+            return cell.getBooleanCellValue();
         } else if (Object.class.equals(type)) {
             return readStraightTypeFromExcel(cell);
         } else {

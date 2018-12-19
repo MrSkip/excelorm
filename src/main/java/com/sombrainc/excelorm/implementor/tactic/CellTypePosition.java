@@ -27,7 +27,7 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
     @Override
     public Object process() {
         Cell annotation = field.getAnnotation(Cell.class);
-        CellRangeAddress range = tracker.rearrangeCell(field);
+        CellRangeAddress range = rearrangeCell();
 
         Object fieldValue = null;
         if (annotation.strategy() == DataQualifier.ROW_UNTIL_NULL
