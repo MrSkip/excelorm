@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm;
 
 import com.sombrainc.excelorm.implementor.ExcelReader;
-import com.sombrainc.excelorm.model.TestDTO;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -19,6 +18,11 @@ public class ModelContainer {
         MODELS = Collections.unmodifiableMap(
                 new HashMap<Class<?>, String>() {{
                     put(Model1.class, "position");
+                    put(Model2.class, "position");
+                    put(Model3.class, "position");
+                    put(Model4.class, "position");
+                    put(Model5.class, "position");
+                    put(Model6.class, "position");
                     // add more
                 }}
         );
@@ -30,6 +34,7 @@ public class ModelContainer {
     }
 
     private static void loadAllModels() {
+        examples = new HashMap<>();
         try (XSSFWorkbook wb = new XSSFWorkbook(new File(ExcelOrm.class.getResource(PATH).getFile()))) {
             MODELS.forEach((modelClass, sheet) -> {
                 Object example = ExcelReader.read(wb.getSheet(sheet), modelClass);
