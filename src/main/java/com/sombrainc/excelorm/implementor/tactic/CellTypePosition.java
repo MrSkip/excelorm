@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.sombrainc.excelorm.implementor.ExcelReader.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
 import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
@@ -34,7 +35,7 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
                 || annotation.strategy() == DataQualifier.COLUMN_UNTIL_NULL) {
             fieldValue = createListAndIteranteUtilEmpty(range, annotation.strategy());
         } else if (List.class.equals(field.getType())) {
-            fieldValue = createListAndIterateOverRange(range);
+            fieldValue = createListAndIterateOverRange(range, annotation);
         } else if (ifTypeIsPureObject(field.getType())) {
             Iterator<CellAddress> iterator = range.iterator();
             fieldValue = readSingleValueFromSheet(field.getType(), getOrCreateCell(sheet, iterator.next()));
@@ -43,16 +44,24 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
         return fieldValue;
     }
 
-    private List<Object> createListAndIterateOverRange(CellRangeAddress range) {
+    private List<Object> createListAndIterateOverRange(CellRangeAddress range, Cell annotation) {
         List<Object> list = new ArrayList<>();
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
+        int counter = 0;
         for (CellAddress cellAddress : range) {
             org.apache.poi.ss.usermodel.Cell cell = getOrCreateCell(sheet, cellAddress);
-            if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(cell))) {
-                break;
+            Object cellValue;
+            if (!ifTypeIsPureObject(clazz)) {
+                cellValue = read(
+                        sheet, clazz, new CellIndexTracker(counter, annotation.strategy()));
+            } else {
+                if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(cell))) {
+                    break;
+                }
+                cellValue = readSingleValueFromSheet(clazz, cell);
             }
-            Object cellValue = readSingleValueFromSheet(clazz, cell);
             list.add(cellValue);
+            counter++;
         }
         return list;
     }

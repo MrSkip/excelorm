@@ -13,7 +13,7 @@ public class ExcelOrm {
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
         try (XSSFWorkbook wb = new XSSFWorkbook(new File(ExcelOrm.class.getResource(PATH).getFile()))) {
-            TestDTO model = ExcelReader.read(wb.getSheet("Sheet1"), TestDTO.class);
+            TestDTO model = ExcelReader.read(wb.getSheet("Sheet2"), TestDTO.class);
             System.out.println(model);
         }
     }
