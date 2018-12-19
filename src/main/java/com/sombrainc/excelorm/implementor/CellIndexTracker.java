@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm.implementor;
 
 import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.annotation.CellPosition;
+import com.sombrainc.excelorm.annotation.Cell;
 import com.sombrainc.excelorm.enumeration.DataQualifier;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import javafx.util.Pair;
@@ -11,7 +11,6 @@ import java.lang.reflect.Field;
 
 public class CellIndexTracker {
     private int listItemCounter;
-//    private int stepCounter = 0;
 
     private DataQualifier strategy;
 
@@ -44,7 +43,7 @@ public class CellIndexTracker {
             CellMapLogic cellLogic = new CellMapLogic(field);
             DataQualifier strategy = cellLogic.getAnnotation().strategy();
             return modifyRangeBasedOnStrategy(cellLogic, chooseStrategy(strategy));
-        } else if (field.isAnnotationPresent(CellPosition.class)) {
+        } else if (field.isAnnotationPresent(Cell.class)) {
             CellPositionLogic cellLogic = new CellPositionLogic(field);
             DataQualifier strategy = cellLogic.getAnnotation().strategy();
             return modifyRangeBasedOnStrategy(cellLogic, chooseStrategy(strategy));
@@ -139,15 +138,15 @@ public class CellIndexTracker {
     }
 
     public static class CellPositionLogic {
-        private CellPosition annotation;
+        private Cell annotation;
         private CellRangeAddress range;
 
         public CellPositionLogic(Field field) {
-            annotation = field.getAnnotation(CellPosition.class);
+            annotation = field.getAnnotation(Cell.class);
             range = CellRangeAddress.valueOf(annotation.position());
         }
 
-        public CellPosition getAnnotation() {
+        public Cell getAnnotation() {
             return annotation;
         }
 

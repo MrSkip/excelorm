@@ -1,11 +1,10 @@
 package com.sombrainc.excelorm.implementor.tactic;
 
-import com.sombrainc.excelorm.annotation.CellPosition;
+import com.sombrainc.excelorm.annotation.Cell;
 import com.sombrainc.excelorm.enumeration.DataQualifier;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -27,7 +26,7 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
 
     @Override
     public Object process() {
-        CellPosition annotation = field.getAnnotation(CellPosition.class);
+        Cell annotation = field.getAnnotation(Cell.class);
         CellRangeAddress range = tracker.rearrangeCell(field);
 
         Object fieldValue = null;
@@ -48,7 +47,7 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
         List<Object> list = new ArrayList<>();
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
         for (CellAddress cellAddress : range) {
-            Cell cell = getOrCreateCell(sheet, cellAddress);
+            org.apache.poi.ss.usermodel.Cell cell = getOrCreateCell(sheet, cellAddress);
             if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(cell))) {
                 break;
             }
@@ -71,7 +70,7 @@ public class CellTypePosition<E> extends AbstractTactic<E> implements CellTypeHa
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
 
         while (true) {
-            Cell cell = DataQualifier.COLUMN_UNTIL_NULL.equals(qualifier)
+            org.apache.poi.ss.usermodel.Cell cell = DataQualifier.COLUMN_UNTIL_NULL.equals(qualifier)
                     ? ExcelUtils.createOrGetCell(sheet, range.getFirstRow(), index)
                     : ExcelUtils.createOrGetCell(sheet, index, range.getFirstColumn());
 

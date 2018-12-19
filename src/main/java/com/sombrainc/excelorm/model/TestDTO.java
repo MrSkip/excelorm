@@ -1,44 +1,51 @@
 package com.sombrainc.excelorm.model;
 
-import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.annotation.CellPosition;
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.annotation.Cell;
+import com.sombrainc.excelorm.annotation.CellMark;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class TestDTO {
 //
-    @CellPosition(position = "B2")
+    @Cell(position = "B2")
     private String title;
+
 //
-//    @CellPosition(position = "C2")
+//    @Cell(position = "C2")
 //    private Integer number;
 
-//    @CellPosition(position = "E3:B4")
-//    private List<Integer> list;
 
-    @CellMap(keyCell = "B11", strategy = DataQualifier.ROW_UNTIL_NULL)
-    private Map<String, Student> students;
+//    @CellMap(keyCell = "B11", strategy = DataQualifier.ROW_UNTIL_NULL)
+//    private Map<String, Student> students;
+
+    @CellMark
+    private Student student;
 
 //    @CellMap(strategy = DataQualifier.ROW_UNTIL_NULL, keyCell = "B11")
 //    private Map<String, Student> students;
 
     @Data
     public static class Student {
-        @CellPosition(position = "C11")
+        @Cell(position = "C11")
         private Integer age;
-        @CellPosition(position = "D11")
+        @Cell(position = "D11")
         private String className;
 
-        @CellPosition(position = "F11:H11")
+        @Cell(position = "F11:H11")
         private List<Integer> ets;
+
+        @CellMark
+        private Subject subject;
     }
 
-//    public static class Subject {
-//
-//    }
+    @Data
+    public static class Subject {
+        @Cell(position = "C11")
+        private Integer age;
+        @Cell(position = "D11")
+        private String className;
+    }
 
 }
