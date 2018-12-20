@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm;
 
-import com.sombrainc.excelorm.annotation.Cell;
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.annotation.CellCollection;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 import lombok.Data;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class Model5 {
 
-    @Cell(position = "a7", strategy = DataQualifier.COLUMN_UNTIL_NULL)
+    @CellCollection(cells = "a7", strategy = CellStrategy.COLUMN_UNTIL_NULL)
     private List<String> list;
 
 }

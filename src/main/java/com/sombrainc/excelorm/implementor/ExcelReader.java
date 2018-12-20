@@ -16,6 +16,9 @@ public class ExcelReader {
     }
 
     public static <E> E read(Sheet sheet, Class<E> target, CellIndexTracker tracker) {
+        if (sheet == null) {
+            throw new RuntimeException("Sheet is null");
+        }
         E instance = getInstance(target);
         Field[] allFields = FieldUtils.getAllFields(target);
         for (Field field : allFields) {

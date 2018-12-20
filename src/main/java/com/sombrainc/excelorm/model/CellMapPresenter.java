@@ -14,8 +14,8 @@ public class CellMapPresenter {
     public CellMapPresenter(Field field) {
         annotation = field.getAnnotation(CellMap.class);
         keyRange = CellRangeAddress.valueOf(annotation.keyCell());
-        if (!annotation.valueStartsAt().isEmpty()) {
-            valueRange = CellRangeAddress.valueOf(annotation.valueStartsAt());
+        if (!annotation.valueCell().isEmpty()) {
+            valueRange = CellRangeAddress.valueOf(annotation.valueCell());
         }
     }
 

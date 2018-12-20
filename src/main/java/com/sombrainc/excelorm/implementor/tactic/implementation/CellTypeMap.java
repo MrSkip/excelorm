@@ -1,8 +1,10 @@
-package com.sombrainc.excelorm.implementor.tactic;
+package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
+import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
+import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.StringUtils;
 import javafx.util.Pair;
@@ -39,8 +41,8 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         Object fieldValue;
         Type[] types = getClassFromGenericField(field);
 
-        if (annotation.strategy() == DataQualifier.ROW_UNTIL_NULL
-                || annotation.strategy() == DataQualifier.COLUMN_UNTIL_NULL) {
+        if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
+                || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
             fieldValue = createMapIterateUtilEmptyCell(pair, annotation.strategy(), types);
         } else {
             fieldValue = createMapIterateOverFixedRange(pair, annotation.strategy(), types);
@@ -50,7 +52,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
     }
 
     private Map<Object, Object> createMapIterateOverFixedRange(
-            Pair<CellRangeAddress, CellRangeAddress> pair, DataQualifier strategy, Type[] types) {
+            Pair<CellRangeAddress, CellRangeAddress> pair, CellStrategy strategy, Type[] types) {
         Class<?> clazzKey = (Class<?>) types[0];
         Class<?> clazzValue = (Class<?>) types[1];
 
@@ -88,9 +90,9 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
     }
 
     private Map<Object, Object> createMapIterateUtilEmptyCell(Pair<CellRangeAddress, CellRangeAddress> pair,
-                                                              DataQualifier qualifier,
+                                                              CellStrategy qualifier,
                                                               Type[] types) {
-        int index = DataQualifier.COLUMN_UNTIL_NULL.equals(qualifier)
+        int index = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
                 ? pair.getKey().getFirstColumn()
                 : pair.getKey().getFirstRow();
 
@@ -101,7 +103,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
 
         int simpleCounter = 0;
         while (true) {
-            Cell keyCell = DataQualifier.COLUMN_UNTIL_NULL.equals(qualifier)
+            Cell keyCell = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
                     ? ExcelUtils.createOrGetCell(sheet, pair.getKey().getFirstRow(), index)
                     : ExcelUtils.createOrGetCell(sheet, index, pair.getKey().getFirstColumn());
 
@@ -118,7 +120,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                 );
                 map.put(valueInKeyCell, nestedObject);
             } else {
-                Cell valueCell = DataQualifier.COLUMN_UNTIL_NULL.equals(qualifier)
+                Cell valueCell = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
                         ? ExcelUtils.createOrGetCell(sheet, pair.getValue().getFirstRow(), index)
                         : ExcelUtils.createOrGetCell(sheet, index, pair.getValue().getFirstColumn());
                 Object valueInValueCell = readSingleValueFromSheet(clazzValue, valueCell);

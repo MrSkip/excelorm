@@ -5,13 +5,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
 
-public class CellPositionPresenter {
+public class CellSinglePresenter {
     private Cell annotation;
     private CellRangeAddress range;
 
-    public CellPositionPresenter(Field field) {
+    public CellSinglePresenter(Field field) {
         annotation = field.getAnnotation(Cell.class);
-        range = CellRangeAddress.valueOf(annotation.position());
+        range = CellRangeAddress.valueOf(annotation.cell());
     }
 
     public Cell getAnnotation() {

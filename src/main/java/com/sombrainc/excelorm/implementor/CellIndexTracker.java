@@ -1,16 +1,16 @@
 package com.sombrainc.excelorm.implementor;
 
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 
 public class CellIndexTracker {
     private int listItemCounter;
-    private DataQualifier strategy;
+    private CellStrategy strategy;
 
     public CellIndexTracker() {
         this.listItemCounter = 0;
     }
 
-    public CellIndexTracker(int listItemCounter, DataQualifier strategy) {
+    public CellIndexTracker(int listItemCounter, CellStrategy strategy) {
         this.listItemCounter = listItemCounter;
         this.strategy = strategy;
     }
@@ -23,7 +23,7 @@ public class CellIndexTracker {
         this.listItemCounter = listItemCounter;
     }
 
-    public DataQualifier getStrategy() {
+    public CellStrategy getStrategy() {
         return strategy;
     }
 }

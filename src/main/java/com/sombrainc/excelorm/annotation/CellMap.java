@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm.annotation;
 
-import com.sombrainc.excelorm.enumeration.CellDirection;
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,13 +11,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface CellMap {
 
-    DataQualifier strategy() default DataQualifier.FIXED;
+    CellStrategy strategy() default CellStrategy.FIXED;
 
     int step() default 1;
 
     String keyCell();
 
-    String valueStartsAt() default "";
+    String valueCell() default "";
 
-    CellDirection direction() default CellDirection.ROW;
 }

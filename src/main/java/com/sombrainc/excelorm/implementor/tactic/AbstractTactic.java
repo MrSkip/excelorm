@@ -1,11 +1,13 @@
 package com.sombrainc.excelorm.implementor.tactic;
 
 import com.sombrainc.excelorm.annotation.Cell;
+import com.sombrainc.excelorm.annotation.CellCollection;
 import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.enumeration.DataQualifier;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
+import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.model.CellMapPresenter;
-import com.sombrainc.excelorm.model.CellPositionPresenter;
+import com.sombrainc.excelorm.model.CellSinglePresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,12 +35,17 @@ public abstract class AbstractTactic<E> {
     protected CellRangeAddress rearrangeCell() {
         if (field.isAnnotationPresent(CellMap.class)) {
             CellMapPresenter presenter = new CellMapPresenter(field);
-            DataQualifier strategy = chooseStrategy(presenter.getAnnotation().strategy());
+            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
             CellRangeAddress valueRange = presenter.getValueRange();
             return arrangeCell(strategy, valueRange);
+        } else if (field.isAnnotationPresent(CellCollection.class)) {
+            CellCollectionPresenter presenter = new CellCollectionPresenter(field);
+            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
+            CellRangeAddress range = presenter.getRange();
+            return arrangeCell(strategy, range);
         } else if (field.isAnnotationPresent(Cell.class)) {
-            CellPositionPresenter presenter = new CellPositionPresenter(field);
-            DataQualifier strategy = chooseStrategy(presenter.getAnnotation().strategy());
+            CellSinglePresenter presenter = new CellSinglePresenter(field);
+            CellStrategy strategy = chooseStrategy(CellStrategy.FIXED);
             CellRangeAddress range = presenter.getRange();
             return arrangeCell(strategy, range);
         }
@@ -47,7 +54,7 @@ public abstract class AbstractTactic<E> {
 
     protected Pair<CellRangeAddress, CellRangeAddress> rearrangeForMap() {
         CellMapPresenter cellLogic = new CellMapPresenter(field);
-        DataQualifier strategy = cellLogic.getAnnotation().strategy();
+        CellStrategy strategy = cellLogic.getAnnotation().strategy();
 
         CellRangeAddress keyRange = arrangeCell(strategy, cellLogic.getKeyRange());
         CellRangeAddress valueRange = null;
@@ -59,15 +66,15 @@ public abstract class AbstractTactic<E> {
         return new Pair<>(keyRange, valueRange);
     }
 
-    private CellRangeAddress arrangeCell(DataQualifier strategy, CellRangeAddress range) {
+    private CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
         CellRangeAddress modifiedRange;
         int index = tracker.getListItemCounter();
-        if (strategy == DataQualifier.ROW_UNTIL_NULL) {
+        if (strategy == CellStrategy.ROW_UNTIL_NULL) {
             modifiedRange = new CellRangeAddress(
                     range.getFirstRow() + index, range.getLastRow() + index,
                     range.getFirstColumn(), range.getLastColumn()
             );
-        } else if (strategy == DataQualifier.COLUMN_UNTIL_NULL) {
+        } else if (strategy == CellStrategy.COLUMN_UNTIL_NULL) {
             modifiedRange = new CellRangeAddress(
                     range.getFirstRow(), range.getLastRow(),
                     range.getFirstColumn() + index, range.getLastColumn() + index
@@ -87,7 +94,7 @@ public abstract class AbstractTactic<E> {
         return modifiedRange;
     }
 
-    private DataQualifier chooseStrategy(DataQualifier fieldStrategy) {
+    private CellStrategy chooseStrategy(CellStrategy fieldStrategy) {
         return tracker.getStrategy() == null
                 ? fieldStrategy
                 : tracker.getStrategy();
