@@ -5,27 +5,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellReference;
+
+import java.math.BigDecimal;
 
 public class ExcelUtils {
-
-    public static Cell getCellLocationOnSheet(Sheet sheet, String position) {
-        StringBuilder row = new StringBuilder();
-        StringBuilder column = new StringBuilder();
-
-        for (char c : position.trim().toCharArray()) {
-            if (Character.isDigit(c)) {
-                row.append(c);
-            } else {
-                column.append(c);
-            }
-        }
-
-        int rowIndex = Integer.parseInt(row.toString());
-        int columnIndex = CellReference.convertColStringToIndex(column.toString());
-
-        return sheet.getRow(rowIndex - 1).getCell(columnIndex);
-    }
 
     public static Object readSingleValueFromSheet(Class<?> type, Cell cell) {
         if (Double.class.equals(type) || double.class.equals(type)) {
@@ -36,6 +19,10 @@ public class ExcelUtils {
             return cell.getStringCellValue();
         } else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
             return cell.getBooleanCellValue();
+        } else if (BigDecimal.class.equals(type)) {
+            return BigDecimal.valueOf(cell.getNumericCellValue());
+        } else if (Float.class.equals(type) || float.class.equals(type)) {
+            return (float) cell.getNumericCellValue();
         } else if (Object.class.equals(type)) {
             return readStraightTypeFromExcel(cell);
         } else {
@@ -78,10 +65,6 @@ public class ExcelUtils {
             cell = row.createCell(columnIndex);
         }
         return cell;
-    }
-
-    public static Cell createOrGetFirstCell(Sheet sheet, CellRangeAddress range) {
-        return createOrGetCell(sheet, range.getFirstRow(), range.getFirstColumn());
     }
 
     public static boolean isOneCellSelected(CellRangeAddress range) {
