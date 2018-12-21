@@ -12,8 +12,7 @@ import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.sombrainc.excelorm.implementor.ExcelReader.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
@@ -34,16 +33,20 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         Object fieldValue = null;
         if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
                 || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
-            fieldValue = createListAndIteranteUtilEmpty(range, annotation.strategy());
+            fieldValue = createListAndIterateUtilEmpty(range, annotation.strategy());
         } else if (List.class.equals(field.getType())) {
+            fieldValue = new ArrayList<>(createListAndIterateOverRange(range, annotation));
+        } else if (Set.class.equals(field.getType())) {
+            fieldValue = new HashSet<>(createListAndIterateOverRange(range, annotation));
+        } else if (Collection.class.equals(field.getType())) {
             fieldValue = createListAndIterateOverRange(range, annotation);
         }
 
         return fieldValue;
     }
 
-    private List<Object> createListAndIterateOverRange(CellRangeAddress range, CellCollection annotation) {
-        List<Object> list = new ArrayList<>();
+    private Collection<Object> createListAndIterateOverRange(CellRangeAddress range, CellCollection annotation) {
+        Collection<Object> collection = new ArrayList<>();
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
         int counter = 0;
         for (CellAddress cellAddress : range) {
@@ -58,13 +61,13 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
                 }
                 cellValue = readSingleValueFromSheet(clazz, cell);
             }
-            list.add(cellValue);
+            collection.add(cellValue);
             counter += annotation.step();
         }
-        return list;
+        return collection;
     }
 
-    private List<Object> createListAndIteranteUtilEmpty(CellRangeAddress range, CellStrategy qualifier) {
+    private List<Object> createListAndIterateUtilEmpty(CellRangeAddress range, CellStrategy qualifier) {
         if (!List.class.equals(field.getType())) {
             throw new IllegalStateException("Incorrect field type. Collection is required");
         }
