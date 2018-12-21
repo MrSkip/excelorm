@@ -43,16 +43,16 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
 
         if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
                 || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
-            fieldValue = createMapIterateUtilEmptyCell(pair, annotation.strategy(), types);
+            fieldValue = createMapIterateUtilEmptyCell(pair, annotation.strategy(), types, annotation);
         } else {
-            fieldValue = createMapIterateOverFixedRange(pair, annotation.strategy(), types);
+            fieldValue = createMapIterateOverFixedRange(pair, annotation.strategy(), types, annotation);
         }
 
         return fieldValue;
     }
 
     private Map<Object, Object> createMapIterateOverFixedRange(
-            Pair<CellRangeAddress, CellRangeAddress> pair, CellStrategy strategy, Type[] types) {
+            Pair<CellRangeAddress, CellRangeAddress> pair, CellStrategy strategy, Type[] types, CellMap annotation) {
         Class<?> clazzKey = (Class<?>) types[0];
         Class<?> clazzValue = (Class<?>) types[1];
 
@@ -83,7 +83,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                 map.put(valueInKeyCell, valueInValueCell);
             }
 
-            simpleCounter++;
+            simpleCounter += annotation.step();
         }
 
         return map;
@@ -91,7 +91,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
 
     private Map<Object, Object> createMapIterateUtilEmptyCell(Pair<CellRangeAddress, CellRangeAddress> pair,
                                                               CellStrategy qualifier,
-                                                              Type[] types) {
+                                                              Type[] types, CellMap annotation) {
         int index = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
                 ? pair.getKey().getFirstColumn()
                 : pair.getKey().getFirstRow();
@@ -127,8 +127,8 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                 map.put(valueInKeyCell, valueInValueCell);
             }
 
-            index++;
-            simpleCounter++;
+            index += annotation.step();
+            simpleCounter += annotation.step();
         }
 
         return map;

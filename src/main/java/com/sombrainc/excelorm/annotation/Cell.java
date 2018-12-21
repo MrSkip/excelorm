@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use to mark field to get direct value from the Sheet.
+ * Use to mark single field to get direct value from the Sheet.
  *
  * Works with following objects:
  *

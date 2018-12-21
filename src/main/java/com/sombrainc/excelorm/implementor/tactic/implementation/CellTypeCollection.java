@@ -59,7 +59,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
                 cellValue = readSingleValueFromSheet(clazz, cell);
             }
             list.add(cellValue);
-            counter++;
+            counter += annotation.step();
         }
         return list;
     }
