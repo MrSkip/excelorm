@@ -29,7 +29,6 @@ public abstract class AbstractTactic<E> {
     }
 
     /**
-     *
      * @return
      */
     protected CellRangeAddress rearrangeCell() {

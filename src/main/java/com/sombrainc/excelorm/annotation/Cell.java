@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 /**
  * Use to mark single field to get direct value from the Sheet.
- *
+ * <p>
  * Works with following objects:
- *
- *  String, Double (double), Integer (int), Double (double),
- *  BigDecimal, Boolean (boolean), Float (float),
+ * <p>
+ * String, Double (double), Integer (int), Double (double),
+ * BigDecimal, Boolean (boolean), Float (float),
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

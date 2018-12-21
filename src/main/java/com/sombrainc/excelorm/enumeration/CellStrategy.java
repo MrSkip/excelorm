@@ -8,21 +8,21 @@ public enum CellStrategy {
     /**
      * In other words that's fixed RANGE
      * For example:
-     *  - A2
-     *  - A2:A4
-     *  - A2:C5
+     * - A2
+     * - A2:A4
+     * - A2:C5
      */
     FIXED,
 
     /**
      * Continue reading cells until first empty/null cell is found
-     * In this case iteration goes over  rows (row by row)
+     * In this case iteration goes over rows (row by row)
      */
     COLUMN_UNTIL_NULL,
 
     /**
      * Continue reading cells until first empty/null cell is found
-     * In this case iteration goes over  columns (column by column)
+     * In this case iteration goes over columns (column by column)
      */
     ROW_UNTIL_NULL
 
