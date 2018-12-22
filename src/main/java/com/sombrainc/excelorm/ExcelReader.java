@@ -1,5 +1,7 @@
-package com.sombrainc.excelorm.implementor;
+package com.sombrainc.excelorm;
 
+import com.sombrainc.excelorm.implementor.CellIndexTracker;
+import com.sombrainc.excelorm.implementor.CellTacticFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 

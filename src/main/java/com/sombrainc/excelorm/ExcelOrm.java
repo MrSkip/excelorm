@@ -1,6 +1,5 @@
 package com.sombrainc.excelorm;
 
-import com.sombrainc.excelorm.implementor.ExcelReader;
 import com.sombrainc.excelorm.model.TestDTO;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

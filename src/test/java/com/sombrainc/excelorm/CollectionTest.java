@@ -7,17 +7,18 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Test
-public class ListTest {
-    private ModelList model;
+public class CollectionTest {
+    private ModelCollection model;
 
     @BeforeClass
     public void prepareModelObject() {
-        model = ModelContainer.getModel(ModelList.class);
+        model = ModelContainer.getModel(ModelCollection.class);
     }
 
     public void testListStringOneCell() {
@@ -102,7 +103,7 @@ public class ListTest {
     public void testListDecimalsRange() {
         List<BigDecimal> list = model.getDecimals();
         Assert.assertTrue(list != null && list.size() == 27);
-        for (double i = 1.1; i <= 3.6; i += 0.1) {
+        for (double i = 1.1; i <= 3.7; i += 0.1) {
             Assert.assertTrue(list.contains(BigDecimal.valueOf(i).setScale(1, RoundingMode.CEILING)),
                     String.format("Expected value is %s", i));
         }
@@ -111,11 +112,26 @@ public class ListTest {
     public void testListBoolRange() {
         List<Boolean> list = model.getBooleans();
         Assert.assertTrue(list != null && list.size() == 27);
-        List<Integer> collect = Stream
-                .iterate(1, n -> n + 1)
-                .limit(27).collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
+        for (int i = 0; i < 27; i++) {
             Assert.assertEquals((boolean) list.get(i), (i + 2) % 2 == 0);
+        }
+    }
+
+    public void testSetDecimalRange() {
+        Set<BigDecimal> set = model.getDecimalsSet();
+        Assert.assertTrue(set != null && set.size() == 27);
+        for (double i = 1.1; i <= 3.7; i += 0.1) {
+            Assert.assertTrue(set.contains(BigDecimal.valueOf(i).setScale(1, RoundingMode.CEILING)),
+                    String.format("Expected value is %s", i));
+        }
+    }
+
+    public void testCollectionDecimalRange() {
+        Collection<BigDecimal> collection = model.getDecimalsCollection();
+        Assert.assertTrue(collection != null && collection.size() == 27);
+        for (double i = 1.1; i <= 3.7; i += 0.1) {
+            Assert.assertTrue(collection.contains(BigDecimal.valueOf(i).setScale(1, RoundingMode.CEILING)),
+                    String.format("Expected value is %s", i));
         }
     }
 

@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm.models;
 
 import com.sombrainc.excelorm.ExcelOrm;
-import com.sombrainc.excelorm.implementor.ExcelReader;
+import com.sombrainc.excelorm.ExcelReader;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -26,7 +26,7 @@ public class ModelContainer {
                     put(Model4.class, "position");
                     put(Model5.class, "position");
                     put(Model6.class, "position");
-                    put(ModelList.class, "position");
+                    put(ModelCollection.class, "position");
                     // add more
                 }}
         );

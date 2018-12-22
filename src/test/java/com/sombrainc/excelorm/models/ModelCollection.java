@@ -5,10 +5,12 @@ import com.sombrainc.excelorm.enumeration.CellStrategy;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
-public class ModelList {
+public class ModelCollection {
 
     @CellCollection(cells = "a12:i15")
     private List<Integer> intsFixed;
@@ -27,5 +29,11 @@ public class ModelList {
 
     @CellCollection(cells = "a22:i24")
     private List<BigDecimal> decimals;
+
+    @CellCollection(cells = "a22:i24")
+    private Set<BigDecimal> decimalsSet;
+
+    @CellCollection(cells = "a22:i24")
+    private Collection<BigDecimal> decimalsCollection;
 
 }

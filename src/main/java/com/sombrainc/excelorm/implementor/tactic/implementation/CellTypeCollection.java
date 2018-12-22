@@ -14,7 +14,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.sombrainc.excelorm.implementor.ExcelReader.read;
+import static com.sombrainc.excelorm.ExcelReader.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
 import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
