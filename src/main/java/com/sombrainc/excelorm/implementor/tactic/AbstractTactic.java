@@ -28,9 +28,6 @@ public abstract class AbstractTactic<E> {
         this.tracker = tracker;
     }
 
-    /**
-     * @return
-     */
     protected CellRangeAddress rearrangeCell() {
         if (field.isAnnotationPresent(CellMap.class)) {
             CellMapPresenter presenter = new CellMapPresenter(field);

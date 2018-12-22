@@ -1,12 +1,15 @@
-package com.sombrainc.excelorm;
+package com.sombrainc.excelorm.models;
 
+import com.sombrainc.excelorm.ExcelOrm;
 import com.sombrainc.excelorm.implementor.ExcelReader;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelContainer {
     private static final String PATH = "/test.xlsx";
@@ -23,6 +26,7 @@ public class ModelContainer {
                     put(Model4.class, "position");
                     put(Model5.class, "position");
                     put(Model6.class, "position");
+                    put(ModelList.class, "position");
                     // add more
                 }}
         );

@@ -22,7 +22,7 @@ public @interface CellCollection {
     int step() default 1;
 
     /**
-     * Specify the range of cells to read data from or the first cell
+     * Specify the range of cells or just the first cell
      *
      * @return range or single cell
      */
@@ -35,10 +35,10 @@ public @interface CellCollection {
      * For example: (A1 - A10 /single column, A1 - D1 /single row, A1 - D4 / range)
      * <p>
      * ROW_UNTIL_NULL - iterate over rows until first empty/null cell is found
-     * (focus on key cells only while iterating)
+     * (focus on key cells while iterating)
      * <p>
      * COLUMN_UNTIL_NULL - iterate over columns until first empty/null cell is found
-     * (focus on key cells only while iterating)
+     * (focus on key cells while iterating)
      *
      * @return strategy
      */

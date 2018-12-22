@@ -33,7 +33,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         Object fieldValue = null;
         if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
                 || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
-            fieldValue = createListAndIterateUtilEmpty(range, annotation.strategy());
+            fieldValue = createListAndIterateUtilEmpty(range, annotation);
         } else if (List.class.equals(field.getType())) {
             fieldValue = new ArrayList<>(createListAndIterateOverRange(range, annotation));
         } else if (Set.class.equals(field.getType())) {
@@ -67,12 +67,12 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         return collection;
     }
 
-    private List<Object> createListAndIterateUtilEmpty(CellRangeAddress range, CellStrategy qualifier) {
+    private List<Object> createListAndIterateUtilEmpty(CellRangeAddress range, CellCollection annotation) {
         if (!List.class.equals(field.getType())) {
             throw new IllegalStateException("Incorrect field type. Collection is required");
         }
 
-        int index = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
+        int index = CellStrategy.COLUMN_UNTIL_NULL.equals(annotation.strategy())
                 ? range.getFirstColumn()
                 : range.getFirstRow();
 
@@ -80,7 +80,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
 
         while (true) {
-            org.apache.poi.ss.usermodel.Cell cell = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
+            org.apache.poi.ss.usermodel.Cell cell = CellStrategy.COLUMN_UNTIL_NULL.equals(annotation.strategy())
                     ? ExcelUtils.createOrGetCell(sheet, range.getFirstRow(), index)
                     : ExcelUtils.createOrGetCell(sheet, index, range.getFirstColumn());
 
@@ -90,7 +90,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
 
             Object cellValue = readSingleValueFromSheet(clazz, cell);
             list.add(cellValue);
-            index++;
+            index += annotation.step();
         }
         return list;
     }
