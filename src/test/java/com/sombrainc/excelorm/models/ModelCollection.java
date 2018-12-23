@@ -13,31 +13,31 @@ import java.util.Set;
 @Data
 public class ModelCollection {
 
-//    @CellCollection(cells = "a12:i15")
+    @CellCollection(cells = "a12:i15")
     private List<Integer> intsFixed;
 
-//    @CellCollection(cells = "a12", strategy = CellStrategy.ROW_UNTIL_NULL)
+    @CellCollection(cells = "a12", strategy = CellStrategy.ROW_UNTIL_NULL)
     private List<Integer> intsRowUntilNull;
 
-//    @CellCollection(cells = "a12", strategy = CellStrategy.COLUMN_UNTIL_NULL)
+    @CellCollection(cells = "a12", strategy = CellStrategy.COLUMN_UNTIL_NULL)
     private List<Integer> intsColUntilNull;
 
-//    @CellCollection(cells = "a12", strategy = CellStrategy.COLUMN_UNTIL_NULL, step = 2)
+    @CellCollection(cells = "a12", strategy = CellStrategy.COLUMN_UNTIL_NULL, step = 2)
     private List<Integer> intsColUntilNullStep2;
 
     @CellCollection(cells = "A17:I19")
     private List<Boolean> booleans;
 
-//    @CellCollection(cells = "a22:i24")
+    @CellCollection(cells = "a22:i24")
     private List<BigDecimal> decimals;
 
-//    @CellCollection(cells = "a22:i24")
+    @CellCollection(cells = "a22:i24")
     private Set<BigDecimal> decimalsSet;
 
-//    @CellCollection(cells = "a22:i24")
+    @CellCollection(cells = "a22:i24")
     private Collection<BigDecimal> decimalsCollection;
 
-//    @CellCollection(cells = "a28:a30")
+    @CellCollection(cells = "a28:a30")
     private List<Person> people;
 
     @Data

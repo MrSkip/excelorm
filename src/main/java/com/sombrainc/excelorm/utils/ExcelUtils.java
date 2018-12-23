@@ -23,7 +23,7 @@ public class ExcelUtils {
             return BigDecimal.valueOf(cell.getNumericCellValue());
         } else if (Float.class.equals(type) || float.class.equals(type)) {
             return (float) cell.getNumericCellValue();
-        }  else if (type.isEnum()) {
+        } else if (type.isEnum()) {
             return valueForEnum(type, cell);
         } else if (Object.class.equals(type)) {
             return readStraightTypeFromExcel(cell);
@@ -50,6 +50,17 @@ public class ExcelUtils {
                 return cell.getBooleanCellValue();
             case NUMERIC:
                 return cell.getNumericCellValue();
+            case FORMULA:
+                switch (cell.getCachedFormulaResultType()) {
+                    case NUMERIC:
+                        return cell.getNumericCellValue();
+                    case STRING:
+                        return cell.getRichStringCellValue();
+                    case BOOLEAN:
+                        return cell.getBooleanCellValue();
+                    default:
+                        return "";
+                }
             default:
                 return "";
         }

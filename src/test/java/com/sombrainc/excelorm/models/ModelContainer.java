@@ -20,12 +20,12 @@ public class ModelContainer {
     static {
         MODELS = Collections.unmodifiableMap(
                 new HashMap<Class<?>, String>() {{
-//                    put(Model1.class, "position");
-//                    put(Model2.class, "position");
-//                    put(Model3.class, "position");
-//                    put(Model4.class, "position");
-//                    put(Model5.class, "position");
-//                    put(Model6.class, "position");
+                    put(Model1.class, "position");
+                    put(Model2.class, "position");
+                    put(Model3.class, "position");
+                    put(Model4.class, "position");
+                    put(Model5.class, "position");
+                    put(Model6.class, "position");
                     put(ModelCollection.class, "position");
                     // add more
                 }}
