@@ -7,9 +7,7 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Test
@@ -133,6 +131,21 @@ public class CollectionTest {
             Assert.assertTrue(collection.contains(BigDecimal.valueOf(i).setScale(1, RoundingMode.CEILING)),
                     String.format("Expected value is %s", i));
         }
+    }
+
+    public void testCollectionObjectRange() {
+        List<ModelCollection.Person> list = new ArrayList<>(
+                Arrays.asList(
+                        new ModelCollection.Person("Roddy", "Wiliams", 34, ModelCollection.Gender.MALE),
+                        new ModelCollection.Person("Max", "Tiff", 74, ModelCollection.Gender.MALE),
+                        new ModelCollection.Person("Lili", "Abrams", 23, ModelCollection.Gender.FEMALE)
+                )
+        );
+        List<ModelCollection.Person> people = model.getPeople();
+        Assert.assertNotNull(people);
+        Assert.assertEquals(people.size(), list.size());
+        list.removeAll(people);
+        Assert.assertEquals(list.size(),0);
     }
 
 }

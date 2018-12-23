@@ -10,7 +10,8 @@ public class TypesUtils {
                 || Boolean.class.equals(type) || boolean.class.equals(type)
                 || Float.class.equals(type) || float.class.equals(type)
                 || String.class.equals(type)
-                || BigDecimal.class.equals(type);
+                || BigDecimal.class.equals(type)
+                || type.isEnum();
     }
 
 }

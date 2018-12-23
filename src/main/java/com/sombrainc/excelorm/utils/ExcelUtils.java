@@ -23,11 +23,23 @@ public class ExcelUtils {
             return BigDecimal.valueOf(cell.getNumericCellValue());
         } else if (Float.class.equals(type) || float.class.equals(type)) {
             return (float) cell.getNumericCellValue();
+        }  else if (type.isEnum()) {
+            return valueForEnum(type, cell);
         } else if (Object.class.equals(type)) {
             return readStraightTypeFromExcel(cell);
         } else {
             throw new NullPointerException("There is no valid type handler for " + type);
         }
+    }
+
+    private static Object valueForEnum(Class<?> type, Cell cell) {
+        Object cellValue = readStraightTypeFromExcel(cell);
+        for (Object enumConstant : type.getEnumConstants()) {
+            if ((enumConstant + "").trim().equalsIgnoreCase(cellValue + "")) {
+                return enumConstant;
+            }
+        }
+        return null;
     }
 
     public static Object readStraightTypeFromExcel(Cell cell) {
