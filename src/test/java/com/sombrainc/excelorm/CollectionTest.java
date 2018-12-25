@@ -1,6 +1,7 @@
 package com.sombrainc.excelorm;
 
 import com.sombrainc.excelorm.models.*;
+import com.sombrainc.excelorm.utils.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,17 +17,17 @@ public class CollectionTest {
 
     @BeforeClass
     public void prepareModelObject() {
-        model = ModelContainer.getModel(ModelCollection.class);
+        model = ModelReader.getModel(ModelCollection.class);
     }
 
     public void testListStringOneCell() {
-        Model3 model = ModelContainer.getModel(Model3.class);
+        Model3 model = ModelReader.getModel(Model3.class);
         Assert.assertTrue(model.getList() != null && model.getList().size() == 1);
         Assert.assertEquals(model.getList().get(0), "n1");
     }
 
     public void testListStringRange() {
-        Model4 model = ModelContainer.getModel(Model4.class);
+        Model4 model = ModelReader.getModel(Model4.class);
         Assert.assertTrue(model.getList() != null && model.getList().size() == 12);
         Stream
                 .iterate(1, n -> n + 1)
@@ -37,7 +38,7 @@ public class CollectionTest {
     }
 
     public void testListStringColumnUntilNull() {
-        Model5 model = ModelContainer.getModel(Model5.class);
+        Model5 model = ModelReader.getModel(Model5.class);
         Assert.assertTrue(model.getList() != null && model.getList().size() == 4);
         Stream
                 .iterate(1, n -> n + 1)
@@ -48,7 +49,7 @@ public class CollectionTest {
     }
 
     public void testListStringColumnRowNull() {
-        Model6 model = ModelContainer.getModel(Model6.class);
+        Model6 model = ModelReader.getModel(Model6.class);
         Assert.assertTrue(model.getList() != null && model.getList().size() == 3);
         Stream
                 .iterate(1, n -> n + 4)
@@ -78,7 +79,7 @@ public class CollectionTest {
         });
     }
 
-    public void testListIntegerColomnUntilNull() {
+    public void testListIntegerColumnUntilNull() {
         List<Integer> list = model.getIntsColUntilNull();
         Assert.assertTrue(list != null && list.size() == 9);
         Stream

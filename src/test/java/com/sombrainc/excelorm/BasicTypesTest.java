@@ -2,17 +2,17 @@ package com.sombrainc.excelorm;
 
 import com.sombrainc.excelorm.models.Model1;
 import com.sombrainc.excelorm.models.Model2;
-import com.sombrainc.excelorm.models.ModelContainer;
+import com.sombrainc.excelorm.utils.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 
 @Test
-public class Test1 {
+public class BasicTypesTest {
 
     public void testPureNumbersScenario1() {
-        Model1 model = ModelContainer.getModel(Model1.class);
+        Model1 model = ModelReader.getModel(Model1.class);
         Assert.assertEquals(model.getA1(), 1);
         Assert.assertEquals(model.getB1(), "name");
         Assert.assertEquals(model.getC1(), 1.3);
@@ -25,7 +25,7 @@ public class Test1 {
     }
 
     public void testPureNumbersScenario2() {
-        Model2 model = ModelContainer.getModel(Model2.class);
+        Model2 model = ModelReader.getModel(Model2.class);
         Assert.assertEquals(model.getA1(), 2);
         Assert.assertEquals(model.getB1(), "name2");
         Assert.assertEquals(model.getC1(), 21.3);

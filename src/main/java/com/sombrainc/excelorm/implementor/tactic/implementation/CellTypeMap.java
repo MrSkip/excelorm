@@ -5,8 +5,10 @@ import com.sombrainc.excelorm.enumeration.CellStrategy;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
+import com.sombrainc.excelorm.model.CellMapPresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.StringUtils;
+import com.sombrainc.excelorm.utils.TypesUtils;
 import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,10 +38,10 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         }
 
         CellMap annotation = field.getAnnotation(CellMap.class);
-        Pair<CellRangeAddress, CellRangeAddress> pair = rearrangeForMap();
 
         Object fieldValue;
         Type[] types = getClassFromGenericField(field);
+        Pair<CellRangeAddress, CellRangeAddress> pair = rearrangeForMap((Class<?>) types[1]);
 
         if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
                 || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
@@ -132,6 +134,38 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         }
 
         return map;
+    }
+
+    private Pair<CellRangeAddress, CellRangeAddress> rearrangeForMap(Class<?> valueType) {
+        CellMapPresenter presenter = new CellMapPresenter(field);
+        CellStrategy strategy = presenter.getAnnotation().strategy();
+
+        CellRangeAddress keyRange = arrangeCell(strategy, presenter.getKeyRange());
+        CellRangeAddress valueRange = calculateRangeForValues(valueType, presenter, strategy, keyRange);
+
+        return new Pair<>(keyRange, valueRange);
+    }
+
+    private CellRangeAddress calculateRangeForValues(Class<?> valueType, CellMapPresenter presenter,
+                                                     CellStrategy strategy, CellRangeAddress keyRange) {
+        if (presenter.getValueRange() != null) {
+            return arrangeCell(strategy, presenter.getValueRange());
+        } else if (TypesUtils.ifTypeIsPureObject(valueType)) {
+            switch (strategy) {
+                case FIXED:
+                case ROW_UNTIL_NULL:
+                    return new CellRangeAddress(
+                            keyRange.getFirstRow(), keyRange.getLastRow(),
+                            keyRange.getFirstColumn() + 1, keyRange.getLastColumn() + 1
+                    );
+                case COLUMN_UNTIL_NULL:
+                    return new CellRangeAddress(
+                            keyRange.getFirstRow() + 1, keyRange.getLastRow() + 1,
+                            keyRange.getFirstColumn(), keyRange.getLastColumn()
+                    );
+            }
+        }
+        return null;
     }
 
 }

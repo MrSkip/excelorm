@@ -9,6 +9,7 @@ import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.model.CellMapPresenter;
 import com.sombrainc.excelorm.model.CellSinglePresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
+import com.sombrainc.excelorm.utils.TypesUtils;
 import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -45,26 +46,18 @@ public abstract class AbstractTactic<E> {
             CellRangeAddress range = presenter.getRange();
             return arrangeCell(strategy, range);
         }
-        return null;
+        throw new NullPointerException("Implementation not found");
     }
 
-    protected Pair<CellRangeAddress, CellRangeAddress> rearrangeForMap() {
-        CellMapPresenter cellLogic = new CellMapPresenter(field);
-        CellStrategy strategy = cellLogic.getAnnotation().strategy();
-
-        CellRangeAddress keyRange = arrangeCell(strategy, cellLogic.getKeyRange());
-        CellRangeAddress valueRange = null;
-
-        if (cellLogic.getKeyRange() != null) {
-            valueRange = arrangeCell(strategy, cellLogic.getValueRange());
-        }
-
-        return new Pair<>(keyRange, valueRange);
-    }
-
-    private CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
+    protected CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
         CellRangeAddress modifiedRange;
         int index = tracker.getListItemCounter();
+        modifiedRange = getCellAddresses(strategy, range, index);
+        return modifiedRange;
+    }
+
+    private static CellRangeAddress getCellAddresses(CellStrategy strategy, CellRangeAddress range, int index) {
+        CellRangeAddress modifiedRange;
         if (strategy == CellStrategy.ROW_UNTIL_NULL) {
             modifiedRange = new CellRangeAddress(
                     range.getFirstRow() + index, range.getLastRow() + index,
@@ -86,7 +79,6 @@ public abstract class AbstractTactic<E> {
                     range.getFirstColumn(), range.getLastColumn()
             );
         }
-        // todo add more logic
         return modifiedRange;
     }
 
