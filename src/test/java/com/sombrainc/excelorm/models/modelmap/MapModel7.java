@@ -6,9 +6,9 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class FixedMapModel {
+public class MapModel7 {
 
-    @CellMap(keyCell = "A33")
-    private Map<Integer, String> map;
+    @CellMap(keyCell = "B42:H42", valueCell = "B47", step = 3)
+    private Map<String, Object> map;
 
 }

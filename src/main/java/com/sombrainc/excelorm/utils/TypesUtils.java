@@ -11,6 +11,7 @@ public class TypesUtils {
                 || Float.class.equals(type) || float.class.equals(type)
                 || String.class.equals(type)
                 || BigDecimal.class.equals(type)
+                || Object.class.equals(type)
                 || type.isEnum();
     }
 

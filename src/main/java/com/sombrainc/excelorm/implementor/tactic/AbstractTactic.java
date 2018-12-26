@@ -9,8 +9,6 @@ import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.model.CellMapPresenter;
 import com.sombrainc.excelorm.model.CellSinglePresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
-import com.sombrainc.excelorm.utils.TypesUtils;
-import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -27,33 +25,6 @@ public abstract class AbstractTactic<E> {
         this.instance = instance;
         this.sheet = sheet;
         this.tracker = tracker;
-    }
-
-    protected CellRangeAddress rearrangeCell() {
-        if (field.isAnnotationPresent(CellMap.class)) {
-            CellMapPresenter presenter = new CellMapPresenter(field);
-            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
-            CellRangeAddress valueRange = presenter.getValueRange();
-            return arrangeCell(strategy, valueRange);
-        } else if (field.isAnnotationPresent(CellCollection.class)) {
-            CellCollectionPresenter presenter = new CellCollectionPresenter(field);
-            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
-            CellRangeAddress range = presenter.getRange();
-            return arrangeCell(strategy, range);
-        } else if (field.isAnnotationPresent(Cell.class)) {
-            CellSinglePresenter presenter = new CellSinglePresenter(field);
-            CellStrategy strategy = chooseStrategy(CellStrategy.FIXED);
-            CellRangeAddress range = presenter.getRange();
-            return arrangeCell(strategy, range);
-        }
-        throw new NullPointerException("Implementation not found");
-    }
-
-    protected CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
-        CellRangeAddress modifiedRange;
-        int index = tracker.getListItemCounter();
-        modifiedRange = getCellAddresses(strategy, range, index);
-        return modifiedRange;
     }
 
     private static CellRangeAddress getCellAddresses(CellStrategy strategy, CellRangeAddress range, int index) {
@@ -80,6 +51,31 @@ public abstract class AbstractTactic<E> {
             );
         }
         return modifiedRange;
+    }
+
+    protected CellRangeAddress rearrangeCell() {
+        if (field.isAnnotationPresent(CellMap.class)) {
+            CellMapPresenter presenter = new CellMapPresenter(field);
+            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
+            CellRangeAddress valueRange = presenter.getValueRange();
+            return arrangeCell(strategy, valueRange);
+        } else if (field.isAnnotationPresent(CellCollection.class)) {
+            CellCollectionPresenter presenter = new CellCollectionPresenter(field);
+            CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
+            CellRangeAddress range = presenter.getRange();
+            return arrangeCell(strategy, range);
+        } else if (field.isAnnotationPresent(Cell.class)) {
+            CellSinglePresenter presenter = new CellSinglePresenter(field);
+            CellStrategy strategy = chooseStrategy(CellStrategy.FIXED);
+            CellRangeAddress range = presenter.getRange();
+            return arrangeCell(strategy, range);
+        }
+        throw new NullPointerException("Implementation not found");
+    }
+
+    protected CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
+        int index = tracker.getListItemCounter();
+        return getCellAddresses(strategy, range, index);
     }
 
     private CellStrategy chooseStrategy(CellStrategy fieldStrategy) {

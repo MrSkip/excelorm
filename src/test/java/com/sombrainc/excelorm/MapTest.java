@@ -16,7 +16,6 @@ public class MapTest {
         Assert.assertNotNull(model);
         Map<Integer, String> map = model.getMap();
         Assert.assertNotNull(map);
-        Assert.assertEquals(map.size(), 1);
         Map<Integer, String> expectedMap = new HashMap<Integer, String>() {{
             put(1, "Roddy");
         }};
@@ -24,10 +23,8 @@ public class MapTest {
     }
 
     public void fixedMapTest() {
-        FixedMapModel model = ModelReader.getModel(FixedMapModel.class);
+        FixedMapWithRangeModel model = ModelReader.getModel(FixedMapWithRangeModel.class);
         Assert.assertNotNull(model);
-        Assert.assertNotNull(model.getMap());
-        Assert.assertEquals(model.getMap().size(), 3);
         Map<Integer, String> expectedMap = new HashMap<Integer, String>() {{
             put(1, "Roddy");
             put(2, "Max");
@@ -40,8 +37,6 @@ public class MapTest {
         RowUntilNullMapModel model = ModelReader.getModel(RowUntilNullMapModel.class);
         Assert.assertNotNull(model);
         Map<Integer, String> map = model.getMap();
-        Assert.assertNotNull(map);
-        Assert.assertEquals(map.size(), 3);
         Map<Integer, String> expectedMap = new HashMap<Integer, String>() {{
             put(1, "Roddy");
             put(2, "Max");
@@ -54,8 +49,6 @@ public class MapTest {
         RowUntilNullWithStepMapModel model = ModelReader.getModel(RowUntilNullWithStepMapModel.class);
         Assert.assertNotNull(model);
         Map<Integer, String> map = model.getMap();
-        Assert.assertNotNull(map);
-        Assert.assertEquals(2, map.size());
         Map<Integer, String> expectedMap = new HashMap<Integer, String>() {{
             put(1, "Roddy");
             put(3, "Lili");
@@ -80,11 +73,81 @@ public class MapTest {
         MapModel2 model = ModelReader.getModel(MapModel2.class);
         Assert.assertNotNull(model);
         Map<Integer, String> map = model.getMap();
-        Assert.assertNotNull(map);
-        Assert.assertEquals(2, map.size());
         Map<Integer, String> expectedMap = new HashMap<Integer, String>() {{
             put(1, "Wiliams");
             put(3, "Abrams");
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void columnUntilNullMapTest() {
+        MapModel3 model = ModelReader.getModel(MapModel3.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Roddy");
+            put("Last name", "Wiliams");
+            put("age", (double) 34);
+            put("gender", "male");
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void keyRangeAndSelectedCellForValuesMapTest() {
+        MapModel4 model = ModelReader.getModel(MapModel4.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Lili");
+            put("Last name", "Abrams");
+            put("age", (double) 23);
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void keyRangeAndSelectedCellForValuesWithStepMapTest() {
+        MapModel5 model = ModelReader.getModel(MapModel5.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Lili");
+            put("age", (double) 23);
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void keyRangeWithStep3MapTest() {
+        MapModel6 model = ModelReader.getModel(MapModel6.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Dmytro");
+            put("gender", "male");
+            put("skype", "dimon.mula");
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void keyRangeAndSelectedCellForValuesWithStep3MapTest() {
+        MapModel7 model = ModelReader.getModel(MapModel7.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Dmytro");
+            put("gender", "male");
+            put("skype", "dimon.mula");
+        }};
+        Assert.assertEquals(map, expectedMap);
+    }
+
+    public void keyRangeOverRowsAndSelectedCellForValuesWithStep3MapTest() {
+        MapModel8 model = ModelReader.getModel(MapModel8.class);
+        Assert.assertNotNull(model);
+        Map<String, Object> map = model.getMap();
+        Map<String, Object> expectedMap = new HashMap<String, Object>() {{
+            put("First Name", "Dmytro");
+            put("gender", "male");
+            put("skype", "dimon.mula");
         }};
         Assert.assertEquals(map, expectedMap);
     }

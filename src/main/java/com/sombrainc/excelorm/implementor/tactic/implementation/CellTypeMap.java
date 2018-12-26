@@ -31,6 +31,12 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         super(field, instance, sheet, tracker);
     }
 
+    private static boolean isIteratingOverColumns(CellRangeAddress range) {
+        // exclude condition when one cell selected
+        return range.getFirstColumn() != range.getLastColumn()
+                && range.getFirstRow() == range.getLastRow();
+    }
+
     @Override
     public Object process() {
         if (!Map.class.equals(field.getType())) {
@@ -57,11 +63,16 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             Pair<CellRangeAddress, CellRangeAddress> pair, CellStrategy strategy, Type[] types, CellMap annotation) {
         Class<?> clazzKey = (Class<?>) types[0];
         Class<?> clazzValue = (Class<?>) types[1];
-
+        int counter = -1;
+        int indexTracker = 0;
         Map<Object, Object> map = new HashMap<>();
 
-        int simpleCounter = 0;
         for (CellAddress keyCellAddress : pair.getKey()) {
+            counter++;
+            if (counter != 0 && counter % (annotation.step()) != 0) {
+                continue;
+            }
+
             final Cell keyCell = getOrCreateCell(sheet, keyCellAddress);
 
             if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(keyCell))) {
@@ -73,19 +84,26 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             // if object is composite then go ever all its fields
             if (!ifTypeIsPureObject(clazzValue)) {
                 Object nestedObject = read(
-                        sheet, clazzValue, new CellIndexTracker(simpleCounter, strategy)
+                        sheet, clazzValue, new CellIndexTracker(indexTracker, strategy)
                 );
                 map.put(valueInKeyCell, nestedObject);
             } else {
-                Cell valueCell = ExcelUtils.createOrGetCell(
-                        sheet, pair.getValue().getFirstRow() + simpleCounter, pair.getValue().getFirstColumn()
-                );
+                Cell valueCell;
+                if (isIteratingOverColumns(pair.getKey())) {
+                    valueCell = ExcelUtils.createOrGetCell(
+                            sheet, pair.getValue().getFirstRow(), pair.getValue().getFirstColumn() + indexTracker
+                    );
+                } else {
+                    valueCell = ExcelUtils.createOrGetCell(
+                            sheet, pair.getValue().getFirstRow() + indexTracker, pair.getValue().getFirstColumn()
+                    );
+                }
 
                 Object valueInValueCell = readSingleValueFromSheet(clazzValue, valueCell);
                 map.put(valueInKeyCell, valueInValueCell);
             }
 
-            simpleCounter += annotation.step();
+            indexTracker += annotation.step();
         }
 
         return map;
@@ -151,18 +169,17 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         if (presenter.getValueRange() != null) {
             return arrangeCell(strategy, presenter.getValueRange());
         } else if (TypesUtils.ifTypeIsPureObject(valueType)) {
-            switch (strategy) {
-                case FIXED:
-                case ROW_UNTIL_NULL:
-                    return new CellRangeAddress(
-                            keyRange.getFirstRow(), keyRange.getLastRow(),
-                            keyRange.getFirstColumn() + 1, keyRange.getLastColumn() + 1
-                    );
-                case COLUMN_UNTIL_NULL:
-                    return new CellRangeAddress(
-                            keyRange.getFirstRow() + 1, keyRange.getLastRow() + 1,
-                            keyRange.getFirstColumn(), keyRange.getLastColumn()
-                    );
+            if (strategy == CellStrategy.COLUMN_UNTIL_NULL
+                    || (strategy == CellStrategy.FIXED && isIteratingOverColumns(keyRange))) {
+                return new CellRangeAddress(
+                        keyRange.getFirstRow() + 1, keyRange.getLastRow() + 1,
+                        keyRange.getFirstColumn(), keyRange.getLastColumn()
+                );
+            } else {
+                return new CellRangeAddress(
+                        keyRange.getFirstRow(), keyRange.getLastRow(),
+                        keyRange.getFirstColumn() + 1, keyRange.getLastColumn() + 1
+                );
             }
         }
         return null;
