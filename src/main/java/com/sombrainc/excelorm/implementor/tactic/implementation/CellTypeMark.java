@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm.implementor.tactic.implementation;
 
-import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.ExcelReader;
+import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
 import org.apache.poi.ss.usermodel.Sheet;

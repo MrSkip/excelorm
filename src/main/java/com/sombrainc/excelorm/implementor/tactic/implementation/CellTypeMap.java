@@ -31,12 +31,6 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         super(field, instance, sheet, tracker);
     }
 
-    private static boolean isIteratingOverColumns(CellRangeAddress range) {
-        // exclude condition when one cell selected
-        return range.getFirstColumn() != range.getLastColumn()
-                && range.getFirstRow() == range.getLastRow();
-    }
-
     @Override
     public Object process() {
         if (!Map.class.equals(field.getType())) {
@@ -84,7 +78,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             // if object is composite then go ever all its fields
             if (!ifTypeIsPureObject(clazzValue)) {
                 Object nestedObject = read(
-                        sheet, clazzValue, new CellIndexTracker(indexTracker, strategy)
+                        sheet, clazzValue, new CellIndexTracker(indexTracker, strategy, pair.getKey())
                 );
                 map.put(valueInKeyCell, nestedObject);
             } else {
@@ -136,7 +130,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             // if object is composite then go ever all its fields
             if (!ifTypeIsPureObject(clazzValue)) {
                 Object nestedObject = read(
-                        sheet, clazzValue, new CellIndexTracker(simpleCounter, qualifier)
+                        sheet, clazzValue, new CellIndexTracker(simpleCounter, qualifier, pair.getKey())
                 );
                 map.put(valueInKeyCell, nestedObject);
             } else {

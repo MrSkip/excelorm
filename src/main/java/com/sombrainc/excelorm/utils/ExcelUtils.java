@@ -10,6 +10,12 @@ import java.math.BigDecimal;
 
 public class ExcelUtils {
 
+    public static boolean isIteratingOverColumns(CellRangeAddress range) {
+        // exclude condition when one cell selected
+        return range.getFirstColumn() != range.getLastColumn()
+                && range.getFirstRow() == range.getLastRow();
+    }
+
     public static Object readSingleValueFromSheet(Class<?> type, Cell cell) {
         if (Double.class.equals(type) || double.class.equals(type)) {
             return cell.getNumericCellValue();

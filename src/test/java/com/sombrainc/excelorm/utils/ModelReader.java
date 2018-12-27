@@ -15,7 +15,7 @@ public class ModelReader {
         return getModel(modelClass, "position");
     }
 
-    public static <E> E getModel(Class<E> modelClass, String sheetName) {
+    public static synchronized <E> E getModel(Class<E> modelClass, String sheetName) {
         try (XSSFWorkbook wb = new XSSFWorkbook(new File(ExcelOrm.class.getResource(PATH).getFile()))) {
             return ExcelReader.read(wb.getSheet(sheetName), modelClass);
         } catch (InvalidFormatException | IOException e) {

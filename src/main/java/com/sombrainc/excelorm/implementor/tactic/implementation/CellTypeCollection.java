@@ -54,7 +54,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
             Object cellValue;
             if (!ifTypeIsPureObject(clazz)) {
                 cellValue = read(
-                        sheet, clazz, new CellIndexTracker(counter, annotation.strategy()));
+                        sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
             } else {
                 if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(cell))) {
                     break;

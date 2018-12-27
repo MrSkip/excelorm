@@ -8,11 +8,12 @@ import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.model.CellMapPresenter;
 import com.sombrainc.excelorm.model.CellSinglePresenter;
-import com.sombrainc.excelorm.utils.ExcelUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
+
+import static com.sombrainc.excelorm.utils.ExcelUtils.isIteratingOverColumns;
 
 public abstract class AbstractTactic<E> {
     protected Field field;
@@ -27,27 +28,19 @@ public abstract class AbstractTactic<E> {
         this.tracker = tracker;
     }
 
-    private static CellRangeAddress getCellAddresses(CellStrategy strategy, CellRangeAddress range, int index) {
+    private static CellRangeAddress getCellAddresses(CellStrategy strategy, CellRangeAddress cellRange, CellIndexTracker tracker) {
+        int index = tracker.getListItemCounter();
         CellRangeAddress modifiedRange;
-        if (strategy == CellStrategy.ROW_UNTIL_NULL) {
+        if (strategy == CellStrategy.COLUMN_UNTIL_NULL
+                || (tracker.getParentRange() != null && isIteratingOverColumns(tracker.getParentRange()))) {
             modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + index, range.getLastRow() + index,
-                    range.getFirstColumn(), range.getLastColumn()
-            );
-        } else if (strategy == CellStrategy.COLUMN_UNTIL_NULL) {
-            modifiedRange = new CellRangeAddress(
-                    range.getFirstRow(), range.getLastRow(),
-                    range.getFirstColumn() + index, range.getLastColumn() + index
-            );
-        } else if (ExcelUtils.isOneCellSelected(range)) {
-            modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + index, range.getLastRow() + index,
-                    range.getFirstColumn(), range.getLastColumn()
+                    cellRange.getFirstRow(), cellRange.getLastRow(),
+                    cellRange.getFirstColumn() + index, cellRange.getLastColumn() + index
             );
         } else {
             modifiedRange = new CellRangeAddress(
-                    range.getFirstRow() + index, range.getLastRow() + index,
-                    range.getFirstColumn(), range.getLastColumn()
+                    cellRange.getFirstRow() + index, cellRange.getLastRow() + index,
+                    cellRange.getFirstColumn(), cellRange.getLastColumn()
             );
         }
         return modifiedRange;
@@ -74,8 +67,7 @@ public abstract class AbstractTactic<E> {
     }
 
     protected CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {
-        int index = tracker.getListItemCounter();
-        return getCellAddresses(strategy, range, index);
+        return getCellAddresses(strategy, range, tracker);
     }
 
     private CellStrategy chooseStrategy(CellStrategy fieldStrategy) {
