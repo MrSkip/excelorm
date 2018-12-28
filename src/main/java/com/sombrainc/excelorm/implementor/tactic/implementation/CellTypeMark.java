@@ -1,6 +1,8 @@
 package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.ExcelReader;
+import com.sombrainc.excelorm.annotation.CellMark;
+import com.sombrainc.excelorm.exception.MissingAnnotationException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -16,6 +18,12 @@ public class CellTypeMark<E> extends AbstractTactic<E> implements CellTypeHandle
 
     @Override
     public Object process() {
+        if (!field.isAnnotationPresent(CellMark.class)) {
+            throw new MissingAnnotationException(
+                    String.format("Annotation %s is not present", CellMark.class.getCanonicalName())
+            );
+        }
+
         return ExcelReader.read(sheet, field.getType(), tracker);
     }
 }

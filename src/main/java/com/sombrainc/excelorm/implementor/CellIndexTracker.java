@@ -22,10 +22,6 @@ public class CellIndexTracker {
         return listItemCounter;
     }
 
-    public void setListItemCounter(int listItemCounter) {
-        this.listItemCounter = listItemCounter;
-    }
-
     public CellStrategy getStrategy() {
         return strategy;
     }

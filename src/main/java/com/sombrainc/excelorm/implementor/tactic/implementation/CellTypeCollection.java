@@ -2,6 +2,8 @@ package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.annotation.CellCollection;
 import com.sombrainc.excelorm.enumeration.CellStrategy;
+import com.sombrainc.excelorm.exception.HasNotImplementedYetException;
+import com.sombrainc.excelorm.exception.MissingAnnotationException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -27,6 +29,12 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
 
     @Override
     public Object process() {
+        if (!field.isAnnotationPresent(CellCollection.class)) {
+            throw new MissingAnnotationException(
+                    String.format("Annotation %s is not present", CellCollection.class.getCanonicalName())
+            );
+        }
+
         CellCollection annotation = field.getAnnotation(CellCollection.class);
         CellRangeAddress range = rearrangeCell();
 
@@ -67,8 +75,10 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         return collection;
     }
 
-    private List<Object> createListAndIterateUtilEmpty(CellRangeAddress range, CellCollection annotation) {
-        if (!List.class.equals(field.getType())) {
+    private Collection<Object> createListAndIterateUtilEmpty(CellRangeAddress range, CellCollection annotation) {
+        if (!List.class.equals(field.getType())
+                && !Set.class.equals(field.getType())
+                && !Collection.class.equals(field.getType())) {
             throw new IllegalStateException("Incorrect field type. Collection is required");
         }
 
@@ -92,6 +102,13 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
             list.add(cellValue);
             index += annotation.step();
         }
-        return list;
+
+        if (Set.class.equals(field.getType())) {
+            return new HashSet<>(list);
+        } else if (List.class.equals(field.getType()) || Collection.class.equals(field.getType())) {
+            return list;
+        }
+
+        throw new HasNotImplementedYetException(String.format("Have no implementation for %s", field.getType().getCanonicalName()));
     }
 }

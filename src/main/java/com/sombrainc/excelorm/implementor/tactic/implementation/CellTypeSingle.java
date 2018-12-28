@@ -1,5 +1,7 @@
 package com.sombrainc.excelorm.implementor.tactic.implementation;
 
+import com.sombrainc.excelorm.annotation.Cell;
+import com.sombrainc.excelorm.exception.MissingAnnotationException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -22,12 +24,16 @@ public class CellTypeSingle<E> extends AbstractTactic<E> implements CellTypeHand
 
     @Override
     public Object process() {
-        CellRangeAddress range = rearrangeCell();
+        if (!field.isAnnotationPresent(Cell.class)) {
+            throw new MissingAnnotationException(
+                    String.format("Annotation %s is not present", Cell.class.getCanonicalName())
+            );
+        }
 
+        CellRangeAddress range = rearrangeCell();
         if (!ifTypeIsPureObject(field.getType())) {
             throw new RuntimeException(String.format("Type is not supported: %s", field.getType()));
         }
-
         Iterator<CellAddress> iterator = range.iterator();
         return readSingleValueFromSheet(field.getType(), getOrCreateCell(sheet, iterator.next()));
     }
