@@ -4,6 +4,7 @@ import com.sombrainc.excelorm.annotation.Cell;
 import com.sombrainc.excelorm.annotation.CellCollection;
 import com.sombrainc.excelorm.annotation.CellMap;
 import com.sombrainc.excelorm.enumeration.CellStrategy;
+import com.sombrainc.excelorm.exception.HasNotImplementedYetException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.model.CellMapPresenter;
@@ -13,7 +14,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
 
-import static com.sombrainc.excelorm.utils.ExcelUtils.isIteratingOverColumns;
+import static com.sombrainc.excelorm.utils.ExcelValidation.isIteratingOverColumns;
 
 public abstract class AbstractTactic<E> {
     protected Field field;
@@ -63,7 +64,7 @@ public abstract class AbstractTactic<E> {
             CellRangeAddress range = presenter.getRange();
             return arrangeCell(strategy, range);
         }
-        throw new NullPointerException("Implementation not found");
+        throw new HasNotImplementedYetException("Implementation not found");
     }
 
     protected CellRangeAddress arrangeCell(CellStrategy strategy, CellRangeAddress range) {

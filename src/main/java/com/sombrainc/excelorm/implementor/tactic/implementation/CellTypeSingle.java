@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.annotation.Cell;
 import com.sombrainc.excelorm.exception.MissingAnnotationException;
+import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -24,18 +25,23 @@ public class CellTypeSingle<E> extends AbstractTactic<E> implements CellTypeHand
 
     @Override
     public Object process() {
+        validate();
+        CellRangeAddress range = rearrangeCell();
+        Iterator<CellAddress> iterator = range.iterator();
+        return readSingleValueFromSheet(field.getType(), getOrCreateCell(sheet, iterator.next()));
+    }
+
+    private void validate() {
         if (!field.isAnnotationPresent(Cell.class)) {
             throw new MissingAnnotationException(
                     String.format("Annotation %s is not present", Cell.class.getCanonicalName())
             );
         }
-
-        CellRangeAddress range = rearrangeCell();
         if (!ifTypeIsPureObject(field.getType())) {
-            throw new RuntimeException(String.format("Type is not supported: %s", field.getType()));
+            throw new TypeIsNotSupportedException(String.format(
+                    "Could not process the field '%s' which has a type '%s'. " +
+                            "You might need to use another annotation", field.getName(), field.getType()));
         }
-        Iterator<CellAddress> iterator = range.iterator();
-        return readSingleValueFromSheet(field.getType(), getOrCreateCell(sheet, iterator.next()));
     }
 
 }

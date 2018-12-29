@@ -1,28 +1,15 @@
 package com.sombrainc.excelorm.utils;
 
-import com.sombrainc.excelorm.exception.IncorectRangeException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.math.BigDecimal;
 
 public class ExcelUtils {
 
-    public static CellRangeAddress validateRange(String range, String message) {
-        if (range == null || range.trim().isEmpty()) {
-            throw new IncorectRangeException(message
-                    + ". Specified cell range is empty or null");
-        }
-        return CellRangeAddress.valueOf(range);
-    }
-
-    public static boolean isIteratingOverColumns(CellRangeAddress range) {
-        // exclude condition when one cell selected
-        return range.getFirstColumn() != range.getLastColumn()
-                && range.getFirstRow() == range.getLastRow();
+    private ExcelUtils() {
     }
 
     public static Object readSingleValueFromSheet(Class<?> type, Cell cell) {
@@ -103,11 +90,6 @@ public class ExcelUtils {
             cell = row.createCell(columnIndex);
         }
         return cell;
-    }
-
-    public static boolean isOneCellSelected(CellRangeAddress range) {
-        return range.getFirstRow() == range.getLastRow()
-                && range.getFirstColumn() == range.getLastColumn();
     }
 
 }

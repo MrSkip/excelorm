@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 public class TypesUtils {
 
+    private TypesUtils(){
+    }
+
     public static boolean ifTypeIsPureObject(Class<?> type) {
         return Double.class.equals(type) || double.class.equals(type)
                 || Integer.class.equals(type) || int.class.equals(type)

@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.annotation.CellMap;
 import com.sombrainc.excelorm.enumeration.CellStrategy;
+import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 import static com.sombrainc.excelorm.ExcelReader.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
+import static com.sombrainc.excelorm.utils.ExcelValidation.isIteratingOverColumns;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
 import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
 
@@ -33,9 +35,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
 
     @Override
     public Object process() {
-        if (!Map.class.equals(field.getType())) {
-            throw new IllegalStateException("Incorrect field type. Map is required");
-        }
+        validate();
 
         CellMap annotation = field.getAnnotation(CellMap.class);
 
@@ -51,6 +51,17 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         }
 
         return fieldValue;
+    }
+
+    private void validate() {
+        if (!Map.class.equals(field.getType())) {
+            throw new IllegalStateException("Incorrect field type. Map is required");
+        }
+        if (!field.getType().equals(Map.class)) {
+            throw new TypeIsNotSupportedException(String.format(
+                    "Could not process the field '%s' which has a type '%s'. " +
+                            "You might need to use another annotation", field.getName(), field.getType()));
+        }
     }
 
     private Map<Object, Object> createMapIterateOverFixedRange(

@@ -4,6 +4,7 @@ import com.sombrainc.excelorm.annotation.CellCollection;
 import com.sombrainc.excelorm.enumeration.CellStrategy;
 import com.sombrainc.excelorm.exception.HasNotImplementedYetException;
 import com.sombrainc.excelorm.exception.MissingAnnotationException;
+import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
@@ -29,11 +30,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
 
     @Override
     public Object process() {
-        if (!field.isAnnotationPresent(CellCollection.class)) {
-            throw new MissingAnnotationException(
-                    String.format("Annotation %s is not present", CellCollection.class.getCanonicalName())
-            );
-        }
+        validate();
 
         CellCollection annotation = field.getAnnotation(CellCollection.class);
         CellRangeAddress range = rearrangeCell();
@@ -51,6 +48,21 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         }
 
         return fieldValue;
+    }
+
+    private void validate() {
+        if (!field.isAnnotationPresent(CellCollection.class)) {
+            throw new MissingAnnotationException(
+                    String.format("Annotation %s is not present", CellCollection.class.getCanonicalName())
+            );
+        }
+        if (!field.getType().equals(Collection.class)
+                && !field.getType().equals(Set.class)
+                && !field.getType().equals(List.class)) {
+            throw new TypeIsNotSupportedException(String.format(
+                    "Could not process the field '%s' which has a type '%s'. " +
+                            "You might need to use another annotation", field.getName(), field.getType()));
+        }
     }
 
     private Collection<Object> createListAndIterateOverRange(CellRangeAddress range, CellCollection annotation) {
@@ -109,6 +121,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
             return list;
         }
 
-        throw new HasNotImplementedYetException(String.format("Have no implementation for %s", field.getType().getCanonicalName()));
+        throw new HasNotImplementedYetException(String.format("Have no implementation for %s." +
+                " Please consider these collection to be replaced by: Collection, List, Set", field.getType().getCanonicalName()));
     }
 }
