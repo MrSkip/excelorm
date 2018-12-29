@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getInstance;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.setFieldViaReflection;
 
-public class ExcelReader {
+public class Excelorm {
 
     public static <E> E read(Sheet sheet, Class<E> target) {
         CellIndexTracker tracker = new CellIndexTracker();

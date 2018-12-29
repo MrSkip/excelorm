@@ -1,6 +1,6 @@
 package com.sombrainc.excelorm.implementor.tactic.implementation;
 
-import com.sombrainc.excelorm.ExcelReader;
+import com.sombrainc.excelorm.Excelorm;
 import com.sombrainc.excelorm.annotation.CellMark;
 import com.sombrainc.excelorm.exception.MissingAnnotationException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
@@ -24,6 +24,6 @@ public class CellTypeMark<E> extends AbstractTactic<E> implements CellTypeHandle
             );
         }
 
-        return ExcelReader.read(sheet, field.getType(), tracker);
+        return Excelorm.read(sheet, field.getType(), tracker);
     }
 }

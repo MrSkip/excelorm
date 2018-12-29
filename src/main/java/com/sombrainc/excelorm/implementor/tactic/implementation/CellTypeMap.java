@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sombrainc.excelorm.ExcelReader.read;
+import static com.sombrainc.excelorm.Excelorm.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isIteratingOverColumns;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
