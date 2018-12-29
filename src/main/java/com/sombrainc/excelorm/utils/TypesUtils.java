@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class TypesUtils {
 
-    private TypesUtils(){
+    private TypesUtils() {
     }
 
     public static boolean ifTypeIsPureObject(Class<?> type) {

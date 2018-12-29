@@ -1,11 +1,13 @@
 package com.sombrainc.excelorm.implementor.tactic.implementation;
 
 import com.sombrainc.excelorm.annotation.Cell;
+import com.sombrainc.excelorm.enumeration.CellStrategy;
 import com.sombrainc.excelorm.exception.MissingAnnotationException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
+import com.sombrainc.excelorm.model.CellSinglePresenter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -29,6 +31,13 @@ public class CellTypeSingle<E> extends AbstractTactic<E> implements CellTypeHand
         CellRangeAddress range = rearrangeCell();
         Iterator<CellAddress> iterator = range.iterator();
         return readSingleValueFromSheet(field.getType(), getOrCreateCell(sheet, iterator.next()));
+    }
+
+    private CellRangeAddress rearrangeCell() {
+        CellSinglePresenter presenter = new CellSinglePresenter(field);
+        CellStrategy strategy = chooseStrategy(CellStrategy.FIXED);
+        CellRangeAddress range = presenter.getRange();
+        return arrangeCell(strategy, range);
     }
 
     private void validate() {

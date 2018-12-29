@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm.model;
 
 import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.ExcelValidation;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -31,15 +30,7 @@ public class CellMapPresenter {
         return keyRange;
     }
 
-    public void setKeyRange(CellRangeAddress keyRange) {
-        this.keyRange = keyRange;
-    }
-
     public CellRangeAddress getValueRange() {
         return valueRange;
-    }
-
-    public void setValueRange(CellRangeAddress valueRange) {
-        this.valueRange = valueRange;
     }
 }

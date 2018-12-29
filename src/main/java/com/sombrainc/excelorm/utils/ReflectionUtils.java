@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 
 public class ReflectionUtils {
 
-    public ReflectionUtils() {
+    private ReflectionUtils() {
     }
 
     public static <E> E getInstance(Class<E> target) {

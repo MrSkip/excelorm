@@ -41,7 +41,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
 
         Object fieldValue;
         Type[] types = getClassFromGenericField(field);
-        Pair<CellRangeAddress, CellRangeAddress> pair = rearrangeForMap((Class<?>) types[1]);
+        Pair<CellRangeAddress, CellRangeAddress> pair = rearrangeCell((Class<?>) types[1]);
 
         if (annotation.strategy() == CellStrategy.ROW_UNTIL_NULL
                 || annotation.strategy() == CellStrategy.COLUMN_UNTIL_NULL) {
@@ -159,7 +159,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         return map;
     }
 
-    private Pair<CellRangeAddress, CellRangeAddress> rearrangeForMap(Class<?> valueType) {
+    private Pair<CellRangeAddress, CellRangeAddress> rearrangeCell(Class<?> valueType) {
         CellMapPresenter presenter = new CellMapPresenter(field);
         CellStrategy strategy = presenter.getAnnotation().strategy();
 

@@ -8,6 +8,7 @@ import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.implementor.CellIndexTracker;
 import com.sombrainc.excelorm.implementor.tactic.AbstractTactic;
 import com.sombrainc.excelorm.implementor.tactic.CellTypeHandler;
+import com.sombrainc.excelorm.model.CellCollectionPresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,6 +49,13 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         }
 
         return fieldValue;
+    }
+
+    private CellRangeAddress rearrangeCell() {
+        CellCollectionPresenter presenter = new CellCollectionPresenter(field);
+        CellStrategy strategy = chooseStrategy(presenter.getAnnotation().strategy());
+        CellRangeAddress range = presenter.getRange();
+        return arrangeCell(strategy, range);
     }
 
     private void validate() {

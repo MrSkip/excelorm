@@ -13,6 +13,24 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Dmytro Mula</name>
+            <email>dimon.mula@gmail.com</email>
+            <organization>Sombra</organization>
+        </developer>
+    </developers>
+
+    <inceptionYear>2018</inceptionYear>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
