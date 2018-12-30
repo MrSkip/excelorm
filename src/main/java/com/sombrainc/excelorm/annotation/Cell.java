@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
  * <p>
  * Works with following objects:
  * <p>
- * String, Double (double), Integer (int), Double (double),
- * BigDecimal, Boolean (boolean), Float (float),
+ * String, Integer (int), Double (double),
+ * BigDecimal, Boolean (boolean), Float (float), Enum
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

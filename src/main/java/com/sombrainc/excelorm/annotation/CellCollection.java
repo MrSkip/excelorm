@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use to construct the Set (HashSet) / List (HashList) / Collection
+ * Use to construct the Set (HashSet) / List (ArrayList) / Collection (ArrayList)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
