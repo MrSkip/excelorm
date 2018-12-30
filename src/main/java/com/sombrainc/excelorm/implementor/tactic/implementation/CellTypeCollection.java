@@ -108,6 +108,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
 
         List<Object> list = new ArrayList<>();
         Class<?> clazz = (Class<?>) getClassFromGenericField(field)[0];
+        int counter = 0;
 
         while (true) {
             org.apache.poi.ss.usermodel.Cell cell = CellStrategy.COLUMN_UNTIL_NULL.equals(annotation.strategy())
@@ -118,9 +119,17 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
                 break;
             }
 
-            Object cellValue = readSingleValueFromSheet(clazz, cell);
+            Object cellValue;
+            if (!ifTypeIsPureObject(clazz)) {
+                cellValue = read(
+                        sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
+            } else {
+                cellValue = readSingleValueFromSheet(clazz, cell);
+            }
+
             list.add(cellValue);
             index += annotation.step();
+            counter += annotation.step();
         }
 
         if (Set.class.equals(field.getType())) {
