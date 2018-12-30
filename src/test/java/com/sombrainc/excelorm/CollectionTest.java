@@ -149,4 +149,19 @@ public class CollectionTest {
         Assert.assertEquals(list.size(),0);
     }
 
+    public void testCollectionObjectRange2() {
+        List<ModelCollection.Person> list = new ArrayList<>(
+                Arrays.asList(
+                        new ModelCollection.Person("Roddy", "Wiliams", 34, ModelCollection.Gender.MALE),
+                        new ModelCollection.Person("Max", "Tiff", 74, ModelCollection.Gender.MALE),
+                        new ModelCollection.Person("Lili", "Abrams", 23, ModelCollection.Gender.FEMALE)
+                )
+        );
+        List<ModelCollection.Person> people = model.getPeople2();
+        Assert.assertNotNull(people);
+        Assert.assertEquals(people.size(), list.size());
+        list.removeAll(people);
+        Assert.assertEquals(list.size(),0);
+    }
+
 }

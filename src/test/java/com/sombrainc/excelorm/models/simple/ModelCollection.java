@@ -40,6 +40,9 @@ public class ModelCollection {
     @CellCollection(cells = "a28:a30")
     private List<Person> people;
 
+    @CellCollection(cells = "a28", strategy = CellStrategy.ROW_UNTIL_NULL)
+    private List<Person> people2;
+
     @Data
     public static class Person {
         @Cell(cell = "a28")
