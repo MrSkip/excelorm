@@ -1,0 +1,2 @@
+# excelorm
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/06e0b427e3a549b9b382303d0837cf31)](https://app.codacy.com/app/MrSkip/excelorm?utm_source=github.com&utm_medium=referral&utm_content=MrSkip/excelorm&utm_campaign=Badge_Grade_Dashboard)
