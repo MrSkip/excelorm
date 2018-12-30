@@ -6,30 +6,38 @@
 
     <groupId>com.sombrainc</groupId>
     <artifactId>excelorm</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <name>com.sombrainc:excelorm</name>
+    <description>Project created to simplify the reading from Excel files</description>
+    <url>https://github.com/MrSkip/excelorm</url>
+    <packaging>jar</packaging>
     <licenses>
         <license>
-            <name>The MIT License (MIT)</name>
-            <url>http://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
         </license>
     </licenses>
-
     <developers>
         <developer>
             <name>Dmytro Mula</name>
             <email>dimon.mula@gmail.com</email>
             <organization>Sombra</organization>
+            <organizationUrl>https://sombrainc.com/</organizationUrl>
         </developer>
     </developers>
-
     <inceptionYear>2018</inceptionYear>
+    <scm>
+        <connection>scm:git:git://github.com/MrSkip/excelorm.git</connection>
+        <developerConnection>scm:git:ssh://github.com:MrSkip/excelorm.git</developerConnection>
+        <url>http://github.com/MrSkip/excelorm/tree/master</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -60,5 +68,50 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
