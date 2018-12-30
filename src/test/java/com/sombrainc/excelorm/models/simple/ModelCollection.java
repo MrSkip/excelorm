@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.models;
+package com.sombrainc.excelorm.models.simple;
 
 import com.sombrainc.excelorm.annotation.Cell;
 import com.sombrainc.excelorm.annotation.CellCollection;

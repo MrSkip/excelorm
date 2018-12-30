@@ -6,9 +6,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ModelReader {
-    private static final String PATH = "/test.xlsx";
+    public static final String PATH = "/test.xlsx";
 
     public static <E> E getModel(Class<E> modelClass) {
         return getModel(modelClass, "position");
@@ -20,6 +21,10 @@ public class ModelReader {
         } catch (InvalidFormatException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static synchronized <E> E getModel(InputStream doc, Class<E> modelClass, String sheetName) {
+        return Excelorm.read(doc, sheetName, modelClass);
     }
 
 }

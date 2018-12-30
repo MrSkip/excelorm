@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.models;
+package com.sombrainc.excelorm.models.simple;
 
 import com.sombrainc.excelorm.annotation.CellCollection;
 import lombok.Data;

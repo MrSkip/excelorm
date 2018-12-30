@@ -1,8 +1,8 @@
 package com.sombrainc.excelorm;
 
-import com.sombrainc.excelorm.models.Model1;
-import com.sombrainc.excelorm.models.Model2;
-import com.sombrainc.excelorm.models.NestedClassModel;
+import com.sombrainc.excelorm.models.simple.Model1;
+import com.sombrainc.excelorm.models.simple.Model2;
+import com.sombrainc.excelorm.models.simple.NestedClassModel;
 import com.sombrainc.excelorm.utils.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -1,6 +1,6 @@
 package com.sombrainc.excelorm;
 
-import com.sombrainc.excelorm.models.*;
+import com.sombrainc.excelorm.models.simple.*;
 import com.sombrainc.excelorm.utils.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;

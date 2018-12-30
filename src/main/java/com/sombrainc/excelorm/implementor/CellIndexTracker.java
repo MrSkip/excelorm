@@ -3,9 +3,15 @@ package com.sombrainc.excelorm.implementor;
 import com.sombrainc.excelorm.enumeration.CellStrategy;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+/**
+ * To keep track of index/strategy while iterating over collection
+ */
 public class CellIndexTracker {
+    // index of next row/column to be loaded into collection
     private int listItemCounter;
+    // parent strategy
     private CellStrategy strategy;
+    // parent key range
     private CellRangeAddress parentRange;
 
     public CellIndexTracker() {

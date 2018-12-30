@@ -12,6 +12,9 @@ public class ReflectionUtils {
     }
 
     public static <E> E getInstance(Class<E> target) {
+        if (target == null) {
+            throw new NullPointerException("Target class could not be null");
+        }
         E instance;
         try {
             instance = ConstructorUtils.getAccessibleConstructor(target).newInstance();
