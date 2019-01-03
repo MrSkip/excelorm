@@ -5,10 +5,21 @@
 [![Coverage Status](https://coveralls.io/repos/github/MrSkip/excelorm/badge.svg?branch=master)](https://coveralls.io/github/MrSkip/excelorm?branch=master)
 ![Licence](https://img.shields.io/badge/apache.poi-4.0.0-brightgreen.svg)
 ![Licence1](https://img.shields.io/badge/license-MIT-blue.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.sombrainc/excelorm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.sombrainc/excelorm)
 
 The idea behind this project is to use **Object Oriented** approach instead of tons of loops while reading 
 some kind of complex data from excel files. I hope you will find it interesting and simple enough to use when fighting with excel.
 
+### Maven dependency
+
+At first you would need to add the following maven dependency
+```xml
+<dependency>
+  <groupId>com.sombrainc</groupId>
+  <artifactId>excelorm</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
 ## Quick example
 
 Let's take an example. How would you read all of the data from this spreadsheet?
