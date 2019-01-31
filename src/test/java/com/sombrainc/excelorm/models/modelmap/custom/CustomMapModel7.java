@@ -14,13 +14,13 @@ public class CustomMapModel7 {
 
     @Data
     public static class User {
-        @Cell(cell = "B68")
+        @Cell(value = "B68")
         private String firstName;
-        @Cell(cell = "B69")
+        @Cell(value = "B69")
         private String lastName;
-        @Cell(cell = "B70")
+        @Cell(value = "B70")
         private Integer age;
-        @Cell(cell = "B71")
+        @Cell(value = "B71")
         private Gender gender;
 
         public User() {

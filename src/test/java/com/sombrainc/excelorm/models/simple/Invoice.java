@@ -12,24 +12,24 @@ import java.util.List;
 @Data
 public class Invoice {
 
-    @Cell(cell = "A1")
+    @Cell(value = "A1")
     private String companyName;
-    @Cell(cell = "A2")
+    @Cell(value = "A2")
     private String streetAddress;
-    @Cell(cell = "A3")
+    @Cell(value = "A3")
     private String city;
-    @Cell(cell = "A4")
+    @Cell(value = "A4")
     private String phone;
-    @Cell(cell = "A5")
+    @Cell(value = "A5")
     private String fax;
-    @Cell(cell = "A6")
+    @Cell(value = "A6")
     private String website;
 
     // same mapping for the rest pure fields ..
 
     @CellMark
     private Bill billTo;
-    // will be iterating down to rows until first empty cell (A17, A18 ... n) is found
+    // will be iterating down to rows until first empty value (A17, A18 ... n) is found
     @CellCollection(cells = "A17", strategy = CellStrategy.ROW_UNTIL_NULL)
     private List<Expenses> expenses;
     @CellCollection(cells = "A36", strategy = CellStrategy.ROW_UNTIL_NULL)
@@ -37,25 +37,25 @@ public class Invoice {
 
     @Data
     public static class Bill {
-        @Cell(cell = "A10")
+        @Cell(value = "A10")
         private String name;
-        @Cell(cell = "A11")
+        @Cell(value = "A11")
         private String companyName;
-        @Cell(cell = "A12")
+        @Cell(value = "A12")
         private String streetAddress;
-        @Cell(cell = "A13")
+        @Cell(value = "A13")
         private String city;
-        @Cell(cell = "A14")
+        @Cell(value = "A14")
         private String phone;
     }
 
     @Data
     public static class Expenses {
-        @Cell(cell = "A17")
+        @Cell(value = "A17")
         private String description;
-        @Cell(cell = "E17")
+        @Cell(value = "E17")
         private Boolean taxed;
-        @Cell(cell = "F17")
+        @Cell(value = "F17")
         private BigDecimal amount;
     }
 

@@ -34,17 +34,17 @@ Simple POJO object:
 @Data
 public class Invoice {
 
-    @Cell(cell = "A1")
+    @Cell("A1")
     private String companyName;
-    @Cell(cell = "A2")
+    @Cell("A2")
     private String streetAddress;
-    @Cell(cell = "A3")
+    @Cell("A3")
     private String city;
-    @Cell(cell = "A4")
+    @Cell("A4")
     private String phone;
-    @Cell(cell = "A5")
+    @Cell("A5")
     private String fax;
-    @Cell(cell = "A6")
+    @Cell("A6")
     private String website;
 
     // same mapping for the rest pure fields ..
@@ -61,25 +61,25 @@ public class Invoice {
 
     @Data
     public static class Bill {
-        @Cell(cell = "A10")
+        @Cell("A10")
         private String name;
-        @Cell(cell = "A11")
+        @Cell("A11")
         private String companyName;
-        @Cell(cell = "A12")
+        @Cell("A12")
         private String streetAddress;
-        @Cell(cell = "A13")
+        @Cell("A13")
         private String city;
-        @Cell(cell = "A14")
+        @Cell("A14")
         private String phone;
     }
     
     @Data
     public static class Expenses {
-        @Cell(cell = "A17")
+        @Cell("A17")
         private String description;
-        @Cell(cell = "E17")
+        @Cell("E17")
         private Boolean taxed;
-        @Cell(cell = "F17")
+        @Cell("F17")
         private BigDecimal amount;
     }
 }

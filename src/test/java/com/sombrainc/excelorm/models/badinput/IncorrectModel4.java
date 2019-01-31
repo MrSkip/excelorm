@@ -8,7 +8,7 @@ import java.util.Map;
 @Data
 public class IncorrectModel4 {
 
-    @Cell(cell = "A15:B19")
+    @Cell(value = "A15:B19")
     private Map<String, String> map;
 
 }

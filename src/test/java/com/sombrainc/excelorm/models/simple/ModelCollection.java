@@ -45,13 +45,13 @@ public class ModelCollection {
 
     @Data
     public static class Person {
-        @Cell(cell = "a28")
+        @Cell(value = "a28")
         private String firstName;
-        @Cell(cell = "b28")
+        @Cell(value = "b28")
         private String lastName;
-        @Cell(cell = "c28")
+        @Cell(value = "c28")
         private int age;
-        @Cell(cell = "d28")
+        @Cell(value = "d28")
         private Gender gender;
 
         public Person() {

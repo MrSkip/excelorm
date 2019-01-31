@@ -22,5 +22,5 @@ public @interface Cell {
      *
      * @return position of cell
      */
-    String cell();
+    String value();
 }

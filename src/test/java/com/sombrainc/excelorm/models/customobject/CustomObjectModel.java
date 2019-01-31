@@ -17,13 +17,13 @@ public class CustomObjectModel {
 
     @Data
     public static class User {
-        @Cell(cell = "C75")
+        @Cell(value = "C75")
         private String firstName;
-        @Cell(cell = "C76")
+        @Cell(value = "C76")
         private String lastName;
-        @Cell(cell = "C77")
+        @Cell(value = "C77")
         private Integer age;
-        @Cell(cell = "C78")
+        @Cell(value = "C78")
         private Gender gender;
         @CellMap(keyCell = "E75", strategy = CellStrategy.ROW_UNTIL_NULL)
         private Map<String, Integer> map;

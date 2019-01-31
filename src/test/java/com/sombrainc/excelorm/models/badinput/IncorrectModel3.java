@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class IncorrectModel3 {
 
-    @Cell(cell = "r")
+    @Cell(value = "r")
     private String name;
 
 }

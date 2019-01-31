@@ -37,11 +37,11 @@ public class CustomObjectModel2 {
 
     @Data
     public static class Subject {
-//        @Cell(cell = "D82")
+//        @Cell(value = "D82")
         private Integer hours;
         @CellMark
         private Student student;
-//        @Cell(cell = "H82")
+//        @Cell(value = "H82")
         private Double sum;
 
         public Subject() {

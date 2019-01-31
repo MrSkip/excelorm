@@ -13,7 +13,7 @@ public class CellSinglePresenter {
     public CellSinglePresenter(Field field) {
         annotation = field.getAnnotation(Cell.class);
         range = ExcelValidation
-                .validateRange(annotation.cell(), field).straightRange();
+                .validateRange(annotation.value(), field).straightRange();
     }
 
     public Cell getAnnotation() {

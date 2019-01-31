@@ -16,13 +16,13 @@ public class CustomMapModel8 {
 
     @Data
     public static class User {
-        @Cell(cell = "B60")
+        @Cell(value = "B60")
         private String firstName;
-        @Cell(cell = "C60")
+        @Cell(value = "C60")
         private String lastName;
-        @Cell(cell = "D60")
+        @Cell(value = "D60")
         private Integer age;
-        @Cell(cell = "E60")
+        @Cell(value = "E60")
         private Gender gender;
         @CellCollection(cells = "F60", strategy = CellStrategy.COLUMN_UNTIL_NULL)
         private List<Integer> etc;
