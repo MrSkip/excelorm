@@ -23,4 +23,12 @@ public @interface Cell {
      * @return position of cell
      */
     String value();
+
+    /**
+     * To specify the name of the field
+     * Could be empty if default field name is acceptable and won't change over time
+     *
+     * @return name of the field
+     */
+    String name() default "";
 }
