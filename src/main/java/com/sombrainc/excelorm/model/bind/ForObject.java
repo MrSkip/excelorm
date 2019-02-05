@@ -1,5 +1,7 @@
 package com.sombrainc.excelorm.model.bind;
 
+import com.sombrainc.excelorm.Main;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -9,8 +11,20 @@ import java.util.function.Supplier;
  */
 public class ForObject<T> implements ExcelReader<T> {
 
-    public ForObject<T> resolve(Consumer<String> confConsumer) {
-        Supplier<String> stringSupplier;
+    public ForObject(Main.TypeReference<T> reference) {
+
+    }
+
+    public ForObject(T reference) {
+
+    }
+
+    public ForObject(Class<T> reference) {
+
+    }
+
+    public ForObject<T> resolve(Consumer<ForObjectDecorator<T>> confConsumer) {
+//        Supplier<String> stringSupplier;
         return this;
     }
 

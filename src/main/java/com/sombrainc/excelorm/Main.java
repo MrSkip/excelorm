@@ -2,10 +2,14 @@
 //
 //import com.sombrainc.excelorm.annotation.Cell;
 //import com.sombrainc.excelorm.enumeration.CellType;
+//import com.sombrainc.excelorm.implementor.CellIndexTracker;
+//import com.sombrainc.excelorm.model.bind.BasicDecorator;
+//import com.sombrainc.excelorm.model.bind.ForCollection;
 //import lombok.Data;
 //
 //import java.util.List;
 //import java.util.Map;
+//import java.util.function.Consumer;
 //import java.util.function.Function;
 //
 ///**
@@ -99,15 +103,28 @@
 //                                .limit(2)
 //                ).read();
 //
-//        Map<String, String> map121 = new Excelorm(sheet)
+//        Map<String, String> map121 = new Excelorm2("", "")
 //                .forObject(Main.class)
-//                .resolve(conf ->
-//                        conf.bind("test",
-//                                ForCollection(new TypeReference<List<String>>())
-//                                        .resolve(conf1 -> conf1.select("A1"))))
+//                .resolve(conf -> {
+//                    conf
+//                            .bind("test",
+//                                    new ForCollection<List<String>>(new TypeReference<>())
+//                                            .resolve(conf1 -> conf1.select("A1")))
+//                            .query(cellSelect ->);
+//                }).read();
+//
+//        Main map1211 = new Excelorm2("", "")
+//                .forObject(Main.class)
+//                .resolve(conf -> conf
+//                        .bind("test", new ForCollection<List<String>>())
+//                        .query(q -> q.select("A1").as(BasicDecorator::getValue)))
 //                .read();
 //
 //        Excelorm.read(null, new TypeReference<Map<String, String>>(), new CellSingleObserver());
+//    }
+//
+//    public static void query(Consumer<CellIndexTracker> queryConsumer) {
+////            return this;
 //    }
 //
 //    public interface CellSelect<I, O> {
@@ -121,7 +138,7 @@
 //
 //        CellSelect<I, O> until(Function<I, Boolean> criteria);
 //
-//        void limit();
+//        void limit(int limit);
 //    }
 //
 //    public static class TypeReference<T> {
