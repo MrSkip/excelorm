@@ -17,6 +17,10 @@ public class ForMapValueDecorator<T> extends BasicDecorator<T> {
         return this;
     }
 
+    public <T1> ForMapValueDecorator<T> bind(ExcelReader<T1> excelReader) {
+        return this;
+    }
+
     public ForMapValueDecorator<T> query(
             Consumer<Main.CellSelect<ForCollectionDecorator<T>, T>> queryConsumer
     ) {

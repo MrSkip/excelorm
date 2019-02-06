@@ -17,6 +17,10 @@ public class ForCollectionDecorator<T> extends BasicDecorator<T> {
         return this;
     }
 
+    public <T1> ForCollectionDecorator<T> bind(ExcelReader<T1> excelReader) {
+        return this;
+    }
+
     public ForCollectionDecorator<T> query(
             Consumer<Main.CellSelect<ForCollectionDecorator<T>, T>> queryConsumer
     ) {

@@ -11,14 +11,6 @@ import java.util.function.Consumer;
  */
 public class ForObject<T> extends ExcelReader<T> {
 
-    public ForObject(Main.TypeReference<T> reference) {
-
-    }
-
-    public ForObject(T reference) {
-
-    }
-
     public ForObject(Class<T> reference) {
 
     }
@@ -30,6 +22,11 @@ public class ForObject<T> extends ExcelReader<T> {
 
     @Override
     public T read() {
+        return null;
+    }
+
+    @Override
+    protected T mapper() {
         return null;
     }
 

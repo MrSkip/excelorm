@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Excelorm2 {
     private Sheet sheet;
@@ -28,15 +30,19 @@ public class Excelorm2 {
         return new ForObject<>(reference);
     }
 
-    public <T, R> ForCollection<T> forCollection(Collection<T> collection) {
-        return new ForCollection<>(collection);
-    }
-
     public <K, V> ForMap<K, V> forMap(Map<K, V> map) {
         return new ForMap<>(map);
     }
 
-    public <T, R> ForCollection<T> forCollection(T strings, Main.TypeReference<R> stringTypeReference) {
+    public <T, V> ForCollection<T, V> forCollection(T collection, Main.TypeRef<V> typeRef) {
+        return null;
+    }
+
+    public <V> ForCollection<Set<V>, V> forSet(Set<V> set) {
+        return null;
+    }
+
+    public <V> ForCollection<List<V>, V> forList(List<V> list) {
         return null;
     }
 }

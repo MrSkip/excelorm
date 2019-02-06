@@ -5,4 +5,6 @@ public abstract class ExcelReader<T> {
 
     protected abstract T read();
 
+    protected abstract Object mapper();
+
 }
