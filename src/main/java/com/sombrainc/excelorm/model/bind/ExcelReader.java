@@ -1,8 +1,8 @@
 package com.sombrainc.excelorm.model.bind;
 
-@FunctionalInterface
-public interface ExcelReader<T> {
+//@FunctionalInterface
+public abstract class ExcelReader<T> {
 
-    T read();
+    protected abstract T read();
 
 }

@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.model.bind;
 
 import com.sombrainc.excelorm.Main;
 import com.sombrainc.excelorm.enumeration.CellType;
+import com.sombrainc.excelorm.model.bind.decorator.BasicDecorator;
 
 import java.util.function.Function;
 

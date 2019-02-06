@@ -1,7 +1,7 @@
-package com.sombrainc.excelorm.model.bind;
+package com.sombrainc.excelorm.model.bind.decorator;
 
 import com.sombrainc.excelorm.Main;
-import com.sombrainc.excelorm.implementor.CellIndexTracker;
+import com.sombrainc.excelorm.model.bind.ExcelReader;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.function.Consumer;
@@ -18,7 +18,7 @@ public class ForObjectDecorator<T> extends BasicDecorator<T> {
     }
 
     public <T1 extends ForObjectDecorator> ForObjectDecorator<T> query(
-            Consumer<Main.CellSelect<ForObjectDecorator<T>, T>> queryConsumer
+            Consumer<Main.CellSelectOnly<ForObjectDecorator<T>, T>> queryConsumer
     ) {
         return this;
     }

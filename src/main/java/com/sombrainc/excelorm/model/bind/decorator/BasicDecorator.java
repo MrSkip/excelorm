@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.model.bind;
+package com.sombrainc.excelorm.model.bind.decorator;
 
 import org.apache.poi.ss.usermodel.Cell;
 
