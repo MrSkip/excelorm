@@ -16,7 +16,7 @@ public class ForObject<T> extends ExcelReader<T> {
     }
 
     public ForObject<T> resolve(Consumer<ForObjectDecorator<T>> confConsumer) {
-//        Supplier<String> stringSupplier;
+//        confConsumer.accept(new ForObjectDecorator<>());
         return this;
     }
 

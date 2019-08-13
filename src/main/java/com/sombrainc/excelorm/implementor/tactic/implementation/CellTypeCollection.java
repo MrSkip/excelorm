@@ -21,7 +21,7 @@ import java.util.*;
 import static com.sombrainc.excelorm.Excelorm.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
-import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 public class CellTypeCollection<E> extends AbstractTactic<E> implements CellTypeHandler {
 
@@ -80,7 +80,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         for (CellAddress cellAddress : range) {
             org.apache.poi.ss.usermodel.Cell cell = getOrCreateCell(sheet, cellAddress);
             Object cellValue;
-            if (!ifTypeIsPureObject(clazz)) {
+            if (!isPureObject(clazz)) {
                 cellValue = read(
                         sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
             } else {
@@ -112,15 +112,15 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
 
         while (true) {
             org.apache.poi.ss.usermodel.Cell cell = CellStrategy.COLUMN_UNTIL_NULL.equals(annotation.strategy())
-                    ? ExcelUtils.createOrGetCell(sheet, range.getFirstRow(), index)
-                    : ExcelUtils.createOrGetCell(sheet, index, range.getFirstColumn());
+                    ? ExcelUtils.getOrCreateCell(sheet, range.getFirstRow(), index)
+                    : ExcelUtils.getOrCreateCell(sheet, index, range.getFirstColumn());
 
             if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(cell))) {
                 break;
             }
 
             Object cellValue;
-            if (!ifTypeIsPureObject(clazz)) {
+            if (!isPureObject(clazz)) {
                 cellValue = read(
                         sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
             } else {

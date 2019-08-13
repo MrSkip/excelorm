@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm.model;
 
 import com.sombrainc.excelorm.annotation.CellMap;
-import com.sombrainc.excelorm.utils.ExcelValidation;
+import com.sombrainc.excelorm.utils.ExcelUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
@@ -14,8 +14,8 @@ public class CellMapPresenter {
 
     public CellMapPresenter(Field field) {
         annotation = field.getAnnotation(CellMap.class);
-        keyRange = ExcelValidation
-                .validateRange(annotation.keyCell(), field)
+        keyRange = ExcelUtils
+                .obtainRange(annotation.keyCell(), field)
                 .validateAndGetRange();
         if (!annotation.valueCell().isEmpty()) {
             valueRange = CellRangeAddress.valueOf(annotation.valueCell());

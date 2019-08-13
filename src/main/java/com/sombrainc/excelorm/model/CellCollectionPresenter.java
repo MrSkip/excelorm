@@ -1,7 +1,7 @@
 package com.sombrainc.excelorm.model;
 
 import com.sombrainc.excelorm.annotation.CellCollection;
-import com.sombrainc.excelorm.utils.ExcelValidation;
+import com.sombrainc.excelorm.utils.ExcelUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
@@ -13,7 +13,7 @@ public class CellCollectionPresenter {
 
     public CellCollectionPresenter(Field field) {
         annotation = field.getAnnotation(CellCollection.class);
-        range = ExcelValidation.validateRange(annotation.cells(), field)
+        range = ExcelUtils.obtainRange(annotation.cells(), field)
                 .straightRange();
     }
 

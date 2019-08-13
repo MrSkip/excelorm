@@ -25,7 +25,7 @@ import static com.sombrainc.excelorm.Excelorm.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isIteratingOverColumns;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
-import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler {
 
@@ -87,7 +87,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             Object valueInKeyCell = readSingleValueFromSheet(clazzKey, keyCell);
 
             // if object is composite then go ever all its fields
-            if (!ifTypeIsPureObject(clazzValue)) {
+            if (!isPureObject(clazzValue)) {
                 Object nestedObject = read(
                         sheet, clazzValue, new CellIndexTracker(indexTracker, strategy, pair.getKey())
                 );
@@ -95,11 +95,11 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             } else {
                 Cell valueCell;
                 if (isIteratingOverColumns(pair.getKey())) {
-                    valueCell = ExcelUtils.createOrGetCell(
+                    valueCell = ExcelUtils.getOrCreateCell(
                             sheet, pair.getValue().getFirstRow(), pair.getValue().getFirstColumn() + indexTracker
                     );
                 } else {
-                    valueCell = ExcelUtils.createOrGetCell(
+                    valueCell = ExcelUtils.getOrCreateCell(
                             sheet, pair.getValue().getFirstRow() + indexTracker, pair.getValue().getFirstColumn()
                     );
                 }
@@ -129,8 +129,8 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
         int simpleCounter = 0;
         while (true) {
             Cell keyCell = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
-                    ? ExcelUtils.createOrGetCell(sheet, pair.getKey().getFirstRow(), index)
-                    : ExcelUtils.createOrGetCell(sheet, index, pair.getKey().getFirstColumn());
+                    ? ExcelUtils.getOrCreateCell(sheet, pair.getKey().getFirstRow(), index)
+                    : ExcelUtils.getOrCreateCell(sheet, index, pair.getKey().getFirstColumn());
 
             if (StringUtils.isNullOrEmpty(readStraightTypeFromExcel(keyCell))) {
                 break;
@@ -139,15 +139,15 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             Object valueInKeyCell = readSingleValueFromSheet(clazzKey, keyCell);
 
             // if object is composite then go ever all its fields
-            if (!ifTypeIsPureObject(clazzValue)) {
+            if (!isPureObject(clazzValue)) {
                 Object nestedObject = read(
                         sheet, clazzValue, new CellIndexTracker(simpleCounter, qualifier, pair.getKey())
                 );
                 map.put(valueInKeyCell, nestedObject);
             } else {
                 Cell valueCell = CellStrategy.COLUMN_UNTIL_NULL.equals(qualifier)
-                        ? ExcelUtils.createOrGetCell(sheet, pair.getValue().getFirstRow(), index)
-                        : ExcelUtils.createOrGetCell(sheet, index, pair.getValue().getFirstColumn());
+                        ? ExcelUtils.getOrCreateCell(sheet, pair.getValue().getFirstRow(), index)
+                        : ExcelUtils.getOrCreateCell(sheet, index, pair.getValue().getFirstColumn());
                 Object valueInValueCell = readSingleValueFromSheet(clazzValue, valueCell);
                 map.put(valueInKeyCell, valueInValueCell);
             }
@@ -173,7 +173,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                                                      CellStrategy strategy, CellRangeAddress keyRange) {
         if (presenter.getValueRange() != null) {
             return arrangeCell(strategy, presenter.getValueRange());
-        } else if (TypesUtils.ifTypeIsPureObject(valueType)) {
+        } else if (TypesUtils.isPureObject(valueType)) {
             if (strategy == CellStrategy.COLUMN_UNTIL_NULL
                     || (strategy == CellStrategy.FIXED && isIteratingOverColumns(keyRange))) {
                 return new CellRangeAddress(

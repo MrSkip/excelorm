@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Test
+//@EReader
 public class CustomObjectTest {
 
     public void customObjectTest() {

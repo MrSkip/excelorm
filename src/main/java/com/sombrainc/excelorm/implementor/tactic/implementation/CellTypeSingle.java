@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
 import static com.sombrainc.excelorm.utils.ExcelUtils.readSingleValueFromSheet;
-import static com.sombrainc.excelorm.utils.TypesUtils.ifTypeIsPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 public class CellTypeSingle<E> extends AbstractTactic<E> implements CellTypeHandler {
 
@@ -46,7 +46,7 @@ public class CellTypeSingle<E> extends AbstractTactic<E> implements CellTypeHand
                     String.format("Annotation %s is not present", Cell.class.getCanonicalName())
             );
         }
-        if (!ifTypeIsPureObject(field.getType())) {
+        if (!isPureObject(field.getType())) {
             throw new TypeIsNotSupportedException(String.format(
                     "Could not process the field '%s' which has a type '%s'. " +
                             "You might need to use another annotation", field.getName(), field.getType()));
