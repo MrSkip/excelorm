@@ -18,6 +18,7 @@ public class ListOfRangeExecutor<T> extends CoreExecutor<List<T>> {
     private final ListOfRange<T> target;
 
     protected ListOfRangeExecutor(ListOfRange<T> target) {
+        super(target.getEReaderContext());
         this.target = target;
     }
 

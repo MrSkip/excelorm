@@ -2,7 +2,7 @@ package com.sombrainc.excelorm.e2;
 
 import com.sombrainc.excelorm.e2.impl.EReaderContext;
 import com.sombrainc.excelorm.e2.impl.list.ListOfRange;
-import com.sombrainc.excelorm.e2.impl.map.MapOfRanges;
+import com.sombrainc.excelorm.e2.impl.map.range.MapOfRanges;
 import com.sombrainc.excelorm.e2.impl.map.list.MapOfLists;
 import com.sombrainc.excelorm.e2.impl.single.SinglePick;
 import lombok.NonNull;

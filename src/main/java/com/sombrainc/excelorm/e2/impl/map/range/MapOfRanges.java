@@ -1,26 +1,25 @@
-package com.sombrainc.excelorm.e2.impl.map;
+package com.sombrainc.excelorm.e2.impl.map.range;
 
 import com.sombrainc.excelorm.e2.impl.CoreActions;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.e2.impl.EReaderContext;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.sombrainc.excelorm.e2.impl.map.MapHolder;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.Map;
 import java.util.function.Function;
 
 public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
-    protected Holder holder;
+    protected MapHolder<K,V> holder;
 
     public MapOfRanges(EReaderContext EReaderContext, Class<K> key, Class<V> value) {
         super(EReaderContext);
-        holder = new Holder();
+        holder = new MapHolder<>();
         holder.setKeyClass(key);
         holder.setValueClass(value);
     }
 
-    public MapOfRanges(EReaderContext EReaderContext, Holder holder) {
+    public MapOfRanges(EReaderContext EReaderContext, MapHolder<K, V> holder) {
         super(EReaderContext);
         this.holder = holder;
     }
@@ -53,23 +52,6 @@ public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
     public MapOfRanges<K, V> until(Function<Cell, Boolean> key) {
         holder.setKeyUntil(key);
         return new MapOfRanges<>(this.getEReaderContext(), holder);
-    }
-
-    @Data
-    @Accessors(chain = true)
-    public class Holder {
-        protected Class<K> keyClass;
-        protected Class<V> valueClass;
-
-        protected Function<Cell, K> keyMapper;
-        protected Function<Cell, V> valueMapper;
-
-        protected Function<Cell, Boolean> keyUntil;
-
-        protected Function<Cell, Boolean> keyFilter;
-
-        protected String keyRange;
-        protected String valueRange;
     }
 
 }
