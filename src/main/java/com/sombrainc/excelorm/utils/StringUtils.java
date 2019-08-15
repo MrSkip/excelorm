@@ -1,5 +1,7 @@
 package com.sombrainc.excelorm.utils;
 
+import java.util.Objects;
+
 public class StringUtils {
 
     private StringUtils() {
@@ -10,5 +12,14 @@ public class StringUtils {
             return ((String) o).trim().isEmpty();
         }
         return o == null;
+    }
+
+    public static<T> T requireNotBlank(T t) {
+        if (t instanceof String) {
+            if (((String) t).trim().isEmpty())
+                throw new NullPointerException();
+            return t;
+        }
+        return Objects.requireNonNull(t);
     }
 }

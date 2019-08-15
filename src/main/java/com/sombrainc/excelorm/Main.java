@@ -1,6 +1,7 @@
 package com.sombrainc.excelorm;
 
 import com.sombrainc.excelorm.e2.EReader;
+import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import com.sombrainc.excelorm.enumeration.CellType;
 import com.sombrainc.excelorm.model.bind.ForList;
@@ -37,8 +38,8 @@ public class Main {
     }
 
     static {
-        BigDecimal a1 = new EReader(test)
-                .single(BigDecimal.class).pick("A1").go();
+        // is't it sweet?
+        int a1 = new EReader(test).single(int.class).go();
 
         BigDecimal a11 = new EReader(test)
                 .single(BigDecimal.class).pick("A1").map(cell -> BigDecimal.valueOf(cell.getNumericCellValue())).go();
@@ -46,9 +47,6 @@ public class Main {
         List<BigDecimal> list1 = new EReader(test)
                 .listOf(BigDecimal.class)
                 .pick("A1:B2")
-                .filter(EFilters::isBlank)
-                .until(contains(""))
-                .map(c -> BigDecimal.valueOf(c.getNumericCellValue()))
                 .go();
 
         Map<String, BigDecimal> go = new EReader(test)
@@ -64,6 +62,15 @@ public class Main {
                 .filter(EFilters::isBlank)
                 .filterValue(contains(""))
                 .map(Cell::getStringCellValue)
+                .go();
+
+        new EReader(test).single(Main.class).go();
+
+        final Main go2 = new EReader(test).single(Main.class)
+                .binds(
+                        new Bind("name", "C1").map(Cell::getStringCellValue),
+                        new Bind("secondName", "C2").map(Cell::getStringCellValue),
+                        new Bind("list", "C2:C1").map(Cell::getStringCellValue))
                 .go();
 
         new Excelorm2("", "")
