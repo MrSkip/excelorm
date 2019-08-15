@@ -1,7 +1,13 @@
 package com.sombrainc.excelorm.e2;
 
+import com.sombrainc.excelorm.e2.dto.UserDTO;
+import com.sombrainc.excelorm.e2.impl.Bind;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
@@ -77,6 +83,44 @@ public class SingleTest {
                     .pick("A4:B7")
                     .go();
             Assert.assertEquals("name1", value);
+        });
+    }
+
+    public void singleCustomObjectString() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            UserDTO value = e2.single(UserDTO.class)
+                    .binds(new Bind("name", "A4")).go();
+            Assert.assertEquals(new UserDTO().setName("name"), value);
+        });
+    }
+
+    public void singleCustomObjectString2() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            UserDTO value = e2.single(UserDTO.class)
+                    .binds(
+                            new Bind("name", "A4"),
+                            new Bind("intAsStr", "A1")
+                    ).go();
+            Assert.assertEquals(new UserDTO().setName("name").setIntAsStr("1"), value);
+        });
+    }
+
+    public void singleCustomObjectStringList() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            UserDTO value = e2.single(UserDTO.class)
+                    .binds(
+                            new Bind("name", "A4"),
+                            new Bind("intAsStr", "A1"),
+                            new Bind("listOfIntAsStr", "B8:B13")
+                    ).go();
+            Assert.assertEquals(
+                    new UserDTO()
+                            .setName("name")
+                            .setIntAsStr("1")
+                            .setListOfIntAsStr(
+                                    IntStream.rangeClosed(1, 6)
+                                            .mapToObj(v -> v + "").collect(Collectors.toList()))
+                    , value);
         });
     }
 

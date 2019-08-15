@@ -1,17 +1,24 @@
 package com.sombrainc.excelorm.e2.impl;
 
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
+import com.sombrainc.excelorm.utils.ReflectionUtils;
 import lombok.Getter;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
+import org.apache.poi.ss.util.CellRangeAddress;
 
-import java.util.Optional;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
 import static com.sombrainc.excelorm.utils.ExcelUtils.readGenericValueFromSheet;
+import static com.sombrainc.excelorm.utils.ReflectionUtils.getInstance;
 import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 @Getter
@@ -23,6 +30,60 @@ public abstract class CoreExecutor<T> {
     }
 
     public abstract T go();
+
+    protected T readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairs, Class<T> aClass, FormulaEvaluator formulaEvaluator) {
+        final T instance = getInstance(aClass);
+        final Field[] allFields = FieldUtils.getAllFields(aClass);
+        for (Field field : allFields) {
+            final Pair<Bind, CellRangeAddress> bindField = pairs.stream()
+                    .filter(pair -> pair.getKey().getField().equals(field.getName())).findFirst().orElse(null);
+            if (bindField == null) {
+                continue;
+            }
+            if (isCollection(field)) {
+                readSingleFieldAsCollection(formulaEvaluator, instance, field, bindField);
+                continue;
+            }
+            if (!isPureObject(field.getType())) {
+                continue;
+            }
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), bindField, toCell(bindField.getValue().iterator().next()));
+            ReflectionUtils.setFieldViaReflection(instance, field, fieldValue);
+        }
+        return instance;
+    }
+
+    private void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, T instance, Field field, Pair<Bind, CellRangeAddress> bindField) {
+        final Collection<Object> collection = new ArrayList<>();
+        for (CellAddress address : bindField.getRight()) {
+            final Cell cell = toCell(address);
+            if (!Optional.ofNullable(bindField.getKey().getUntil()).map(func -> func.apply(cell)).orElse(true)) {
+                break;
+            }
+            if (Optional.ofNullable(bindField.getKey().getFilter()).map(func -> func.apply(cell)).orElse(false)) {
+                continue;
+            }
+            final Class<?> type = (Class<?>) ReflectionUtils.getClassFromGenericField(field)[0];
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, type, bindField, cell);
+            collection.add(fieldValue);
+        }
+        if (field.getType().equals(Set.class)) {
+            ReflectionUtils.setFieldViaReflection(instance, field, new HashSet<>(collection));
+        } else {
+            ReflectionUtils.setFieldViaReflection(instance, field, collection);
+        }
+    }
+
+    private Object parseValueFromSheet(FormulaEvaluator formulaEvaluator, Class<?> aClass, Pair<Bind, CellRangeAddress> bindField, Cell cell) {
+        return Optional.ofNullable(bindField.getKey().getMapper()).map(func -> func.apply(cell))
+                .orElseGet(() -> readGenericValueFromSheet(aClass, cell, formulaEvaluator));
+    }
+
+    private static boolean isCollection(Field field) {
+        return field.getType().equals(Collection.class)
+                || field.getType().equals(Set.class)
+                || field.getType().equals(List.class);
+    }
 
     protected Sheet getSheet() {
         return context.getSheet();

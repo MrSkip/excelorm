@@ -24,12 +24,12 @@ public class SinglePick<T> extends CoreActions<T> {
         this.binds = new ArrayList<>();
     }
 
-    public SinglePick(EReaderContext EReaderContext, Class<T> aClass, String cell, Function<Cell, T> mapper) {
+    public SinglePick(EReaderContext EReaderContext, Class<T> aClass, String cell, Function<Cell, T> mapper, List<Bind> binds) {
         super(EReaderContext);
         this.aClass = aClass;
         this.cell = cell;
         this.mapper = mapper;
-        this.binds = new ArrayList<>();
+        this.binds = binds;
     }
 
     @Override
@@ -38,16 +38,16 @@ public class SinglePick<T> extends CoreActions<T> {
     }
 
     public SinglePick<T> pick(String cell) {
-        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper);
+        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, binds);
     }
 
     public SinglePick<T> binds(Bind... binds) {
         this.binds = Arrays.asList(Objects.requireNonNull(binds));
-        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper);
+        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, this.binds);
     }
 
     public SinglePick<T> map(Function<Cell, T> mapper) {
-        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper);
+        return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, binds);
     }
 
 }
