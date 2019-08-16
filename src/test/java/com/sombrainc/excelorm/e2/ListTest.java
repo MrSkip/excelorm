@@ -1,5 +1,7 @@
 package com.sombrainc.excelorm.e2;
 
+import com.sombrainc.excelorm.e2.dto.UserDTO;
+import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,6 +23,17 @@ public class ListTest {
                     .pick("B8")
                     .go();
             Assert.assertEquals(value, Stream.of("1").collect(Collectors.toList()));
+        });
+    }
+
+    public void numberAsTextObject() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            List<UserDTO> value = e2
+                    .listOf(UserDTO.class)
+                    .binds(new Bind("name", "C20"))
+                    .pick("C20:E20")
+                    .go();
+            Assert.assertEquals(value, Stream.of("Test", "Test2", "Test3").map(s -> new UserDTO().setName(s)).collect(Collectors.toList()));
         });
     }
 

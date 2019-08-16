@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl;
 
+import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.ReflectionUtils;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 
@@ -31,8 +31,8 @@ public abstract class CoreExecutor<T> {
 
     public abstract T go();
 
-    protected T readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairs, Class<T> aClass, FormulaEvaluator formulaEvaluator) {
-        final T instance = getInstance(aClass);
+    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairs, Class<R> aClass, FormulaEvaluator formulaEvaluator) {
+        final R instance = getInstance(aClass);
         final Field[] allFields = FieldUtils.getAllFields(aClass);
         for (Field field : allFields) {
             final Pair<Bind, CellRangeAddress> bindField = pairs.stream()
@@ -40,7 +40,7 @@ public abstract class CoreExecutor<T> {
             if (bindField == null) {
                 continue;
             }
-            if (isCollection(field)) {
+            if (isCollection(field.getType())) {
                 readSingleFieldAsCollection(formulaEvaluator, instance, field, bindField);
                 continue;
             }
@@ -53,7 +53,7 @@ public abstract class CoreExecutor<T> {
         return instance;
     }
 
-    private void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, T instance, Field field, Pair<Bind, CellRangeAddress> bindField) {
+    private<R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance, Field field, Pair<Bind, CellRangeAddress> bindField) {
         final Collection<Object> collection = new ArrayList<>();
         for (CellAddress address : bindField.getRight()) {
             final Cell cell = toCell(address);
@@ -79,10 +79,10 @@ public abstract class CoreExecutor<T> {
                 .orElseGet(() -> readGenericValueFromSheet(aClass, cell, formulaEvaluator));
     }
 
-    private static boolean isCollection(Field field) {
-        return field.getType().equals(Collection.class)
-                || field.getType().equals(Set.class)
-                || field.getType().equals(List.class);
+    protected static boolean isCollection(Class<?> aClass) {
+        return aClass.equals(Collection.class)
+                || aClass.equals(Set.class)
+                || aClass.equals(List.class);
     }
 
     protected Sheet getSheet() {
@@ -91,6 +91,30 @@ public abstract class CoreExecutor<T> {
 
     protected Cell toCell(CellAddress address) {
         return getOrCreateCell(getSheet(), address);
+    }
+
+    protected static boolean isVector(CellRangeAddress addresses) {
+        return addresses.getFirstRow() == addresses.getLastRow()
+                || addresses.getFirstColumn() == addresses.getLastColumn();
+    }
+
+    protected static boolean isHorizontal(CellRangeAddress addresses) {
+        return addresses.getFirstRow() == addresses.getLastRow();
+    }
+
+    protected static boolean isVertical(CellRangeAddress addresses) {
+        return addresses.getFirstColumn() == addresses.getLastColumn();
+    }
+
+    protected CellRangeAddress adjustRangeBasedOnVector(CellRangeAddress range, int counter, CellRangeAddress lookForRange) {
+        if (isVertical(lookForRange)) {
+            return new CellRangeAddress(range.getFirstRow() + counter, range.getLastRow() + counter,
+                    range.getFirstColumn(), range.getLastColumn());
+        } else if (isVertical(range)) {
+            return new CellRangeAddress(range.getFirstRow(), range.getLastRow(),
+                    range.getFirstColumn() + counter, range.getLastColumn() + counter);
+        }
+        throw new IncorrectRangeException("For user custom object the range should be on the same column/row");
     }
 
     protected FormulaEvaluator createFormulaEvaluator() {

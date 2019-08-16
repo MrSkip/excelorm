@@ -73,6 +73,11 @@ public class Main {
                         new Bind("list", "C2:C1").map(Cell::getStringCellValue))
                 .go();
 
+        List<Main> list12 = new EReader(test)
+                .listOf(Main.class)
+                .binds()
+                .go();
+
         new Excelorm2("", "")
                 .forObject(BigDecimal.class)
                 .resolve(conf -> conf.query(q -> q.select("A1")))

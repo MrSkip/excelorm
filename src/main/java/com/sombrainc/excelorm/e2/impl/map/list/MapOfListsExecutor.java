@@ -65,13 +65,7 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
 
     private Iterator<CellAddress> incrementValuesIterator(CellRangeAddress keyRange, CellRangeAddress valueRange, Iterator<CellAddress> valueIterator, int counter) {
         if (isVector(keyRange) && !isHorizontal(keyRange, valueRange) && !isVertical(keyRange, valueRange)) {
-            if (isHorizontal(valueRange)) {
-                return new CellRangeAddress(valueRange.getFirstRow() + counter, valueRange.getLastRow() + counter,
-                        valueRange.getFirstColumn(), valueRange.getLastColumn()).iterator();
-            } else {
-                return new CellRangeAddress(valueRange.getFirstRow(), valueRange.getLastRow(),
-                        valueRange.getFirstColumn() + counter, valueRange.getLastColumn() + counter).iterator();
-            }
+            return adjustRangeBasedOnVector(valueRange, counter, valueRange).iterator();
         }
         valueIterator.next();
         return valueIterator;
@@ -103,19 +97,6 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
         } else if (keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
             throw new IncorrectRangeException("Cell range for key and cell range for value should have the same number of cells");
         }
-    }
-
-    private static boolean isVector(CellRangeAddress addresses) {
-        return addresses.getFirstRow() == addresses.getLastRow()
-                || addresses.getFirstColumn() == addresses.getLastColumn();
-    }
-
-    private static boolean isHorizontal(CellRangeAddress addresses) {
-        return addresses.getFirstRow() == addresses.getLastRow();
-    }
-
-    private static boolean isVertical(CellRangeAddress addresses) {
-        return addresses.getFirstColumn() == addresses.getLastColumn();
     }
 
     private static boolean isHorizontal(CellRangeAddress key, CellRangeAddress value) {
