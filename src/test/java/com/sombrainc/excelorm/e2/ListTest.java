@@ -70,7 +70,7 @@ public class ListTest {
                                     .filter(isNotBlank())
                     )
                     .pick("M24:M29")
-                    .filter(EFilters::isNotBlank)
+                    .filter(isNotBlank())
                     .go();
             Comparisons.compareLists(value, Jackson.parseTo(new TypeReference<List<UserDTO>>() {
             }, "/json/e2/list/customObjectWithTwoListInsideFilterUntil.json"));
@@ -90,7 +90,7 @@ public class ListTest {
                                     .map(field -> field.toInt() + "a")
                     )
                     .pick("M24:M29")
-                    .filter(EFilters::isNotBlank)
+                    .filter(isNotBlank())
                     .go();
             Comparisons.compareLists(value, Jackson.parseTo(new TypeReference<List<UserDTO>>() {
             }, "/json/e2/list/customObjectWithTwoListInsideFilterUntilMap.json"));

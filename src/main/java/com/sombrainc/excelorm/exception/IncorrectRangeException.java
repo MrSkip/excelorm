@@ -1,6 +1,6 @@
 package com.sombrainc.excelorm.exception;
 
-public class IncorrectRangeException extends RuntimeException {
+public class IncorrectRangeException extends POIRuntimeException {
 
     public IncorrectRangeException(String message) {
         super(message);

@@ -3,12 +3,13 @@ package com.sombrainc.excelorm.e2.impl.map;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreActions;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
+import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class CoreMapExecutor<K, V> extends CoreExecutor<Map<K, V>> {
+public abstract class CoreMapExecutor<K, V> extends MiddleExecutor<Map<K, V>> {
 
     protected CoreMapExecutor(CoreActions core) {
         super(core.getEReaderContext());

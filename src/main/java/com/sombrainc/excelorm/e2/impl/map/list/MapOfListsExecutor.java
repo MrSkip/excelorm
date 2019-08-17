@@ -23,7 +23,7 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
     }
 
     @Override
-    public Map<K, List<V>> go() {
+    public Map<K, List<V>> execute() {
         validateOnPureObjects(holder);
 
         final CellRangeAddress keyRange = obtainRange(holder.getKeyRange());

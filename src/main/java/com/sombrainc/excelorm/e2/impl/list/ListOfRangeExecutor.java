@@ -3,6 +3,7 @@ package com.sombrainc.excelorm.e2.impl.list;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
+import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
-public class ListOfRangeExecutor<T> extends CoreExecutor<List<T>> {
+public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {
     private final ListOfRange<T> target;
 
     protected ListOfRangeExecutor(ListOfRange<T> target) {
@@ -28,7 +29,7 @@ public class ListOfRangeExecutor<T> extends CoreExecutor<List<T>> {
     }
 
     @Override
-    public List<T> go() {
+    public List<T> execute() {
         validate();
         List<Pair<Bind, CellRangeAddress>> bindOfPairs = getBinds();
         final CellRangeAddress addresses = obtainRange(target.range);

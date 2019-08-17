@@ -16,9 +16,9 @@ public class Bind {
     private Function<BindField, Object> mapper;
     private Function<BindField, Boolean> until;
 
-    public Bind(String field, String initialCell) {
+    public Bind(String field, String cell) {
         this.field = StringUtils.requireNotBlank(field);
-        this.initialCell = StringUtils.requireNotBlank(initialCell);
+        this.initialCell = StringUtils.requireNotBlank(cell);
     }
 
     public Bind filter(final Function<BindField, Boolean> filter) {

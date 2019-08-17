@@ -1,10 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.single;
 
-import com.sombrainc.excelorm.e2.impl.Bind;
-import com.sombrainc.excelorm.e2.impl.CoreActions;
-import com.sombrainc.excelorm.e2.impl.CoreExecutor;
-import com.sombrainc.excelorm.e2.impl.EReaderContext;
-import org.apache.poi.ss.usermodel.Cell;
+import com.sombrainc.excelorm.e2.impl.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class SinglePick<T> extends CoreActions<T> {
-    protected Function<Cell, T> mapper;
+    protected Function<BindField, T> mapper;
     protected String cell;
     protected Class<T> aClass;
     protected List<Bind> binds;
@@ -24,7 +20,8 @@ public class SinglePick<T> extends CoreActions<T> {
         this.binds = new ArrayList<>();
     }
 
-    public SinglePick(EReaderContext EReaderContext, Class<T> aClass, String cell, Function<Cell, T> mapper, List<Bind> binds) {
+    public SinglePick(EReaderContext EReaderContext, Class<T> aClass,
+                      String cell, Function<BindField, T> mapper, List<Bind> binds) {
         super(EReaderContext);
         this.aClass = aClass;
         this.cell = cell;
@@ -46,7 +43,7 @@ public class SinglePick<T> extends CoreActions<T> {
         return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, this.binds);
     }
 
-    public SinglePick<T> map(Function<Cell, T> mapper) {
+    public SinglePick<T> map(Function<BindField, T> mapper) {
         return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, binds);
     }
 

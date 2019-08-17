@@ -12,7 +12,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 
@@ -25,7 +24,7 @@ public class MapOfRangesExecutor<K, V> extends CoreMapExecutor<K, V> {
     }
 
     @Override
-    public Map<K, V> go() {
+    public Map<K, V> execute() {
         validateOnPureObjects(holder);
 
         final CellRangeAddress keyRange = obtainRange(holder.getKeyRange());
@@ -40,7 +39,7 @@ public class MapOfRangesExecutor<K, V> extends CoreMapExecutor<K, V> {
         final FormulaEvaluator evaluator = createFormulaEvaluator();
 
         for (CellAddress keyAddr : keyRange) {
-            final Cell keyCell = getOrCreateCell(getSheet(), keyAddr);
+            final Cell keyCell = getOrCreateCell(loadSheet(), keyAddr);
             final BindField keyBindField = new BindField(keyCell, evaluator);
             if (isUntilByKeyReached(holder, keyBindField)) {
                 break;
@@ -51,7 +50,7 @@ public class MapOfRangesExecutor<K, V> extends CoreMapExecutor<K, V> {
             }
             final K key = readRequestedType(evaluator, keyBindField,
                     holder.getKeyMapper(), holder.getKeyClass());
-            final Cell valueCell = getOrCreateCell(getSheet(), valueIterator.next());
+            final Cell valueCell = getOrCreateCell(loadSheet(), valueIterator.next());
             final V value = readRequestedType(evaluator, new BindField(valueCell, evaluator),
                     holder.getValueMapper(), holder.getValueClass());
             map.putIfAbsent(key, value);

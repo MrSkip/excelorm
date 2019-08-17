@@ -42,7 +42,7 @@ public class Excelorm {
      */
     public static <E> E read(Sheet sheet, Class<E> targetClass, CellIndexTracker tracker) {
         if (sheet == null) {
-            throw new RuntimeException("Sheet could not be null");
+            throw new POIRuntimeException("Sheet could not be null");
         }
         E instance = getInstance(targetClass);
         Field[] allFields = FieldUtils.getAllFields(targetClass);

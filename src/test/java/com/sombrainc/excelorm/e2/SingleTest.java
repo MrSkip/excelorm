@@ -79,7 +79,7 @@ public class SingleTest {
         executeForE2(DEFAULT_SHEET, e2 -> {
             String value = e2
                     .single(String.class)
-                    .map(cell -> cell.getStringCellValue() + 1)
+                    .map(cell -> cell.toText() + 1)
                     .pick("A4:B7")
                     .go();
             Assert.assertEquals("name1", value);
