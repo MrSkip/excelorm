@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.map.list;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.map.CoreMapExecutor;
 import com.sombrainc.excelorm.e2.impl.map.MapHolder;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
@@ -32,12 +33,12 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
 
         final Map<K, List<V>> map = new HashMap<>();
         Iterator<CellAddress> valueIterator = valueRange.iterator();
-        final FormulaEvaluator formulaEvaluator = createFormulaEvaluator();
+        final FormulaEvaluator evaluator = createFormulaEvaluator();
         int counter = -1;
 
         for (CellAddress keyAddr : keyRange) {
             counter++;
-            final Cell keyCell = toCell(keyAddr);
+            final BindField keyCell = new BindField(toCell(keyAddr), evaluator);
             if (isUntilByKeyReached(holder, keyCell)) {
                 break;
             }
@@ -45,10 +46,11 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
                 valueIterator = incrementValuesIterator(keyRange, valueRange, valueIterator, counter);
                 continue;
             }
-            final K key = readRequestedType(formulaEvaluator, keyCell, holder.getKeyMapper(), holder.getKeyClass());
+            final K key = readRequestedType(evaluator, keyCell, holder.getKeyMapper(), holder.getKeyClass());
 
             if (!isVector(keyRange) || !isVector(valueRange) || isSameVector(keyRange, valueRange)) {
-                final V value = readRequestedType(formulaEvaluator, toCell(valueIterator.next()), holder.getValueMapper(), holder.getValueClass());
+                final V value = readRequestedType(evaluator, new BindField(toCell(valueIterator.next()), evaluator),
+                        holder.getValueMapper(), holder.getValueClass());
                 map.putIfAbsent(key, new ArrayList<V>() {{
                     add(value);
                 }});
@@ -56,7 +58,7 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
                 if (!map.isEmpty()) {
                     valueIterator = incrementValuesIterator(keyRange, valueRange, valueIterator, counter);
                 }
-                final List<V> values = readValue(valueIterator, formulaEvaluator, new ArrayList<>());
+                final List<V> values = readValue(valueIterator, evaluator, new ArrayList<>());
                 map.putIfAbsent(key, values);
             }
         }
@@ -65,20 +67,20 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
 
     private Iterator<CellAddress> incrementValuesIterator(CellRangeAddress keyRange, CellRangeAddress valueRange, Iterator<CellAddress> valueIterator, int counter) {
         if (isVector(keyRange) && !isHorizontal(keyRange, valueRange) && !isVertical(keyRange, valueRange)) {
-            return adjustRangeBasedOnVector(valueRange, counter, valueRange).iterator();
+            return adjustRangeBasedOnVector(valueRange, counter, keyRange).iterator();
         }
         valueIterator.next();
         return valueIterator;
     }
 
-    private List<V> readValue(Iterator<CellAddress> valueIterator, FormulaEvaluator formulaEvaluator, List<V> list) {
+    private List<V> readValue(Iterator<CellAddress> valueIterator, FormulaEvaluator evaluator, List<V> list) {
         while (valueIterator.hasNext()) {
             final CellAddress next = valueIterator.next();
-            final Cell cell = toCell(next);
+            final BindField cell = new BindField(toCell(next), evaluator);
             if (!Optional.ofNullable(holder.getValueFilter()).map(func -> func.apply(cell)).orElse(true)) {
                 continue;
             }
-            final V item = readRequestedType(formulaEvaluator, cell, holder.getValueMapper(), holder.getValueClass());
+            final V item = readRequestedType(evaluator, cell, holder.getValueMapper(), holder.getValueClass());
             list.add(item);
         }
         return list;

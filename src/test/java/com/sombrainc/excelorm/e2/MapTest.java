@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.sombrainc.excelorm.e2.utils.EFilters.isNotBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
 @Test
@@ -23,7 +24,7 @@ public class MapTest {
                     .mapOf(String.class, int.class)
                     .pick("D33:F35", "H37:J39")
                     .filter(EFilters::isNotBlank)
-                    .mapValue(cell -> ((int)cell.getNumericCellValue()) * 10)
+                    .mapValue(cell -> cell.toInt() * 10)
                     .go();
             Map<String, Integer> expected = new HashMap<>();
             IntStream.rangeClosed(1, 6).forEach(v -> expected.put(v + "", v * 10));
@@ -56,8 +57,8 @@ public class MapTest {
             List<Long> value = e2
                     .listOf(Long.class)
                     .filter(EFilters::isNotBlank)
-                    .map(cell -> ((long) cell.getNumericCellValue()) * 10)
-                    .until(cell -> cell.getNumericCellValue() > 100)
+                    .map(cell -> cell.toLong() * 10)
+                    .until(cell -> isNotBlank(cell) && cell.toLong() > 100)
                     .pick("C25:J25")
                     .go();
             Assert.assertEquals(value, Stream.of(10L, 20L, 30L, 40L).collect(Collectors.toList()));

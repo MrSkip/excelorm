@@ -2,6 +2,7 @@ package com.sombrainc.excelorm;
 
 import com.sombrainc.excelorm.e2.EReader;
 import com.sombrainc.excelorm.e2.impl.Bind;
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import com.sombrainc.excelorm.enumeration.CellType;
 import com.sombrainc.excelorm.model.bind.ForList;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.sombrainc.excelorm.e2.utils.EFilters.contains;
+import static com.sombrainc.excelorm.e2.utils.EFilters.*;
 
 /**
  * @author <a href=dimon.mula@gmail.com>Dmytro Mula</a>
@@ -52,25 +53,25 @@ public class Main {
         Map<String, BigDecimal> go = new EReader(test)
                 .mapOf(String.class, BigDecimal.class)
                 .pick("A1:A2", "B1:B2")
-                .filter(EFilters::isBlank)
-                .map(Cell::getStringCellValue)
+                .filter(isNotBlank())
+                .map(BindField::toText)
                 .go();
 
         Map<String, List<String>> go1 = new EReader(test)
                 .mapOfList(String.class, String.class)
                 .pick("A1:A2", "B1:B2")
-                .filter(EFilters::isBlank)
-                .filterValue(contains(""))
-                .map(Cell::getStringCellValue)
+                .filter(isBlank())
+                .filterValue(contains("some text"))
+                .map(BindField::toText)
                 .go();
 
         new EReader(test).single(Main.class).go();
 
         final Main go2 = new EReader(test).single(Main.class)
                 .binds(
-                        new Bind("name", "C1").map(Cell::getStringCellValue),
-                        new Bind("secondName", "C2").map(Cell::getStringCellValue),
-                        new Bind("list", "C2:C1").map(Cell::getStringCellValue))
+                        new Bind("name", "C1").map(BindField::cell),
+                        new Bind("secondName", "C2").map(BindField::cell),
+                        new Bind("list", "C2:C1").map(BindField::cell))
                 .go();
 
         List<Main> list12 = new EReader(test)

@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.map.range;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreActions;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.e2.impl.EReaderContext;
@@ -34,22 +35,22 @@ public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
         return new MapOfRanges<>(getEReaderContext(), holder);
     }
 
-    public MapOfRanges<K, V> map(Function<Cell, K> mapper) {
+    public MapOfRanges<K, V> map(Function<BindField, K> mapper) {
         holder.setKeyMapper(mapper);
         return new MapOfRanges<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfRanges<K, V> mapValue(Function<Cell, V> value) {
+    public MapOfRanges<K, V> mapValue(Function<BindField, V> value) {
         holder.setValueMapper(value);
         return new MapOfRanges<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfRanges<K, V> filter(Function<Cell, Boolean> key) {
+    public MapOfRanges<K, V> filter(Function<BindField, Boolean> key) {
         holder.setKeyFilter(key);
         return new MapOfRanges<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfRanges<K, V> until(Function<Cell, Boolean> key) {
+    public MapOfRanges<K, V> until(Function<BindField, Boolean> key) {
         holder.setKeyUntil(key);
         return new MapOfRanges<>(this.getEReaderContext(), holder);
     }

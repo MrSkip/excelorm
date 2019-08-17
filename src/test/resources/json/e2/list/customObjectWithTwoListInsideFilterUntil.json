@@ -1,0 +1,44 @@
+[
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": [
+      "1",
+      "1",
+      "1"
+    ],
+    "listOfInt": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": [
+      "1"
+    ],
+    "listOfInt": [
+      1
+    ]
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": [
+      "2",
+      "2",
+      "2"
+    ],
+    "listOfInt": []
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": [
+      "2"
+    ],
+    "listOfInt": []
+  }
+]

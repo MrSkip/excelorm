@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.map.range;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.map.CoreMapExecutor;
 import com.sombrainc.excelorm.e2.impl.map.MapHolder;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
@@ -36,20 +37,23 @@ public class MapOfRangesExecutor<K, V> extends CoreMapExecutor<K, V> {
 
         final Map<K, V> map = new HashMap<>();
         final Iterator<CellAddress> valueIterator = valueRange.iterator();
-        final FormulaEvaluator formulaEvaluator = createFormulaEvaluator();
+        final FormulaEvaluator evaluator = createFormulaEvaluator();
 
         for (CellAddress keyAddr : keyRange) {
             final Cell keyCell = getOrCreateCell(getSheet(), keyAddr);
-            if (isUntilByKeyReached(holder, keyCell)) {
+            final BindField keyBindField = new BindField(keyCell, evaluator);
+            if (isUntilByKeyReached(holder, keyBindField)) {
                 break;
             }
-            if (filterByKey(holder, keyCell)) {
+            if (filterByKey(holder, keyBindField)) {
                 valueIterator.next();
                 continue;
             }
-            final K key = readRequestedType(formulaEvaluator, keyCell, holder.getKeyMapper(), holder.getKeyClass());
+            final K key = readRequestedType(evaluator, keyBindField,
+                    holder.getKeyMapper(), holder.getKeyClass());
             final Cell valueCell = getOrCreateCell(getSheet(), valueIterator.next());
-            final V value = readRequestedType(formulaEvaluator, valueCell, holder.getValueMapper(), holder.getValueClass());
+            final V value = readRequestedType(evaluator, new BindField(valueCell, evaluator),
+                    holder.getValueMapper(), holder.getValueClass());
             map.putIfAbsent(key, value);
         }
 

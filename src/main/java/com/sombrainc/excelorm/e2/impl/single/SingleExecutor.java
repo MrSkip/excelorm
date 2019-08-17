@@ -4,13 +4,9 @@ import com.sombrainc.excelorm.Excelorm;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.utils.ExcelUtils;
-import com.sombrainc.excelorm.utils.ReflectionUtils;
 import lombok.Getter;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.*;
@@ -38,7 +34,7 @@ public class SingleExecutor<T> extends CoreExecutor<T> {
             }
             // custom user definition of the object
             List<Pair<Bind, CellRangeAddress>> bindOfPairs = target.binds.stream()
-                    .map(bind -> Pair.of(bind, obtainRange(bind.getCell()))).collect(Collectors.toList());
+                    .map(bind -> Pair.of(bind, obtainRange(bind.getInitialCell()))).collect(Collectors.toList());
             return readForSingleObject(bindOfPairs, target.aClass, createFormulaEvaluator());
         }
         CellRangeAddress cellAddresses = obtainRange(target.cell);

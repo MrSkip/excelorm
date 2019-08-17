@@ -31,40 +31,44 @@ public abstract class CoreExecutor<T> {
 
     public abstract T go();
 
-    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairs, Class<R> aClass, FormulaEvaluator formulaEvaluator) {
+    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFiels, Class<R> aClass,
+                                       FormulaEvaluator formulaEvaluator) {
         final R instance = getInstance(aClass);
         final Field[] allFields = FieldUtils.getAllFields(aClass);
         for (Field field : allFields) {
-            final Pair<Bind, CellRangeAddress> bindField = pairs.stream()
-                    .filter(pair -> pair.getKey().getField().equals(field.getName())).findFirst().orElse(null);
-            if (bindField == null) {
+            final Pair<Bind, CellRangeAddress> pair = pairOfFiels.stream()
+                    .filter(p -> p.getKey().getField().equals(field.getName())).findFirst().orElse(null);
+            if (pair == null) {
                 continue;
             }
             if (isCollection(field.getType())) {
-                readSingleFieldAsCollection(formulaEvaluator, instance, field, bindField);
+                readSingleFieldAsCollection(formulaEvaluator, instance, field, pair);
                 continue;
             }
             if (!isPureObject(field.getType())) {
                 continue;
             }
-            final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), bindField, toCell(bindField.getValue().iterator().next()));
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), pair,
+                    new BindField(toCell(pair.getValue().iterator().next()), formulaEvaluator));
             ReflectionUtils.setFieldViaReflection(instance, field, fieldValue);
         }
         return instance;
     }
 
-    private<R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance, Field field, Pair<Bind, CellRangeAddress> bindField) {
+    private<R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
+                                                Field field, Pair<Bind, CellRangeAddress> pair) {
         final Collection<Object> collection = new ArrayList<>();
-        for (CellAddress address : bindField.getRight()) {
+        for (CellAddress address : pair.getRight()) {
             final Cell cell = toCell(address);
-            if (!Optional.ofNullable(bindField.getKey().getUntil()).map(func -> func.apply(cell)).orElse(true)) {
+            final BindField bindField = new BindField(cell, formulaEvaluator);
+            if (!Optional.ofNullable(pair.getKey().getUntil()).map(func -> func.apply(bindField)).orElse(true)) {
                 break;
             }
-            if (Optional.ofNullable(bindField.getKey().getFilter()).map(func -> func.apply(cell)).orElse(false)) {
+            if (!Optional.ofNullable(pair.getKey().getFilter()).map(func -> func.apply(bindField)).orElse(true)) {
                 continue;
             }
             final Class<?> type = (Class<?>) ReflectionUtils.getClassFromGenericField(field)[0];
-            final Object fieldValue = parseValueFromSheet(formulaEvaluator, type, bindField, cell);
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, type, pair, bindField);
             collection.add(fieldValue);
         }
         if (field.getType().equals(Set.class)) {
@@ -74,9 +78,11 @@ public abstract class CoreExecutor<T> {
         }
     }
 
-    private Object parseValueFromSheet(FormulaEvaluator formulaEvaluator, Class<?> aClass, Pair<Bind, CellRangeAddress> bindField, Cell cell) {
-        return Optional.ofNullable(bindField.getKey().getMapper()).map(func -> func.apply(cell))
-                .orElseGet(() -> readGenericValueFromSheet(aClass, cell, formulaEvaluator));
+    private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator,
+                                       final Class<?> aClass, Pair<Bind, CellRangeAddress> pair,
+                                       final BindField userField) {
+        return Optional.ofNullable(pair.getKey().getMapper()).map(func -> func.apply(userField))
+                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.cell(), formulaEvaluator));
     }
 
     protected static boolean isCollection(Class<?> aClass) {
@@ -121,9 +127,10 @@ public abstract class CoreExecutor<T> {
         return getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
     }
 
-    protected <R> R readRequestedType(FormulaEvaluator formulaEvaluator, Cell keyCell, Function<Cell, R> keyMapper, Class<R> keyClass) {
-        return Optional.ofNullable(keyMapper).map(func -> func.apply(keyCell))
-                .orElseGet(() -> readGenericValueFromSheet(keyClass, keyCell, formulaEvaluator));
+    protected <R> R readRequestedType(FormulaEvaluator formulaEvaluator, BindField bindField,
+                                      Function<BindField, R> keyMapper, Class<R> keyClass) {
+        return Optional.ofNullable(keyMapper).map(func -> func.apply(bindField))
+                .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.cell(), formulaEvaluator));
     }
 
     protected void validateOnPureObject(Class aClass, String message) {

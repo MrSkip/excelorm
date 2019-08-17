@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.sombrainc.excelorm.e2.utils.EFilters.isNotBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
 @Test
@@ -21,7 +22,7 @@ public class MapListTest {
                     .mapOfList(String.class, int.class)
                     .pick("B45:D46", "F45:H46")
                     .filter(EFilters::isNotBlank)
-                    .mapValue(cell -> ((int) cell.getNumericCellValue()) * 10)
+                    .mapValue(cell -> cell.toInt() * 10)
                     .go();
             Map<String, List<Integer>> expected = new HashMap<>();
             IntStream.rangeClosed(1, 6).forEach(v -> expected.put(v + "", new ArrayList<Integer>() {{
@@ -36,10 +37,9 @@ public class MapListTest {
             Map<String, List<Integer>> value = e2
                     .mapOfList(String.class, int.class)
                     .pick("B45:D45", "F45:H45")
-                    .filter(EFilters::isNotBlank)
-                    .mapValue(cell -> ((int) cell.getNumericCellValue()) * 10)
+                    .filter(isNotBlank())
+                    .mapValue(cell -> cell.toInt() * 10)
                     .go();
-
             Map<String, List<Integer>> expected = new HashMap<>();
             IntStream.rangeClosed(1, 3).forEach(v -> expected.put(v + "", new ArrayList<Integer>() {{
                 add((v + 9) * 10);

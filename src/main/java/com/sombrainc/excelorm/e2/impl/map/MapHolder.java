@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.map;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,14 +13,14 @@ public class MapHolder<K1, V1> {
     private Class<K1> keyClass;
     private Class<V1> valueClass;
 
-    private Function<Cell, K1> keyMapper;
-    private Function<Cell, V1> valueMapper;
+    private Function<BindField, K1> keyMapper;
+    private Function<BindField, V1> valueMapper;
 
-    private Function<Cell, Boolean> keyUntil;
-    private Function<Cell, Boolean> valueUntil;
+    private Function<BindField, Boolean> keyUntil;
+    private Function<BindField, Boolean> valueUntil;
 
-    private Function<Cell, Boolean> keyFilter;
-    private Function<Cell, Boolean> valueFilter;
+    private Function<BindField, Boolean> keyFilter;
+    private Function<BindField, Boolean> valueFilter;
 
     protected String keyRange;
     private String valueRange;

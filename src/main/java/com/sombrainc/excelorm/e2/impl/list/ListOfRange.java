@@ -1,11 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.list;
 
-import com.sombrainc.excelorm.e2.impl.Bind;
-import com.sombrainc.excelorm.e2.impl.CoreActions;
-import com.sombrainc.excelorm.e2.impl.CoreExecutor;
-import com.sombrainc.excelorm.e2.impl.EReaderContext;
-import com.sombrainc.excelorm.e2.impl.single.SinglePick;
-import org.apache.poi.ss.usermodel.Cell;
+import com.sombrainc.excelorm.e2.impl.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +9,9 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class ListOfRange<T> extends CoreActions<List<T>> {
-    protected Function<Cell, T> mapper;
-    protected Function<Cell, Boolean> filter;
-    protected Function<Cell, Boolean> until;
+    protected Function<BindField, T> mapper;
+    protected Function<BindField, Boolean> filter;
+    protected Function<BindField, Boolean> until;
     protected String range;
     protected Class<T> aClass;
     protected List<Bind> binds;
@@ -52,17 +47,17 @@ public class ListOfRange<T> extends CoreActions<List<T>> {
         return new ListOfRange<>(getEReaderContext(), this);
     }
 
-    public ListOfRange<T> map(Function<Cell, T> mapper) {
+    public ListOfRange<T> map(Function<BindField, T> mapper) {
         this.mapper = mapper;
         return new ListOfRange<>(this.getEReaderContext(), this);
     }
 
-    public ListOfRange<T> filter(Function<Cell, Boolean> filter) {
+    public ListOfRange<T> filter(Function<BindField, Boolean> filter) {
         this.filter = filter;
         return new ListOfRange<>(this.getEReaderContext(), this);
     }
 
-    public ListOfRange<T> until(Function<Cell, Boolean> until) {
+    public ListOfRange<T> until(Function<BindField, Boolean> until) {
         this.until = until;
         return new ListOfRange<>(this.getEReaderContext(), this);
     }

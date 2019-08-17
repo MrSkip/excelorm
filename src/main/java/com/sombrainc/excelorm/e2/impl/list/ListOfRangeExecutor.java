@@ -1,6 +1,7 @@
 package com.sombrainc.excelorm.e2.impl.list;
 
 import com.sombrainc.excelorm.e2.impl.Bind;
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
@@ -32,25 +33,26 @@ public class ListOfRangeExecutor<T> extends CoreExecutor<List<T>> {
         List<Pair<Bind, CellRangeAddress>> bindOfPairs = getBinds();
         final CellRangeAddress addresses = obtainRange(target.range);
         final List<T> list = new ArrayList<>();
-        final FormulaEvaluator formulaEvaluator = createFormulaEvaluator();
+        final FormulaEvaluator evaluator = createFormulaEvaluator();
         int simpleCounter = -1;
         for (CellAddress address : addresses) {
             simpleCounter++;
             final Cell cell = toCell(address);
-            if (Optional.ofNullable(target.until).map(func -> func.apply(cell)).orElse(false)) {
+            final BindField bindField = new BindField(cell, evaluator);
+            if (Optional.ofNullable(target.until).map(func -> func.apply(bindField)).orElse(false)) {
                 break;
             }
-            if (!Optional.ofNullable(target.filter).map(func -> func.apply(cell)).orElse(true)) {
+            if (!Optional.ofNullable(target.filter).map(func -> func.apply(bindField)).orElse(true)) {
                 continue;
             }
             if (isPureObject(target.aClass)) {
-                final T item = readRequestedType(formulaEvaluator, cell, target.mapper, target.aClass);
+                final T item = readRequestedType(evaluator, bindField, target.mapper, target.aClass);
                 list.add(item);
             } else {
                 int finalSimpleCounter = simpleCounter;
                 final List<Pair<Bind, CellRangeAddress>> modifiedPairs = bindOfPairs.stream()
                         .map(pair -> Pair.of(pair.getLeft(), adjustRangeBasedOnVector(pair.getRight(), finalSimpleCounter, addresses))).collect(Collectors.toList());
-                final T singleObject = readForSingleObject(modifiedPairs, target.aClass, formulaEvaluator);
+                final T singleObject = readForSingleObject(modifiedPairs, target.aClass, evaluator);
                 list.add(singleObject);
             }
         }
@@ -71,7 +73,7 @@ public class ListOfRangeExecutor<T> extends CoreExecutor<List<T>> {
     private List<Pair<Bind, CellRangeAddress>> getBinds() {
         if (!target.binds.isEmpty()) {
             return target.binds.stream()
-                    .map(bind -> Pair.of(bind, obtainRange(bind.getCell()))).collect(Collectors.toList());
+                    .map(bind -> Pair.of(bind, obtainRange(bind.getInitialCell()))).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

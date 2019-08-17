@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl.map.list;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreActions;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.e2.impl.EReaderContext;
@@ -35,27 +36,27 @@ public class MapOfLists<K, V> extends CoreActions<Map<K, List<V>>> {
         return new MapOfLists<>(getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> map(Function<Cell, K> mapper) {
+    public MapOfLists<K, V> map(Function<BindField, K> mapper) {
         holder.setKeyMapper(mapper);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> mapValue(Function<Cell, V> value) {
+    public MapOfLists<K, V> mapValue(Function<BindField, V> value) {
         holder.setValueMapper(value);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> filter(Function<Cell, Boolean> key) {
+    public MapOfLists<K, V> filter(Function<BindField, Boolean> key) {
         holder.setKeyFilter(key);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> filterValue(Function<Cell, Boolean> value) {
+    public MapOfLists<K, V> filterValue(Function<BindField, Boolean> value) {
         holder.setValueFilter(value);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> until(Function<Cell, Boolean> key) {
+    public MapOfLists<K, V> until(Function<BindField, Boolean> key) {
         holder.setKeyUntil(key);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }

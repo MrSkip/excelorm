@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.utils;
 
+import com.sombrainc.excelorm.e2.impl.BindField;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
@@ -17,6 +18,10 @@ public class EFilters {
         return DATA_FORMATTER.formatCellValue(cell, evaluator).trim().isEmpty();
     }
 
+    public static Function<BindField, Boolean> isBlank() {
+        return field -> isBlank(field.cell());
+    }
+
     public static boolean isNotBlank(Cell cell) {
         if (cell == null) {
             return false;
@@ -25,7 +30,15 @@ public class EFilters {
         return !DATA_FORMATTER.formatCellValue(cell, evaluator).trim().isEmpty();
     }
 
-    public static Function<Cell, Boolean> contains(String str) {
-        return cell -> cell.getStringCellValue().contains(str);
+    public static boolean isNotBlank(BindField field) {
+        return isNotBlank(field.cell());
+    }
+
+    public static Function<BindField, Boolean> isNotBlank() {
+        return field -> isNotBlank(field.cell());
+    }
+
+    public static Function<BindField, Boolean> contains(String str) {
+        return cell -> cell.toText().contains(str);
     }
 }
