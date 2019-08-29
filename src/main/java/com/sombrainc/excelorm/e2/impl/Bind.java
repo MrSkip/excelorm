@@ -1,6 +1,5 @@
 package com.sombrainc.excelorm.e2.impl;
 
-import com.sombrainc.excelorm.utils.StringUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,8 +16,8 @@ public class Bind {
     private Function<BindField, Boolean> until;
 
     public Bind(String field, String cell) {
-        this.field = StringUtils.requireNotBlank(field);
-        this.initialCell = StringUtils.requireNotBlank(cell);
+        this.field = field;
+        this.initialCell = cell;
     }
 
     public Bind filter(final Function<BindField, Boolean> filter) {

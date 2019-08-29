@@ -25,17 +25,17 @@ public class ReadViaStreamTest {
         Assert.assertTrue(model.getD1BoolObject());
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void readUsingInputStreamExceptionTest() {
         ModelReader.getModel(null, Model1.class, "position");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void readUsingInputStreamSheetInNullTest() {
         ModelReader.getModel(ReadViaStreamTest.class.getResourceAsStream(ModelReader.PATH), Model1.class, null);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void readUsingInputStreamSheetInEmptyTest() {
         ModelReader.getModel(ReadViaStreamTest.class.getResourceAsStream(ModelReader.PATH), Model1.class, " ");
     }

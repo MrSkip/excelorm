@@ -54,7 +54,7 @@ public class Excelorm {
     }
 
     /**
-     * To load the the data into POJO object based on excel doc and selected sheet name.
+     * Loads the the data into POJO object based on excel doc and selected sheet name.
      *
      * @param docInputStream input stream to the excel file
      * @param sheetName      selected Apache POI sheet
@@ -64,10 +64,10 @@ public class Excelorm {
      */
     public static <E> E read(InputStream docInputStream, String sheetName, Class<E> targetClass) {
         if (docInputStream == null) {
-            throw new NullPointerException("InputSteam could not be null");
+            throw new POIRuntimeException("InputSteam could not be null");
         }
         if (StringUtils.isNullOrEmpty(sheetName)) {
-            throw new NullPointerException("Sheet name could not be null");
+            throw new POIRuntimeException("Sheet name could not be null");
         }
         try (Workbook wb = WorkbookFactory.create(docInputStream)) {
             Sheet sheet = wb.getSheet(sheetName);

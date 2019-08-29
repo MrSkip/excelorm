@@ -47,7 +47,6 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
                 continue;
             }
             final K key = readRequestedType(evaluator, keyCell, holder.getKeyMapper(), holder.getKeyClass());
-
             if (!isVector(keyRange) || !isVector(valueRange) || isSameVector(keyRange, valueRange)) {
                 final V value = readRequestedType(evaluator, new BindField(toCell(valueIterator.next()), evaluator),
                         holder.getValueMapper(), holder.getValueClass());

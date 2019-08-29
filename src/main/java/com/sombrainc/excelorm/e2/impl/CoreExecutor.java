@@ -27,6 +27,9 @@ public abstract class CoreExecutor<T> {
         try {
             return execute();
         } catch (RuntimeException ex) {
+            if (ex instanceof POIRuntimeException) {
+                throw ex;
+            }
             throw new POIRuntimeException(ex);
         } finally {
             if (workbook != null) {

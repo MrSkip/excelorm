@@ -39,7 +39,7 @@ public class SinglePick<T> extends CoreActions<T> {
     }
 
     public SinglePick<T> binds(Bind... binds) {
-        this.binds = Arrays.asList(Objects.requireNonNull(binds));
+        this.binds = Arrays.asList(binds);
         return new SinglePick<>(this.getEReaderContext(), aClass, cell, mapper, this.binds);
     }
 

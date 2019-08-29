@@ -5,6 +5,7 @@ import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -61,9 +62,12 @@ public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {
     }
 
     private void validate() {
+        if (target.aClass == null) {
+            throw new POIRuntimeException("Generic class is null");
+        }
         if (!isPureObject(target.aClass)) {
             if (target.binds.isEmpty()) {
-                throw new TypeIsNotSupportedException("You should explicitly map the object fields");
+                throw new TypeIsNotSupportedException("Check if the mapped object is supported or define the object fields to be bind");
             }
             if (!isVector(obtainRange(target.range))) {
                 throw new IncorrectRangeException("For user custom object the range should be on the same column/row");

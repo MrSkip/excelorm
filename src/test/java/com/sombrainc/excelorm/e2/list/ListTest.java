@@ -1,11 +1,14 @@
-package com.sombrainc.excelorm.e2;
+package com.sombrainc.excelorm.e2.list;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.utils.EFilters;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
+import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.Comparisons;
 import com.sombrainc.excelorm.utils.Jackson;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -27,6 +30,17 @@ public class ListTest {
                     .pick("B8")
                     .go();
             Assert.assertEquals(value, Stream.of("1").collect(Collectors.toList()));
+        });
+    }
+
+    public void empty() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            List<String> value = e2
+                    .listOf(String.class)
+                    .pick("B8")
+                    .filter(field -> !isNotBlank(field))
+                    .go();
+            Assert.assertEquals(value, new ArrayList<>());
         });
     }
 
@@ -97,10 +111,6 @@ public class ListTest {
         });
     }
 
-    public static void main(String[] args) {
-        Stream.of(1,2,3,4,5,6).filter(integer -> integer > 3).forEach(System.out::println);
-    }
-
     public void integer() {
         executeForE2(DEFAULT_SHEET, e2 -> {
             List<Integer> value = e2
@@ -144,5 +154,7 @@ public class ListTest {
             Assert.assertEquals(value, Stream.of(1, 2, 3, 4, 123, 5).collect(Collectors.toList()));
         });
     }
+
+
 
 }

@@ -31,9 +31,6 @@ public class ModelReader {
     public static synchronized void executeForE2(String sheetName, Consumer<EReader> reader) {
         try (XSSFWorkbook wb = new XSSFWorkbook(new File(ModelReader.class.getResource(PATH).getFile()))) {
             EReader eReader = new EReader(wb.getSheet(sheetName));
-            XSSFSheet position = wb.getSheet("position");
-            double numericCellValue = position.getRow(0).getCell(0).getNumericCellValue();
-            // do actual test
             reader.accept(eReader);
         } catch (InvalidFormatException | IOException e) {
             throw new RuntimeException(e);

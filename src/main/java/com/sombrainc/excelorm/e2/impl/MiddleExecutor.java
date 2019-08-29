@@ -1,13 +1,14 @@
 package com.sombrainc.excelorm.e2.impl;
 
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.ReflectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -15,7 +16,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
 import static com.sombrainc.excelorm.utils.ExcelUtils.readGenericValueFromSheet;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getInstance;
 import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
@@ -25,12 +25,13 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         super(context);
     }
 
-    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFiels, Class<R> aClass,
+    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
                                        FormulaEvaluator formulaEvaluator) {
+        validate(pairOfFields);
         final R instance = getInstance(aClass);
         final Field[] allFields = FieldUtils.getAllFields(aClass);
         for (Field field : allFields) {
-            final Pair<Bind, CellRangeAddress> pair = pairOfFiels.stream()
+            final Pair<Bind, CellRangeAddress> pair = pairOfFields.stream()
                     .filter(p -> p.getKey().getField().equals(field.getName())).findFirst().orElse(null);
             if (pair == null) {
                 continue;
@@ -47,6 +48,14 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
             ReflectionUtils.setFieldViaReflection(instance, field, fieldValue);
         }
         return instance;
+    }
+
+    private void validate(List<Pair<Bind, CellRangeAddress>> list) {
+        for (Pair<Bind, CellRangeAddress> pair : list) {
+            if (StringUtils.isBlank(pair.getKey().getField())) {
+                throw new POIRuntimeException("Field name could not be empty");
+            }
+        }
     }
 
     private<R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
