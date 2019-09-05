@@ -41,7 +41,8 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                 continue;
             }
             if (!isPureObject(field.getType())) {
-                continue;
+                throw new TypeIsNotSupportedException(
+                        String.format("The field [%s] is not supported. Please see the list of supported objects for this method", pair.getKey().getField()));
             }
             final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), pair,
                     new BindField(toCell(pair.getValue().iterator().next()), formulaEvaluator));

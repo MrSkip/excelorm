@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.e2;
+package com.sombrainc.excelorm.e2.single;
 
 import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
@@ -86,41 +86,14 @@ public class SingleTest {
         });
     }
 
-    public void singleCustomObjectString() {
+    public void stringRangeWithMapperAsNull() {
         executeForE2(DEFAULT_SHEET, e2 -> {
-            UserDTO value = e2.single(UserDTO.class)
-                    .binds(new Bind("name", "A4")).go();
-            Assert.assertEquals(new UserDTO().setName("name"), value);
-        });
-    }
-
-    public void singleCustomObjectString2() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            UserDTO value = e2.single(UserDTO.class)
-                    .binds(
-                            new Bind("name", "A4"),
-                            new Bind("intAsStr", "A1")
-                    ).go();
-            Assert.assertEquals(new UserDTO().setName("name").setIntAsStr("1"), value);
-        });
-    }
-
-    public void singleCustomObjectStringList() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            UserDTO value = e2.single(UserDTO.class)
-                    .binds(
-                            new Bind("name", "A4"),
-                            new Bind("intAsStr", "A1"),
-                            new Bind("listOfIntAsStr", "B8:B13")
-                    ).go();
-            Assert.assertEquals(
-                    new UserDTO()
-                            .setName("name")
-                            .setIntAsStr("1")
-                            .setListOfIntAsStr(
-                                    IntStream.rangeClosed(1, 6)
-                                            .mapToObj(v -> v + "").collect(Collectors.toList()))
-                    , value);
+            String value = e2
+                    .single(String.class)
+                    .map(cell -> null)
+                    .pick("A4:B7")
+                    .go();
+            Assert.assertNull(value);
         });
     }
 

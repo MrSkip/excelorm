@@ -4,6 +4,7 @@ import com.sombrainc.excelorm.Excelorm;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
@@ -30,12 +32,12 @@ public class SingleExecutor<T> extends MiddleExecutor<T> {
     public T execute() {
         if (!isPureObject(target.aClass)) {
             if (target.binds.isEmpty()) {
-                // assume that annotations are on the object
+                // assuming that annotations are on the object
                 return Excelorm.read(loadSheet(), target.aClass);
             }
             // custom user definition of the object
             List<Pair<Bind, CellRangeAddress>> bindOfPairs = target.binds.stream()
-                    .map(bind -> Pair.of(bind, obtainRange(bind.getInitialCell()))).collect(Collectors.toList());
+                    .map(buildPair()).collect(Collectors.toList());
             return readForSingleObject(bindOfPairs, target.aClass, createFormulaEvaluator());
         }
         CellRangeAddress cellAddresses = obtainRange(target.cell);
@@ -47,6 +49,15 @@ public class SingleExecutor<T> extends MiddleExecutor<T> {
             return ExcelUtils.readGenericValueFromSheet(target.aClass, cell, createFormulaEvaluator());
         }
         return target.mapper.apply(new BindField(cell, createFormulaEvaluator()));
+    }
+
+    private Function<Bind, Pair<Bind, CellRangeAddress>> buildPair() {
+        return bind -> {
+            if (bind == null) {
+                throw new POIRuntimeException("Bind object could not be null");
+            }
+            return Pair.of(bind, obtainRange(bind.getInitialCell()));
+        };
     }
 
 }

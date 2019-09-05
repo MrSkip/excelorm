@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -13,6 +14,13 @@ public class UserDTO {
     private String name;
     private String intAsStr;
     private List<String> listOfIntAsStr;
+    private Set<String> setOfIntAsStr;
     private List<Integer> listOfInt;
+    private Map<String, String> map;
+
+    private String dontMapThisField;
+    private Set dontMapThisField1;
+    private List dontMapThisField2;
+    private Map dontMapThisField3;
 
 }
