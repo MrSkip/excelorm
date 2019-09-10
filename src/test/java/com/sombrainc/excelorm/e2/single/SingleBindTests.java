@@ -149,4 +149,28 @@ public class SingleBindTests {
         });
     }
 
+    public void stringsOfSetUntilLikeMapSpecialSymbol5() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            UserDTO value = e2.single(UserDTO.class)
+                    .binds(
+                            new Bind("setOfIntAsStr", "I8:I19")
+                                    .map(field -> field.toInt() * 10 + "")
+                                    .until(field -> !field.toText().contains("*")),
+                            new Bind("listOfInt", "K13:O13")
+                                    .until(field -> !field.toText().contains("&"))
+                                    .filter(field -> field.toInt() <= 2)
+                                    .map(field -> (int) (field.cell().getNumericCellValue()) + 1)
+                    ).go();
+            Assert.assertEquals(
+                    new UserDTO()
+                            .setSetOfIntAsStr(
+                                    IntStream.rangeClosed(1, 8)
+                                            .mapToObj(v -> (v*10) + "").collect(Collectors.toSet()))
+                            .setListOfInt(
+                                    IntStream.rangeClosed(2, 3)
+                                            .boxed().collect(Collectors.toList()))
+                    , value);
+        });
+    }
+
 }

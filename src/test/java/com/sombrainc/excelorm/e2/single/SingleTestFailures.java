@@ -109,8 +109,15 @@ public class SingleTestFailures {
                             new Bind("intAsStr", "A1"),
                             new Bind("map", "B8:B13")
                     ).go();
-            System.out.println(go);
         });
+    }
+
+    @Test(expectedExceptions = POIRuntimeException.class)
+    public void empty() {
+        executeForE2(DEFAULT_SHEET, e2 -> e2
+                .single(int.class)
+                .pick("AX1")
+                .go());
     }
 
 }

@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.e2.single;
 
 import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
+import com.sombrainc.excelorm.e2.impl.BindField;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -94,6 +95,49 @@ public class SingleTest {
                     .pick("A4:B7")
                     .go();
             Assert.assertNull(value);
+        });
+    }
+
+    public void doubleTest() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            double value = e2
+                    .single(double.class)
+                    .map(cell -> cell.cell().getNumericCellValue())
+                    .pick("A2")
+                    .go();
+            Assert.assertEquals(value, 2.2);
+        });
+    }
+
+    public void doubleTest2() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            double value = e2
+                    .single(double.class)
+                    .map(BindField::toDouble)
+                    .pick("A2")
+                    .go();
+            Assert.assertEquals(value, 2.2);
+        });
+    }
+
+    public void longTest() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            long value = e2
+                    .single(long.class)
+                    .map(field -> Long.parseLong(field.toText().split("Test")[1]))
+                    .pick("E20")
+                    .go();
+            Assert.assertEquals(value, 3);
+        });
+    }
+
+    public void stringEmptyTest() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            String value = e2
+                    .single(String.class)
+                    .pick("AZ1")
+                    .go();
+            Assert.assertEquals(value, "");
         });
     }
 
