@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.e2;
+package com.sombrainc.excelorm.e2.map;
 
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import org.testng.Assert;

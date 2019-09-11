@@ -1,14 +1,6 @@
 package com.sombrainc.excelorm.e2.list;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.sombrainc.excelorm.e2.dto.UserDTO;
-import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.utils.EFilters;
-import com.sombrainc.excelorm.exception.POIRuntimeException;
-import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
-import com.sombrainc.excelorm.utils.Comparisons;
-import com.sombrainc.excelorm.utils.Jackson;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -38,76 +30,9 @@ public class ListTest {
             List<String> value = e2
                     .listOf(String.class)
                     .pick("B8")
-                    .filter(field -> !isNotBlank(field))
+                    .filter(EFilters.isBlank())
                     .go();
             Assert.assertEquals(value, new ArrayList<>());
-        });
-    }
-
-    public void numberAsTextObject() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            List<UserDTO> value = e2
-                    .listOf(UserDTO.class)
-                    .binds(new Bind("name", "C20"))
-                    .pick("C20:E20")
-                    .go();
-            Assert.assertEquals(value, Stream.of("Test", "Test2", "Test3")
-                    .map(s -> new UserDTO().setName(s)).collect(Collectors.toList()));
-        });
-    }
-
-    public void customObjectWithTwoListInsideFilter() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            List<UserDTO> value = e2
-                    .listOf(UserDTO.class)
-                    .binds(
-                            new Bind("listOfInt", "M24:O24").filter(isNotBlank()),
-                            new Bind("listOfIntAsStr", "M24:O24").filter(isNotBlank())
-                    )
-                    .pick("M24:M29")
-                    .filter(EFilters::isNotBlank)
-                    .go();
-            Comparisons.compareLists(value, Jackson.parseTo(new TypeReference<List<UserDTO>>() {
-            }, "/json/e2/list/customObjectWithTwoListInside.json"));
-        });
-    }
-
-    public void customObjectWithTwoListInsideFilterUntil() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            List<UserDTO> value = e2
-                    .listOf(UserDTO.class)
-                    .binds(
-                            new Bind("listOfInt", "M24:O24")
-                                    .filter(isNotBlank())
-                                    .until(field -> isNotBlank(field) && field.toInt() <= 1),
-                            new Bind("listOfIntAsStr", "M24:O24")
-                                    .filter(isNotBlank())
-                    )
-                    .pick("M24:M29")
-                    .filter(isNotBlank())
-                    .go();
-            Comparisons.compareLists(value, Jackson.parseTo(new TypeReference<List<UserDTO>>() {
-            }, "/json/e2/list/customObjectWithTwoListInsideFilterUntil.json"));
-        });
-    }
-
-    public void customObjectWithTwoListInsideFilterUntilMap() {
-        executeForE2(DEFAULT_SHEET, e2 -> {
-            List<UserDTO> value = e2
-                    .listOf(UserDTO.class)
-                    .binds(
-                            new Bind("listOfInt", "M24:O24")
-                                    .until(field -> isNotBlank(field) && field.toInt() <= 1)
-                                    .map(field -> field.toInt() * 10),
-                            new Bind("listOfIntAsStr", "M24:O24")
-                                    .until(isNotBlank())
-                                    .map(field -> field.toInt() + "a")
-                    )
-                    .pick("M24:M29")
-                    .filter(isNotBlank())
-                    .go();
-            Comparisons.compareLists(value, Jackson.parseTo(new TypeReference<List<UserDTO>>() {
-            }, "/json/e2/list/customObjectWithTwoListInsideFilterUntilMap.json"));
         });
     }
 
@@ -154,7 +79,5 @@ public class ListTest {
             Assert.assertEquals(value, Stream.of(1, 2, 3, 4, 123, 5).collect(Collectors.toList()));
         });
     }
-
-
 
 }

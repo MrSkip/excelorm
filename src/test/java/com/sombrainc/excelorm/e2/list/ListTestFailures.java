@@ -72,6 +72,15 @@ public class ListTestFailures {
     }
 
     @Test(expectedExceptions = POIRuntimeException.class)
+    public void pickIsIMissing() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            e2
+                    .listOf(String.class)
+                    .go();
+        });
+    }
+
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void customObjectFieldIsNull() {
         executeForE2(DEFAULT_SHEET, e2 -> {
             List<UserDTO> value = e2

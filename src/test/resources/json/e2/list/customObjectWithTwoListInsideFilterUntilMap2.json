@@ -1,0 +1,45 @@
+[
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": null,
+    "listOfInt": [
+      -1,
+      -1,
+      -11,
+      -16
+    ]
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": null,
+    "listOfInt": [
+      -2,
+      -7,
+      -12,
+      -17
+    ]
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": null,
+    "listOfInt": [
+      -4,
+      -9,
+      -14
+    ]
+  },
+  {
+    "name": null,
+    "intAsStr": null,
+    "listOfIntAsStr": null,
+    "listOfInt": [
+      -5,
+      -10,
+      -15,
+      -20
+    ]
+  }
+]

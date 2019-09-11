@@ -23,4 +23,12 @@ public class UserDTO {
     private List dontMapThisField2;
     private Map dontMapThisField3;
 
+    private TestEnum testEnum;
+
+    public enum TestEnum {
+        T1,
+        T2,
+        T3
+    }
+
 }

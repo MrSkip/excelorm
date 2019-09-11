@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.e2.impl;
 
+import com.sombrainc.excelorm.e2.utils.EFilters;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
@@ -36,6 +37,14 @@ public class BindField {
 
     public Cell cell() {
         return cell;
+    }
+
+    public boolean isBlank() {
+        return EFilters.isBlank(cell);
+    }
+
+    public boolean isNotBlank() {
+        return EFilters.isNotBlank(this);
     }
 
     private <T1> T1 parse(Class<T1> type) {
