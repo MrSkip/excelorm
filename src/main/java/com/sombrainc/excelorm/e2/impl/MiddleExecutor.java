@@ -126,7 +126,7 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
     }
 
     protected void validateOnPureObject(Class aClass, String message) {
-        if (!isPureObject(aClass)) {
+        if (aClass == null || !isPureObject(aClass)) {
             throw new TypeIsNotSupportedException(message + ". Please see the list of supported objects for this method");
         }
     }

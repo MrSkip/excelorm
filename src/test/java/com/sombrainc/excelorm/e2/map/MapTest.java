@@ -17,8 +17,9 @@ import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 @Test
 public class MapTest {
     private static final String DEFAULT_SHEET = "e2Single";
+    private static final String DEFAULT_MAP_SHEET = "e2Map";
 
-    public void numberAsText() {
+    public void _1() {
         executeForE2(DEFAULT_SHEET, e2 -> {
             Map<String, Integer> value = e2
                     .mapOf(String.class, int.class)

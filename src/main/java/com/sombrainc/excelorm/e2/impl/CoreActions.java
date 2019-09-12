@@ -11,7 +11,7 @@ public abstract class CoreActions<T> {
     }
 
     /**
-     * The trigger the whole chain of user actions to read from the doc
+     * Trigger for the whole chain of user actions to read from the doc
      *
      * @return required user object
      */
@@ -20,7 +20,7 @@ public abstract class CoreActions<T> {
     }
 
     /**
-     * To return the executor object for the required structure
+     * Return the executor object for the required structure
      *
      * @return appropriate executor object
      */

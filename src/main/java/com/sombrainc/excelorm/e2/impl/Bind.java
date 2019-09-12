@@ -20,16 +20,34 @@ public class Bind {
         this.initialCell = cell;
     }
 
+    /**
+     * Build a filter
+     *
+     * @param filter filter function
+     * @return set of other functions
+     */
     public Bind filter(final Function<BindField, Boolean> filter) {
         this.filter = filter;
         return this;
     }
 
+    /**
+     * Custom mapper for items
+     *
+     * @param mapper mapper function
+     * @return set of other functions
+     */
     public Bind map(final Function<BindField, Object> mapper) {
         this.mapper = mapper;
         return this;
     }
 
+    /**
+     * Iterate until some special condition
+     *
+     * @param until specify the condition
+     * @return set of other functions
+     */
     public Bind until(final Function<BindField, Boolean> until) {
         this.until = until;
         return this;
