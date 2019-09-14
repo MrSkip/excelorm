@@ -1,9 +1,11 @@
 package com.sombrainc.excelorm.e2.impl;
 
+import com.sombrainc.excelorm.exception.FieldNotFoundException;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.ReflectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,8 +17,14 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
+import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 import static com.sombrainc.excelorm.utils.ExcelUtils.readGenericValueFromSheet;
+import static com.sombrainc.excelorm.utils.ExcelValidation.isOneCellSelected;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getInstance;
 import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
@@ -25,12 +33,11 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         super(context);
     }
 
-    protected<R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
-                                       FormulaEvaluator formulaEvaluator) {
+    protected <R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
+                                        FormulaEvaluator formulaEvaluator) {
         validate(pairOfFields);
         final R instance = getInstance(aClass);
-        final Field[] allFields = FieldUtils.getAllFields(aClass);
-        for (Field field : allFields) {
+        for (Field field : validateObjectFields(aClass, pairOfFields)) {
             final Pair<Bind, CellRangeAddress> pair = pairOfFields.stream()
                     .filter(p -> p.getKey().getField().equals(field.getName())).findFirst().orElse(null);
             if (pair == null) {
@@ -51,7 +58,20 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         return instance;
     }
 
-    private void validate(List<Pair<Bind, CellRangeAddress>> list) {
+    protected <R> Field[] validateObjectFields(final Class<R> aClass,
+                                               final List<Pair<Bind, CellRangeAddress>> pairOfFields) {
+        final Field[] allFields = FieldUtils.getAllFields(aClass);
+        final List<String> names = Stream.of(allFields).map(Field::getName).collect(Collectors.toList());
+        final Optional<String> first = pairOfFields
+                .stream().map(pair -> pair.getKey().getField())
+                .filter(name -> !names.contains(name)).findFirst();
+        if (first.isPresent()) {
+            throw new FieldNotFoundException(String.format("Field {%s} doesn't exist", first.get()));
+        }
+        return allFields;
+    }
+
+    private static void validate(List<Pair<Bind, CellRangeAddress>> list) {
         for (Pair<Bind, CellRangeAddress> pair : list) {
             if (StringUtils.isBlank(pair.getKey().getField())) {
                 throw new POIRuntimeException("Field name could not be empty");
@@ -59,16 +79,16 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         }
     }
 
-    private<R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
-                                                Field field, Pair<Bind, CellRangeAddress> pair) {
+    private <R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
+                                                 Field field, Pair<Bind, CellRangeAddress> pair) {
         final Collection<Object> collection = new ArrayList<>();
         for (CellAddress address : pair.getRight()) {
             final Cell cell = toCell(address);
             final BindField bindField = new BindField(cell, formulaEvaluator);
-            if (!Optional.ofNullable(pair.getKey().getUntil()).map(func -> func.apply(bindField)).orElse(true)) {
+            if (untilFunction(pair.getKey().getUntil(), bindField)) {
                 break;
             }
-            if (!Optional.ofNullable(pair.getKey().getFilter()).map(func -> func.apply(bindField)).orElse(true)) {
+            if (filterFunction(pair.getKey().getFilter(), bindField)) {
                 continue;
             }
             final Class<?> type = (Class<?>) ReflectionUtils.getClassFromGenericField(field)[0];
@@ -80,6 +100,40 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         } else {
             ReflectionUtils.setFieldViaReflection(instance, field, collection);
         }
+    }
+
+    protected static List<Pair<Bind, CellRangeAddress>> getBinds(final List<Bind> binds) {
+        if (!binds.isEmpty()) {
+            return binds.stream()
+                    .map(bind -> Pair.of(bind, obtainRange(bind.getInitialCell())))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    protected <T1> T1 readAsPureOrCustomObject(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
+                                               final CellRangeAddress addresses,
+                                               final FormulaEvaluator evaluator,
+                                               final int counter,
+                                               final BindField bindField,
+                                               final Function<BindField, T1> mapper,
+                                               final Class<T1> aClass) {
+        if (isPureObject(aClass)) {
+            return readRequestedType(
+                    evaluator, bindField, mapper, aClass);
+        } else {
+            return readValueBasedOnRange(
+                    bindOfPairs, addresses, evaluator, counter, aClass);
+        }
+    }
+
+    private <T1> T1 readValueBasedOnRange(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
+                                          final CellRangeAddress addresses, final FormulaEvaluator evaluator,
+                                          final int counter, final Class<T1> valueClass) {
+        final List<Pair<Bind, CellRangeAddress>> modifiedPairs = bindOfPairs.stream()
+                .map(pair -> Pair.of(pair.getLeft(), adjustRangeBasedOnVector(pair.getRight(), counter, addresses)))
+                .collect(Collectors.toList());
+        return readForSingleObject(modifiedPairs, valueClass, evaluator);
     }
 
     private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator,
@@ -108,7 +162,7 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         return addresses.getFirstColumn() == addresses.getLastColumn();
     }
 
-    protected CellRangeAddress adjustRangeBasedOnVector(CellRangeAddress range, int counter, CellRangeAddress lookForRange) {
+    protected static CellRangeAddress adjustRangeBasedOnVector(CellRangeAddress range, int counter, CellRangeAddress lookForRange) {
         if (isVertical(lookForRange)) {
             return new CellRangeAddress(range.getFirstRow() + counter, range.getLastRow() + counter,
                     range.getFirstColumn(), range.getLastColumn());
@@ -119,8 +173,16 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         throw new IncorrectRangeException("For user custom object the range should be on the same column/row");
     }
 
-    protected <R> R readRequestedType(FormulaEvaluator formulaEvaluator, BindField bindField,
-                                      Function<BindField, R> keyMapper, Class<R> keyClass) {
+    protected static CellRangeAddress makeTheSameLengthAndDirection(CellRangeAddress parent, CellRangeAddress singleCell) {
+        if (!isOneCellSelected(singleCell)) {
+            throw new POIRuntimeException("Can not perform adjustment for multiple cells");
+        }
+        return new CellRangeAddress(singleCell.getFirstRow(), singleCell.getLastRow() + (parent.getLastRow() - parent.getFirstRow()),
+                singleCell.getFirstColumn(), singleCell.getLastColumn() + (parent.getLastColumn() - parent.getFirstColumn()));
+    }
+
+    protected static <R> R readRequestedType(FormulaEvaluator formulaEvaluator, BindField bindField,
+                                             Function<BindField, R> keyMapper, Class<R> keyClass) {
         return Optional.ofNullable(keyMapper).map(func -> func.apply(bindField))
                 .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.cell(), formulaEvaluator));
     }

@@ -8,6 +8,7 @@ import java.util.function.Function;
 @Data
 @Accessors(chain = true)
 public class Bind {
+    // field name
     private final String field;
     private final String initialCell;
 
@@ -15,6 +16,12 @@ public class Bind {
     private Function<BindField, Object> mapper;
     private Function<BindField, Boolean> until;
 
+    /**
+     * Bind object fields
+     *
+     * @param field the name of the field of required object
+     * @param cell  the first cell(-s). The iteration will be auto incremented based on key direction
+     */
     public Bind(String field, String cell) {
         this.field = field;
         this.initialCell = cell;
@@ -43,7 +50,7 @@ public class Bind {
     }
 
     /**
-     * Iterate until some special condition
+     * Iterate until some special condition found
      *
      * @param until specify the condition
      * @return set of other functions

@@ -1,4 +1,4 @@
-package com.sombrainc.excelorm.e2.map;
+package com.sombrainc.excelorm.e2.map.range;
 
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
@@ -11,7 +11,6 @@ import java.util.Map;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
 public class MapFailuresTest {
-
     private static final String DEFAULT_MAP_SHEET = "e2Map";
 
     @Test(expectedExceptions = IncorrectRangeException.class)
@@ -64,7 +63,7 @@ public class MapFailuresTest {
         });
     }
 
-    @Test(expectedExceptions = TypeIsNotSupportedException.class)
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void mapOf_2() {
         executeForE2(DEFAULT_MAP_SHEET, e2 -> {
             e2
@@ -104,22 +103,12 @@ public class MapFailuresTest {
         });
     }
 
-    @Test(expectedExceptions = IncorrectRangeException.class)
-    public void incorrect_4() {
-        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
-            e2
-                    .mapOf(int.class, String.class)
-                    .pick("B3:B9", "B3")
-                    .go();
-        });
-    }
-
     @Test(expectedExceptions = POIRuntimeException.class)
     public void incorrect_5() {
         executeForE2(DEFAULT_MAP_SHEET, e2 -> {
             e2
                     .mapOf(int.class, String.class)
-                    .pick("B3:B8", "B3:B8")
+                    .pick("B3:B22", "B3:B22")
                     .map(BindField::toInt)
                     .go();
         });

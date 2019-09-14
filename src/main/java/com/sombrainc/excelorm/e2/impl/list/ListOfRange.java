@@ -72,9 +72,9 @@ public class ListOfRange<T> extends CoreActions<List<T>> {
     }
 
     /**
-     * Build a filter
+     * Define a filter for a key
      *
-     * @param filter filter function
+     * @param filter a filter function
      * @return set of other functions
      */
     public ListOfRange<T> filter(Function<BindField, Boolean> filter) {
@@ -85,7 +85,7 @@ public class ListOfRange<T> extends CoreActions<List<T>> {
     /**
      * Iterate until some special condition
      *
-     * @param until specify the condition
+     * @param until specified condition
      * @return set of other functions
      */
     public ListOfRange<T> until(Function<BindField, Boolean> until) {

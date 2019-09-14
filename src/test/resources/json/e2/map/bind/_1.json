@@ -1,0 +1,22 @@
+{
+  "1": {
+    "symbol": "a",
+    "integer": 1
+  },
+  "2": {
+    "symbol": "b",
+    "integer": 2
+  },
+  "3": {
+    "symbol": "c",
+    "integer": 3
+  },
+  "4": {
+    "symbol": "d",
+    "integer": 4
+  },
+  "5": {
+    "symbol": "e",
+    "integer": 5
+  }
+}

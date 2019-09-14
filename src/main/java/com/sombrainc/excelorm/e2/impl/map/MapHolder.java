@@ -1,10 +1,13 @@
 package com.sombrainc.excelorm.e2.impl.map;
 
+import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.poi.ss.usermodel.Cell;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 @Data
@@ -24,4 +27,10 @@ public class MapHolder<K1, V1> {
 
     protected String keyRange;
     private String valueRange;
+
+    private List<Bind> binds;
+
+    public MapHolder() {
+        binds = new ArrayList<>();
+    }
 }

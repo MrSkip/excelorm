@@ -72,7 +72,7 @@ public class SingleBindTests {
             UserDTO value = e2.single(UserDTO.class)
                     .binds(
                             new Bind("setOfIntAsStr", "I8:I19")
-                                    .until(field -> !field.toText().contains("*"))
+                                    .until(field -> field.toText().contains("*"))
                     ).go();
             Assert.assertEquals(
                     new UserDTO()
@@ -88,9 +88,9 @@ public class SingleBindTests {
             UserDTO value = e2.single(UserDTO.class)
                     .binds(
                             new Bind("setOfIntAsStr", "I8:I19")
-                                    .until(field -> !field.toText().contains("*")),
+                                    .until(field -> field.toText().contains("*")),
                             new Bind("listOfInt", "K13:O13")
-                                    .until(field -> !field.toText().contains("&"))
+                                    .until(field -> field.toText().contains("&"))
                     ).go();
             Assert.assertEquals(
                     new UserDTO()
@@ -109,9 +109,9 @@ public class SingleBindTests {
             UserDTO value = e2.single(UserDTO.class)
                     .binds(
                             new Bind("setOfIntAsStr", "I8:I19")
-                                    .until(field -> !field.toText().contains("*")),
+                                    .until(field -> field.toText().contains("*")),
                             new Bind("listOfInt", "K13:O13")
-                                    .until(field -> !field.toText().contains("&"))
+                                    .until(field -> field.toText().contains("&"))
                                     .filter(field -> field.toInt() <= 2)
                     ).go();
             Assert.assertEquals(
@@ -132,9 +132,9 @@ public class SingleBindTests {
                     .binds(
                             new Bind("setOfIntAsStr", "I8:I19")
                                     .map(field -> field.toInt() * 10 + "")
-                                    .until(field -> !field.toText().contains("*")),
+                                    .until(field -> field.toText().contains("*")),
                             new Bind("listOfInt", "K13:O13")
-                                    .until(field -> !field.toText().contains("&"))
+                                    .until(field -> field.toText().contains("&"))
                                     .filter(field -> field.toInt() <= 2)
                     ).go();
             Assert.assertEquals(
@@ -155,9 +155,9 @@ public class SingleBindTests {
                     .binds(
                             new Bind("setOfIntAsStr", "I8:I19")
                                     .map(field -> field.toInt() * 10 + "")
-                                    .until(field -> !field.toText().contains("*")),
+                                    .until(field -> field.toText().contains("*")),
                             new Bind("listOfInt", "K13:O13")
-                                    .until(field -> !field.toText().contains("&"))
+                                    .until(field -> field.toText().contains("&"))
                                     .filter(field -> field.toInt() <= 2)
                                     .map(field -> (int) (field.cell().getNumericCellValue()) + 1)
                     ).go();

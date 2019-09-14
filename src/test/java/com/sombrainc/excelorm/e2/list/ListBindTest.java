@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.sombrainc.excelorm.e2.utils.EFilters.isBlank;
 import static com.sombrainc.excelorm.e2.utils.EFilters.isNotBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
@@ -69,7 +70,7 @@ public class ListBindTest {
                     .binds(
                             new Bind("listOfInt", "M24:O24")
                                     .filter(isNotBlank())
-                                    .until(field -> isNotBlank(field) && field.toInt() <= 1),
+                                    .until(field -> isNotBlank(field) && field.toInt() > 1),
                             new Bind("listOfIntAsStr", "M24:O24")
                                     .filter(isNotBlank())
                     )
@@ -87,10 +88,10 @@ public class ListBindTest {
                     .listOf(UserDTO.class)
                     .binds(
                             new Bind("listOfInt", "M24:O24")
-                                    .until(field -> isNotBlank(field) && field.toInt() <= 1)
+                                    .until(field -> isBlank(field.cell()) || field.toInt() > 1)
                                     .map(field -> field.toInt() * 10),
                             new Bind("listOfIntAsStr", "M24:O24")
-                                    .until(isNotBlank())
+                                    .until(isBlank())
                                     .map(field -> field.toInt() + "a")
                     )
                     .pick("M24:M29")

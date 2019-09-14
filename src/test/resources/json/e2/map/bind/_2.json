@@ -1,0 +1,47 @@
+{
+  "1": {
+    "symbol": "a",
+    "integer": 1,
+    "integers": [
+      1,
+      1,
+      2
+    ]
+  },
+  "2": {
+    "symbol": "b",
+    "integer": 2,
+    "integers": [
+      2,
+      2,
+      3
+    ]
+  },
+  "3": {
+    "symbol": "c",
+    "integer": 3,
+    "integers": [
+      3,
+      3,
+      4
+    ]
+  },
+  "4": {
+    "symbol": "d",
+    "integer": 4,
+    "integers": [
+      4,
+      4,
+      5
+    ]
+  },
+  "5": {
+    "symbol": "e",
+    "integer": 5,
+    "integers": [
+      5,
+      5,
+      6
+    ]
+  }
+}

@@ -11,6 +11,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.*;
 
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
 import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
 import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 
@@ -39,10 +41,10 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
         for (CellAddress keyAddr : keyRange) {
             counter++;
             final BindField keyCell = new BindField(toCell(keyAddr), evaluator);
-            if (isUntilByKeyReached(holder, keyCell)) {
+            if (untilFunction(holder.getKeyUntil(), keyCell)) {
                 break;
             }
-            if (filterByKey(holder, keyCell)) {
+            if (filterFunction(holder.getKeyFilter(), keyCell)) {
                 valueIterator = incrementValuesIterator(keyRange, valueRange, valueIterator, counter);
                 continue;
             }
