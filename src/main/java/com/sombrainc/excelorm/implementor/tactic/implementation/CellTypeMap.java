@@ -10,7 +10,7 @@ import com.sombrainc.excelorm.model.CellMapPresenter;
 import com.sombrainc.excelorm.utils.ExcelUtils;
 import com.sombrainc.excelorm.utils.StringUtils;
 import com.sombrainc.excelorm.utils.TypesUtils;
-import javafx.util.Pair;
+import org.apache.commons.math3.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellAddress;
