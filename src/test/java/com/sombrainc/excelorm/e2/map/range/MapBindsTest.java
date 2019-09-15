@@ -1,18 +1,14 @@
 package com.sombrainc.excelorm.e2.map.range;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.map.range.dto.User;
-import com.sombrainc.excelorm.e2.utils.EFilters;
 import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static com.sombrainc.excelorm.e2.utils.EFilters.isBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
@@ -32,7 +28,7 @@ public class MapBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_1.json"));
+            }, "/json/e2/map/range/bind/_1.json"));
         });
     }
 
@@ -48,7 +44,7 @@ public class MapBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_2.json"));
+            }, "/json/e2/map/range/bind/_2.json"));
         });
     }
 
@@ -66,7 +62,7 @@ public class MapBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_3.json"));
+            }, "/json/e2/map/range/bind/_3.json"));
         });
     }
 
@@ -85,7 +81,7 @@ public class MapBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_4.json"));
+            }, "/json/e2/map/range/bind/_4.json"));
         });
     }
 
@@ -104,7 +100,7 @@ public class MapBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_4.json"));
+            }, "/json/e2/map/range/bind/_4.json"));
         });
     }
 

@@ -29,6 +29,7 @@ public class MapHolder<K1, V1> {
     private String valueRange;
 
     private List<Bind> binds;
+    private boolean frozen;
 
     public MapHolder() {
         binds = new ArrayList<>();

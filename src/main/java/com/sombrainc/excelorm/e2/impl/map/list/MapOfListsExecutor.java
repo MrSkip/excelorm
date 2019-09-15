@@ -49,7 +49,8 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
                 continue;
             }
             final K key = readRequestedType(evaluator, keyCell, holder.getKeyMapper(), holder.getKeyClass());
-            if (!isVector(keyRange) || !isVector(valueRange) || isSameVector(keyRange, valueRange)) {
+            if (!isVector(keyRange) || !isVector(valueRange)
+                    || isSameVector(keyRange, valueRange) || holder.isFrozen()) {
                 final V value = readRequestedType(evaluator, new BindField(toCell(valueIterator.next()), evaluator),
                         holder.getValueMapper(), holder.getValueClass());
                 map.putIfAbsent(key, new ArrayList<V>() {{
@@ -78,7 +79,7 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
         while (valueIterator.hasNext()) {
             final CellAddress next = valueIterator.next();
             final BindField cell = new BindField(toCell(next), evaluator);
-            if (!Optional.ofNullable(holder.getValueFilter()).map(func -> func.apply(cell)).orElse(true)) {
+            if (filterFunction(holder.getValueFilter(), cell)) {
                 continue;
             }
             final V item = readRequestedType(evaluator, cell, holder.getValueMapper(), holder.getValueClass());
@@ -87,9 +88,9 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
         return list;
     }
 
-    private static void validate(CellRangeAddress keyA, CellRangeAddress valueA) {
+    protected static void validate(CellRangeAddress keyA, CellRangeAddress valueA) {
         if (isVector(keyA)) {
-            final String message = "Cell range for value is not correct";
+            final String message = "Based on key range the range for value is not correct";
             if (isVector(valueA)) {
                 if (isSameVector(keyA, valueA) && keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
                     throw new IncorrectRangeException(message);

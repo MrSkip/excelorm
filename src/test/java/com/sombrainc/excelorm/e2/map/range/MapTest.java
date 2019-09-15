@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm.e2.map.range;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import com.sombrainc.excelorm.utils.Jackson;
@@ -9,11 +8,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.sombrainc.excelorm.e2.utils.EFilters.isNotBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
@@ -44,7 +40,7 @@ public class MapTest {
                     .pick("B3:B7", "D11:D15")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_2.json"));
+            }, "/json/e2/map/range/_2.json"));
         });
     }
 
@@ -55,7 +51,7 @@ public class MapTest {
                     .pick("B3:B7", "D11:D15")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_2.json"));
+            }, "/json/e2/map/range/_2.json"));
         });
     }
 
@@ -66,7 +62,7 @@ public class MapTest {
                     .pick("B3:B7", "D11")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_2.json"));
+            }, "/json/e2/map/range/_2.json"));
         });
     }
 
@@ -77,7 +73,7 @@ public class MapTest {
                     .pick("B20:f20", "e23")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_2.json"));
+            }, "/json/e2/map/range/_2.json"));
         });
     }
 
@@ -88,7 +84,7 @@ public class MapTest {
                     .pick("B28:F29", "G31")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_6.json"));
+            }, "/json/e2/map/range/_6.json"));
         });
     }
 
@@ -100,7 +96,7 @@ public class MapTest {
                     .until(field -> field.toInt() == 8)
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_7.json"));
+            }, "/json/e2/map/range/_7.json"));
         });
     }
 
@@ -113,7 +109,7 @@ public class MapTest {
                     .map(field -> field.toType(int.class) * 2)
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_8.json"));
+            }, "/json/e2/map/range/_8.json"));
         });
     }
 
@@ -127,7 +123,7 @@ public class MapTest {
                     .mapValue(field -> field.toText() + "|")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_9.json"));
+            }, "/json/e2/map/range/_9.json"));
         });
     }
 
@@ -141,7 +137,7 @@ public class MapTest {
                     .mapValue(field -> field.toText() + "|")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_10.json"));
+            }, "/json/e2/map/range/_10.json"));
         });
     }
 
@@ -156,7 +152,7 @@ public class MapTest {
                     .mapValue(field -> field.toText() + "|")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
-            }, "/json/e2/map/_11.json"));
+            }, "/json/e2/map/range/_11.json"));
         });
     }
 
@@ -171,7 +167,7 @@ public class MapTest {
                     .mapValue(field -> field.toText() + "|")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Long, String>>() {
-            }, "/json/e2/map/_11.json"));
+            }, "/json/e2/map/range/_11.json"));
         });
     }
 
@@ -186,7 +182,7 @@ public class MapTest {
                     .mapValue(field -> field.toText() + "|")
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, String>>() {
-            }, "/json/e2/map/_11.json"));
+            }, "/json/e2/map/range/_11.json"));
         });
     }
 

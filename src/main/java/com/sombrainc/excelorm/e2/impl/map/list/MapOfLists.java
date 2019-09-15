@@ -31,33 +31,81 @@ public class MapOfLists<K, V> extends CoreActions<Map<K, List<V>>> {
         return new MapOfListsExecutor<>(this);
     }
 
+    /**
+     * Used to specify the locations of keys and values
+     *
+     * @param key   location of keys on the spreadsheet
+     * @param value location of values on the spreadsheet
+     * @return set of other functions
+     */
     public MapOfLists<K, V> pick(String key, String value) {
         holder.setKeyRange(key).setValueRange(value);
         return new MapOfLists<>(getEReaderContext(), holder);
     }
 
+    /**
+     * Prevent increasing the range for value.
+     * Only the explicitly selected values will be taken
+     *
+     * @return set of other functions
+     */
+    public MapOfLists<K, V> freeze() {
+        holder.setFrozen(true);
+        return new MapOfLists<>(getEReaderContext(), holder);
+    }
+
+    /**
+     * Used to define a mapper for a key
+     *
+     * @param mapper mapper for a value
+     * @return set of other functions
+     */
     public MapOfLists<K, V> map(Function<BindField, K> mapper) {
         holder.setKeyMapper(mapper);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> mapValue(Function<BindField, V> value) {
-        holder.setValueMapper(value);
+    /**
+     * Used to define a mapper for value
+     *
+     * @param mapper mapper for a value
+     * @return set of other functions
+     */
+    public MapOfLists<K, V> mapValue(Function<BindField, V> mapper) {
+        holder.setValueMapper(mapper);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> filter(Function<BindField, Boolean> key) {
-        holder.setKeyFilter(key);
+    /**
+     * Define a filter for a key
+     *
+     * @param filter key filter function
+     * @return set of other functions
+     */
+    public MapOfLists<K, V> filter(Function<BindField, Boolean> filter) {
+        holder.setKeyFilter(filter);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> filterValue(Function<BindField, Boolean> value) {
-        holder.setValueFilter(value);
+    /**
+     * Define a filter for a value
+     *
+     * @param filter value filter function
+     * @return set of other functions
+     */
+    public MapOfLists<K, V> filterValue(Function<BindField, Boolean> filter) {
+        holder.setValueFilter(filter);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 
-    public MapOfLists<K, V> until(Function<BindField, Boolean> key) {
-        holder.setKeyUntil(key);
+    /**
+     * Iterate over keys until some special condition
+     *
+     * @param until specified condition
+     * @return set of other functions
+     */
+    public MapOfLists<K, V> until(Function<BindField, Boolean> until) {
+        holder.setKeyUntil(until);
         return new MapOfLists<>(this.getEReaderContext(), holder);
     }
 

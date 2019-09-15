@@ -62,9 +62,9 @@ public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
     }
 
     /**
-     * Used to define a mapper for key
+     * Used to define a mapper for a key
      *
-     * @param mapper mapper for a value
+     * @param mapper mapper for a key
      * @return set of other functions
      */
     public MapOfRanges<K, V> map(Function<BindField, K> mapper) {
@@ -84,7 +84,7 @@ public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
     }
 
     /**
-     * Define a filter to a key
+     * Define a filter for a key
      *
      * @param filter key filter function
      * @return set of other functions

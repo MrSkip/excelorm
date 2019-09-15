@@ -114,4 +114,14 @@ public class MapFailuresTest {
         });
     }
 
+    @Test(expectedExceptions = POIRuntimeException.class)
+    public void incorrect_6() {
+        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
+            final Map<Integer, String> go = e2
+                    .mapOf(int.class, String.class)
+                    .pick("B3:B5", "F3:G3")
+                    .go();
+        });
+    }
+
 }

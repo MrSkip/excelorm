@@ -2,12 +2,9 @@ package com.sombrainc.excelorm.e2.map.range;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sombrainc.excelorm.e2.impl.Bind;
-import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.map.range.dto.User;
-import com.sombrainc.excelorm.exception.FieldNotFoundException;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
-import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -32,7 +29,7 @@ public class MapFailureBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_1.json"));
+            }, "/json/e2/map/range/bind/_1.json"));
         });
     }
 
@@ -49,7 +46,7 @@ public class MapFailureBindsTest {
                     )
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
-            }, "/json/e2/map/bind/_1.json"));
+            }, "/json/e2/map/range/bind/_1.json"));
         });
     }
 
