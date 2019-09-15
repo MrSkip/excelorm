@@ -51,16 +51,4 @@ public class MapListFailuresTest {
         });
     }
 
-    @Test(expectedExceptions = IncorrectRangeException.class)
-    public void _4() {
-        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
-            Map<String, List<String>> value = e2
-                    .mapOfList(String.class, String.class)
-                    .pick("D4:F4", "D4:F4")
-                    .go();
-            Comparisons.compareMaps(value, Jackson.parseTo(new TypeReference<Map<String, List<String>>>() {
-            }, "/json/e2/map/list/_5.json"));
-        });
-    }
-
 }
