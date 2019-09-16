@@ -1,5 +1,6 @@
 package com.sombrainc.excelorm.utils;
 
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import java.lang.reflect.Field;
@@ -13,7 +14,7 @@ public class ReflectionUtils {
 
     public static <E> E getInstance(Class<E> target) {
         if (target == null) {
-            throw new NullPointerException("Target class could not be null");
+            throw new POIRuntimeException("Target class could not be null");
         }
         E instance;
         try {

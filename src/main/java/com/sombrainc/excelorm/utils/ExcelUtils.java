@@ -2,6 +2,7 @@ package com.sombrainc.excelorm.utils;
 
 import com.sombrainc.excelorm.exception.HasNotImplementedYetException;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.model.pojo.CellDirection;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -40,7 +41,7 @@ public class ExcelUtils {
         } else if (Object.class.equals(type)) {
             return readStraightTypeFromExcel(cell);
         } else {
-            throw new NullPointerException("There is no valid type handler for " + type);
+            throw new POIRuntimeException("There is no valid type handler for " + type);
         }
     }
 

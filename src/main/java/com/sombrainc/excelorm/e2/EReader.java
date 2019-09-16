@@ -82,7 +82,7 @@ public class EReader extends EReaderContext {
     }
 
     /**
-     * Create the single object based on {@code aClass}
+     * Create a single object based on {@code aClass}
      *
      * @param aClass type
      * @param <T>    required object to be created
@@ -92,14 +92,39 @@ public class EReader extends EReaderContext {
         return new SinglePick<>(this, aClass);
     }
 
+    /**
+     * Load items from the spreadsheet into List of {@code E}
+     *
+     * @param aClass required object
+     * @param <E>    type of required object
+     * @return a set of functions
+     */
     public <E> ListOfRange<E> listOf(Class<E> aClass) {
         return new ListOfRange<>(this, aClass);
     }
 
+    /**
+     * Load items from the spreadsheet into the Map of single or custom objects (Map<K, V>)
+     *
+     * @param key   key class
+     * @param value value class
+     * @param <K>   key type
+     * @param <V>   value type
+     * @return a set of functions
+     */
     public <K, V> MapOfRanges<K, V> mapOf(Class<K> key, Class<V> value) {
         return new MapOfRanges<>(this, key, value);
     }
 
+    /**
+     * Load items from the spreadsheet into the Map of Lists (Map<K, List<V>)
+     *
+     * @param key   key class
+     * @param value value class
+     * @param <K>   key type
+     * @param <V>   value type
+     * @return a set of functions
+     */
     public <K, V> MapOfLists<K, V> mapOfList(Class<K> key, Class<V> value) {
         return new MapOfLists<>(this, key, value);
     }

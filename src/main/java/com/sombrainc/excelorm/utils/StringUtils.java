@@ -1,5 +1,7 @@
 package com.sombrainc.excelorm.utils;
 
+import com.sombrainc.excelorm.exception.POIRuntimeException;
+
 import java.util.Objects;
 
 public class StringUtils {
@@ -17,7 +19,7 @@ public class StringUtils {
     public static<T> T requireNotBlank(T t) {
         if (t instanceof String) {
             if (((String) t).trim().isEmpty())
-                throw new NullPointerException();
+                throw new POIRuntimeException("Not blank is required");
             return t;
         }
         return Objects.requireNonNull(t);
