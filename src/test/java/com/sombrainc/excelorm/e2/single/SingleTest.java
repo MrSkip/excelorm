@@ -1,20 +1,14 @@
 package com.sombrainc.excelorm.e2.single;
 
-import com.sombrainc.excelorm.e2.dto.UserDTO;
-import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
 @Test
 public class SingleTest {
-    private static final String DEFAULT_SHEET = "e2Single";
+    public static final String DEFAULT_SHEET = "e2Single";
 
     public void numberAsText() {
         executeForE2(DEFAULT_SHEET, e2 -> {

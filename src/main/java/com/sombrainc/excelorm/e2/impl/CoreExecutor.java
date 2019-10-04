@@ -3,6 +3,7 @@ package com.sombrainc.excelorm.e2.impl;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.utils.StringUtils;
 import lombok.Getter;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -32,9 +33,9 @@ public abstract class CoreExecutor<T> {
             }
             throw new POIRuntimeException(ex);
         } finally {
-            if (workbook != null) {
+            if (this.workbook != null) {
                 try {
-                    workbook.close();
+                    this.workbook.close();
                 } catch (IOException e) {
                     throw new POIRuntimeException(e);
                 }
@@ -45,27 +46,35 @@ public abstract class CoreExecutor<T> {
     public abstract T execute();
 
     protected Sheet loadSheet() {
-        if (context.sheet != null) {
-            return context.sheet;
+        if (this.context.sheet != null) {
+            return this.context.sheet;
         }
         try {
-            if (!StringUtils.isNullOrEmpty(context.path)) {
-                workbook = new XSSFWorkbook(context.path);
-            } else if (context.file != null) {
-                workbook = new XSSFWorkbook(context.file);
-            } else if (context.inputStream != null) {
-                workbook = new XSSFWorkbook(context.inputStream);
-            } else {
-                throw new POIRuntimeException("Required properties are not set");
-            }
-            if (StringUtils.isNullOrEmpty(context.sheetName)) {
-                return workbook.getSheetAt(1);
-            } else {
-                return workbook.getSheet(context.sheetName);
-            }
+            this.workbook = loadWorkBook();
+            this.context.sheet = defineSheet();
+            return defineSheet();
         } catch (Exception e) {
             throw new POIRuntimeException(
                     "Something went wrong while loading excel document", e);
+        }
+    }
+
+    private Sheet defineSheet() {
+        if (StringUtils.isNullOrEmpty(this.context.sheetName)) {
+            return this.workbook.getSheetAt(1);
+        }
+        return this.workbook.getSheet(this.context.sheetName);
+    }
+
+    private XSSFWorkbook loadWorkBook() throws IOException, InvalidFormatException {
+        if (!StringUtils.isNullOrEmpty(this.context.path)) {
+            return new XSSFWorkbook(this.context.path);
+        } else if (this.context.file != null) {
+            return new XSSFWorkbook(this.context.file);
+        } else if (this.context.inputStream != null) {
+            return new XSSFWorkbook(this.context.inputStream);
+        } else {
+            throw new POIRuntimeException("Required properties are not set");
         }
     }
 
