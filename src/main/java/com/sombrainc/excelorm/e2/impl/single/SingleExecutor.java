@@ -10,6 +10,8 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Function;
@@ -22,6 +24,8 @@ import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 @Getter
 public class SingleExecutor<T> extends MiddleExecutor<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SingleExecutor.class);
+
     private final SinglePick<T> target;
 
     public SingleExecutor(SinglePick<T> target) {
@@ -43,7 +47,7 @@ public class SingleExecutor<T> extends MiddleExecutor<T> {
         }
         CellRangeAddress cellAddresses = obtainRange(target.cell);
         if (!isOneCellSelected(cellAddresses)) {
-            System.out.println("Non-single cell found. Only the first cell will be processed");
+            LOGGER.info("Non-single cell found. Only the first cell will be processed");
         }
         Cell cell = getOrCreateCell(loadSheet(), cellAddresses.getFirstRow(), cellAddresses.getFirstColumn());
         if (target.mapper == null) {
