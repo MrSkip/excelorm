@@ -4,7 +4,6 @@ import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.map.CoreMapExecutor;
 import com.sombrainc.excelorm.e2.impl.map.MapHolder;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -13,7 +12,6 @@ import java.util.*;
 
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
-import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
 import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 
 public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
@@ -22,6 +20,34 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
     protected MapOfListsExecutor(MapOfLists<K, V> target) {
         super(target);
         this.holder = target.holder;
+    }
+
+    protected static void validate(CellRangeAddress keyA, CellRangeAddress valueA) {
+        if (isVector(keyA)) {
+            final String message = "Based on key range the range for value is not correct";
+            if (isVector(valueA)) {
+                if (isSameVector(keyA, valueA) && keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
+                    throw new IncorrectRangeException(message);
+                }
+            } else {
+                throw new IncorrectRangeException(message);
+            }
+        } else if (keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
+            throw new IncorrectRangeException("Cell range for key and cell range for value should have the same number of cells");
+        }
+    }
+
+    private static boolean isHorizontal(CellRangeAddress key, CellRangeAddress value) {
+        return isHorizontal(key) && isHorizontal(value);
+    }
+
+    private static boolean isVertical(CellRangeAddress key, CellRangeAddress value) {
+        return isVertical(key) && isVertical(value);
+    }
+
+    private static boolean isSameVector(CellRangeAddress keyA, CellRangeAddress valueA) {
+        return (keyA.getFirstRow() == keyA.getLastRow() && valueA.getFirstRow() == valueA.getLastRow())
+                || (keyA.getFirstColumn() == keyA.getLastColumn() && valueA.getFirstColumn() == valueA.getLastColumn());
     }
 
     @Override
@@ -86,34 +112,6 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
             list.add(item);
         }
         return list;
-    }
-
-    protected static void validate(CellRangeAddress keyA, CellRangeAddress valueA) {
-        if (isVector(keyA)) {
-            final String message = "Based on key range the range for value is not correct";
-            if (isVector(valueA)) {
-                if (isSameVector(keyA, valueA) && keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
-                    throw new IncorrectRangeException(message);
-                }
-            } else {
-                throw new IncorrectRangeException(message);
-            }
-        } else if (keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
-            throw new IncorrectRangeException("Cell range for key and cell range for value should have the same number of cells");
-        }
-    }
-
-    private static boolean isHorizontal(CellRangeAddress key, CellRangeAddress value) {
-        return isHorizontal(key) && isHorizontal(value);
-    }
-
-    private static boolean isVertical(CellRangeAddress key, CellRangeAddress value) {
-        return isVertical(key) && isVertical(value);
-    }
-
-    private static boolean isSameVector(CellRangeAddress keyA, CellRangeAddress valueA) {
-        return (keyA.getFirstRow() == keyA.getLastRow() && valueA.getFirstRow() == valueA.getLastRow())
-                || (keyA.getFirstColumn() == keyA.getLastColumn() && valueA.getFirstColumn() == valueA.getLastColumn());
     }
 
 }

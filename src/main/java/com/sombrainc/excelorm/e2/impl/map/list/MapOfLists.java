@@ -5,7 +5,6 @@ import com.sombrainc.excelorm.e2.impl.CoreActions;
 import com.sombrainc.excelorm.e2.impl.CoreExecutor;
 import com.sombrainc.excelorm.e2.impl.EReaderContext;
 import com.sombrainc.excelorm.e2.impl.map.MapHolder;
-import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.List;
 import java.util.Map;

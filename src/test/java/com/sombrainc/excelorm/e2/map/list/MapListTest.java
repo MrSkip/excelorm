@@ -1,7 +1,6 @@
 package com.sombrainc.excelorm.e2.map.list;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.utils.EFilters;
 import com.sombrainc.excelorm.utils.Comparisons;
@@ -9,10 +8,11 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.sombrainc.excelorm.e2.utils.EFilters.isNotBlank;
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;

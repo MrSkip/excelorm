@@ -19,7 +19,8 @@ import java.util.Map;
 
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
-import static com.sombrainc.excelorm.utils.ExcelUtils.*;
+import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
+import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isOneCellSelected;
 
 public class MapOfRangesExecutor<K, V> extends CoreMapExecutor<K, V> {

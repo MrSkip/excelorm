@@ -3,7 +3,6 @@ package com.sombrainc.excelorm.e2.impl.list;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
-import com.sombrainc.excelorm.e2.utils.FunctionUtils;
 import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
@@ -15,10 +14,10 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static com.sombrainc.excelorm.e2.utils.FunctionUtils.*;
-import static com.sombrainc.excelorm.utils.ExcelUtils.*;
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
+import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
+import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
 
 public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {

@@ -5,7 +5,6 @@ import com.sombrainc.excelorm.exception.IncorrectRangeException;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import com.sombrainc.excelorm.utils.ReflectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,72 +32,11 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         super(context);
     }
 
-    protected <R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
-                                        FormulaEvaluator formulaEvaluator) {
-        validate(pairOfFields);
-        final R instance = getInstance(aClass);
-        for (Field field : validateObjectFields(aClass, pairOfFields)) {
-            final Pair<Bind, CellRangeAddress> pair = pairOfFields.stream()
-                    .filter(p -> p.getKey().getField().equals(field.getName())).findFirst().orElse(null);
-            if (pair == null) {
-                continue;
-            }
-            if (isCollection(field.getType())) {
-                readSingleFieldAsCollection(formulaEvaluator, instance, field, pair);
-                continue;
-            }
-            if (!isPureObject(field.getType())) {
-                throw new TypeIsNotSupportedException(
-                        String.format("The field [%s] is not supported. Please see the list of supported objects for this method", pair.getKey().getField()));
-            }
-            final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), pair,
-                    new BindField(toCell(pair.getValue().iterator().next()), formulaEvaluator));
-            ReflectionUtils.setFieldViaReflection(instance, field, fieldValue);
-        }
-        return instance;
-    }
-
-    protected <R> Field[] validateObjectFields(final Class<R> aClass,
-                                               final List<Pair<Bind, CellRangeAddress>> pairOfFields) {
-        final Field[] allFields = FieldUtils.getAllFields(aClass);
-        final List<String> names = Stream.of(allFields).map(Field::getName).collect(Collectors.toList());
-        final Optional<String> first = pairOfFields
-                .stream().map(pair -> pair.getKey().getField())
-                .filter(name -> !names.contains(name)).findFirst();
-        if (first.isPresent()) {
-            throw new FieldNotFoundException(String.format("Field {%s} doesn't exist", first.get()));
-        }
-        return allFields;
-    }
-
     private static void validate(List<Pair<Bind, CellRangeAddress>> list) {
         for (Pair<Bind, CellRangeAddress> pair : list) {
             if (StringUtils.isBlank(pair.getKey().getField())) {
                 throw new POIRuntimeException("Field name could not be empty");
             }
-        }
-    }
-
-    private <R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
-                                                 Field field, Pair<Bind, CellRangeAddress> pair) {
-        final Collection<Object> collection = new ArrayList<>();
-        for (CellAddress address : pair.getRight()) {
-            final Cell cell = toCell(address);
-            final BindField bindField = new BindField(cell, formulaEvaluator);
-            if (untilFunction(pair.getKey().getUntil(), bindField)) {
-                break;
-            }
-            if (filterFunction(pair.getKey().getFilter(), bindField)) {
-                continue;
-            }
-            final Class<?> type = (Class<?>) ReflectionUtils.getClassFromGenericField(field)[0];
-            final Object fieldValue = parseValueFromSheet(formulaEvaluator, type, pair, bindField);
-            collection.add(fieldValue);
-        }
-        if (field.getType().equals(Set.class)) {
-            ReflectionUtils.setFieldViaReflection(instance, field, new HashSet<>(collection));
-        } else {
-            ReflectionUtils.setFieldViaReflection(instance, field, collection);
         }
     }
 
@@ -109,38 +47,6 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
-    }
-
-    protected <T1> T1 readAsPureOrCustomObject(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
-                                               final CellRangeAddress addresses,
-                                               final FormulaEvaluator evaluator,
-                                               final int counter,
-                                               final BindField bindField,
-                                               final Function<BindField, T1> mapper,
-                                               final Class<T1> aClass) {
-        if (isPureObject(aClass)) {
-            return readRequestedType(
-                    evaluator, bindField, mapper, aClass);
-        } else {
-            return readValueBasedOnRange(
-                    bindOfPairs, addresses, evaluator, counter, aClass);
-        }
-    }
-
-    private <T1> T1 readValueBasedOnRange(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
-                                          final CellRangeAddress addresses, final FormulaEvaluator evaluator,
-                                          final int counter, final Class<T1> valueClass) {
-        final List<Pair<Bind, CellRangeAddress>> modifiedPairs = bindOfPairs.stream()
-                .map(pair -> Pair.of(pair.getLeft(), adjustRangeBasedOnVector(pair.getRight(), counter, addresses)))
-                .collect(Collectors.toList());
-        return readForSingleObject(modifiedPairs, valueClass, evaluator);
-    }
-
-    private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator,
-                                       final Class<?> aClass, Pair<Bind, CellRangeAddress> pair,
-                                       final BindField userField) {
-        return Optional.ofNullable(pair.getKey().getMapper()).map(func -> func.apply(userField))
-                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.cell(), formulaEvaluator));
     }
 
     protected static boolean isCollection(Class<?> aClass) {
@@ -185,6 +91,99 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                                              Function<BindField, R> keyMapper, Class<R> keyClass) {
         return Optional.ofNullable(keyMapper).map(func -> func.apply(bindField))
                 .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.cell(), formulaEvaluator));
+    }
+
+    protected <R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
+                                        FormulaEvaluator formulaEvaluator) {
+        validate(pairOfFields);
+        final R instance = getInstance(aClass);
+        for (Field field : validateObjectFields(aClass, pairOfFields)) {
+            final Pair<Bind, CellRangeAddress> pair = pairOfFields.stream()
+                    .filter(p -> p.getKey().getField().equals(field.getName())).findFirst().orElse(null);
+            if (pair == null) {
+                continue;
+            }
+            if (isCollection(field.getType())) {
+                readSingleFieldAsCollection(formulaEvaluator, instance, field, pair);
+                continue;
+            }
+            if (!isPureObject(field.getType())) {
+                throw new TypeIsNotSupportedException(
+                        String.format("The field [%s] is not supported. Please see the list of supported objects for this method", pair.getKey().getField()));
+            }
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), pair,
+                    new BindField(toCell(pair.getValue().iterator().next()), formulaEvaluator));
+            ReflectionUtils.setFieldViaReflection(instance, field, fieldValue);
+        }
+        return instance;
+    }
+
+    protected <R> Field[] validateObjectFields(final Class<R> aClass,
+                                               final List<Pair<Bind, CellRangeAddress>> pairOfFields) {
+        final Field[] allFields = FieldUtils.getAllFields(aClass);
+        final List<String> names = Stream.of(allFields).map(Field::getName).collect(Collectors.toList());
+        final Optional<String> first = pairOfFields
+                .stream().map(pair -> pair.getKey().getField())
+                .filter(name -> !names.contains(name)).findFirst();
+        if (first.isPresent()) {
+            throw new FieldNotFoundException(String.format("Field {%s} doesn't exist", first.get()));
+        }
+        return allFields;
+    }
+
+    private <R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
+                                                 Field field, Pair<Bind, CellRangeAddress> pair) {
+        final Collection<Object> collection = new ArrayList<>();
+        for (CellAddress address : pair.getRight()) {
+            final Cell cell = toCell(address);
+            final BindField bindField = new BindField(cell, formulaEvaluator);
+            if (untilFunction(pair.getKey().getUntil(), bindField)) {
+                break;
+            }
+            if (filterFunction(pair.getKey().getFilter(), bindField)) {
+                continue;
+            }
+            final Class<?> type = (Class<?>) ReflectionUtils.getClassFromGenericField(field)[0];
+            final Object fieldValue = parseValueFromSheet(formulaEvaluator, type, pair, bindField);
+            collection.add(fieldValue);
+        }
+        if (field.getType().equals(Set.class)) {
+            ReflectionUtils.setFieldViaReflection(instance, field, new HashSet<>(collection));
+        } else {
+            ReflectionUtils.setFieldViaReflection(instance, field, collection);
+        }
+    }
+
+    protected <T1> T1 readAsPureOrCustomObject(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
+                                               final CellRangeAddress addresses,
+                                               final FormulaEvaluator evaluator,
+                                               final int counter,
+                                               final BindField bindField,
+                                               final Function<BindField, T1> mapper,
+                                               final Class<T1> aClass) {
+        if (isPureObject(aClass)) {
+            return readRequestedType(
+                    evaluator, bindField, mapper, aClass);
+        } else {
+            return readValueBasedOnRange(
+                    bindOfPairs, addresses, evaluator, counter, aClass);
+        }
+    }
+
+    private <T1> T1 readValueBasedOnRange(final List<Pair<Bind, CellRangeAddress>> bindOfPairs,
+                                          final CellRangeAddress addresses, final FormulaEvaluator evaluator,
+                                          final int counter, final Class<T1> valueClass) {
+        final List<Pair<Bind, CellRangeAddress>> modifiedPairs = bindOfPairs.stream()
+                .map(pair -> Pair.of(pair.getLeft(), adjustRangeBasedOnVector(pair.getRight(), counter, addresses)))
+                .collect(Collectors.toList());
+        return readForSingleObject(modifiedPairs, valueClass, evaluator);
+    }
+
+    private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator,
+                                       final Class<?> aClass, Pair<Bind, CellRangeAddress> pair,
+                                       final BindField userField) {
+        return Optional.ofNullable(pair.getKey().getMapper()).map(func -> func.apply(userField))
+                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.cell(), formulaEvaluator));
     }
 
     protected void validateOnPureObject(Class aClass, String message) {

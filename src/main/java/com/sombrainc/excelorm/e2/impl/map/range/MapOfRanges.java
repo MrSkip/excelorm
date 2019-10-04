@@ -1,9 +1,7 @@
 package com.sombrainc.excelorm.e2.impl.map.range;
 
 import com.sombrainc.excelorm.e2.impl.*;
-import com.sombrainc.excelorm.e2.impl.list.ListOfRange;
 import com.sombrainc.excelorm.e2.impl.map.MapHolder;
-import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.Arrays;
 import java.util.Map;
