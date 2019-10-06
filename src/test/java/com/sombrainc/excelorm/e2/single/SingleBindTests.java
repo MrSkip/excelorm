@@ -159,7 +159,7 @@ public class SingleBindTests {
                             new Bind("listOfInt", "K13:O13")
                                     .until(field -> field.toText().contains("&"))
                                     .filter(field -> field.toInt() <= 2)
-                                    .map(field -> (int) (field.cell().getNumericCellValue()) + 1)
+                                    .map(field -> (int) (field.poi().getNumericCellValue()) + 1)
                     ).go();
             Assert.assertEquals(
                     new UserDTO()

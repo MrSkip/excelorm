@@ -90,7 +90,7 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
     protected static <R> R readRequestedType(FormulaEvaluator formulaEvaluator, BindField bindField,
                                              Function<BindField, R> keyMapper, Class<R> keyClass) {
         return Optional.ofNullable(keyMapper).map(func -> func.apply(bindField))
-                .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.cell(), formulaEvaluator));
+                .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.poi(), formulaEvaluator));
     }
 
     protected <R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
@@ -183,7 +183,7 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                                        final Class<?> aClass, Pair<Bind, CellRangeAddress> pair,
                                        final BindField userField) {
         return Optional.ofNullable(pair.getKey().getMapper()).map(func -> func.apply(userField))
-                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.cell(), formulaEvaluator));
+                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.poi(), formulaEvaluator));
     }
 
     protected void validateOnPureObject(Class aClass, String message) {

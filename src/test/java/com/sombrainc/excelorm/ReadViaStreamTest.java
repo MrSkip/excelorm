@@ -6,6 +6,7 @@ import com.sombrainc.excelorm.utils.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.math.BigDecimal;
 
 @Test
@@ -14,6 +15,16 @@ public class ReadViaStreamTest {
     public void readUsingInputStreamTest() {
         Model1 model = ModelReader.getModel(
                 ReadViaStreamTest.class.getResourceAsStream(ModelReader.PATH), Model1.class, "position");
+        makeAssertion(model);
+    }
+
+    public void readUsingFileTest() {
+        Model1 model = Excelorm.read(
+                new File(ReadViaStreamTest.class.getResource(ModelReader.PATH).getPath()), "position", Model1.class);
+        makeAssertion(model);
+    }
+
+    private void makeAssertion(Model1 model) {
         Assert.assertEquals(model.getA1(), 1);
         Assert.assertEquals(model.getB1(), "name");
         Assert.assertEquals(model.getC1(), 1.3);

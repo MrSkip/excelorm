@@ -19,7 +19,7 @@ public class EFilters {
     }
 
     public static Function<BindField, Boolean> isBlank() {
-        return field -> isBlank(field.cell());
+        return field -> isBlank(field.poi());
     }
 
     public static boolean isNotBlank(Cell cell) {
@@ -31,11 +31,11 @@ public class EFilters {
     }
 
     public static boolean isNotBlank(BindField field) {
-        return isNotBlank(field.cell());
+        return isNotBlank(field.poi());
     }
 
     public static Function<BindField, Boolean> isNotBlank() {
-        return field -> isNotBlank(field.cell());
+        return field -> isNotBlank(field.poi());
     }
 
     public static Function<BindField, Boolean> contains(String str) {

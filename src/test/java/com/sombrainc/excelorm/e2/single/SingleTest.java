@@ -96,7 +96,7 @@ public class SingleTest {
         executeForE2(DEFAULT_SHEET, e2 -> {
             double value = e2
                     .single(double.class)
-                    .map(cell -> cell.cell().getNumericCellValue())
+                    .map(cell -> cell.poi().getNumericCellValue())
                     .pick("A2")
                     .go();
             Assert.assertEquals(value, 2.2);

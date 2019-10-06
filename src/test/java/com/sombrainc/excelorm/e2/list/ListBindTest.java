@@ -9,7 +9,6 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -88,7 +87,7 @@ public class ListBindTest {
                     .listOf(UserDTO.class)
                     .binds(
                             new Bind("listOfInt", "M24:O24")
-                                    .until(field -> isBlank(field.cell()) || field.toInt() > 1)
+                                    .until(field -> isBlank(field.poi()) || field.toInt() > 1)
                                     .map(field -> field.toInt() * 10),
                             new Bind("listOfIntAsStr", "M24:O24")
                                     .until(isBlank())

@@ -24,7 +24,7 @@ public class MapOfListsExecutor<K, V> extends CoreMapExecutor<K, List<V>> {
 
     protected static void validate(CellRangeAddress keyA, CellRangeAddress valueA) {
         if (isVector(keyA)) {
-            final String message = "Based on key range the range for value is not correct";
+            final String message = "Based on key range, the range for value is not correct";
             if (isVector(valueA)) {
                 if (isSameVector(keyA, valueA) && keyA.getNumberOfCells() != valueA.getNumberOfCells()) {
                     throw new IncorrectRangeException(message);

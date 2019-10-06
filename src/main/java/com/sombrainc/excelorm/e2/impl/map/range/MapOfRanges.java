@@ -49,6 +49,16 @@ public class MapOfRanges<K, V> extends CoreActions<Map<K, V>> {
     }
 
     /**
+     * Used to specify the locations of keys
+     *
+     * @param key location of keys on the spreadsheet
+     * @return set of other functions
+     */
+    public MapOfRanges<K, V> pick(String key) {
+        return pick(key, key);
+    }
+
+    /**
      * Used to specify user object
      *
      * @param binds provided array of user objects to be mapped

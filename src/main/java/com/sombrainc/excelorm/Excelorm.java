@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
@@ -70,6 +71,30 @@ public class Excelorm {
             throw new POIRuntimeException("Sheet name could not be null");
         }
         try (Workbook wb = WorkbookFactory.create(docInputStream)) {
+            Sheet sheet = wb.getSheet(sheetName);
+            return read(sheet, targetClass);
+        } catch (Exception e) {
+            throw new POIRuntimeException(e);
+        }
+    }
+
+    /**
+     * Loads the the data into POJO object based on excel doc and selected sheet name.
+     *
+     * @param file        file of the spreadsheet
+     * @param sheetName   selected Apache POI sheet
+     * @param targetClass simple class
+     * @param <E>         target POJO class
+     * @return instance with loaded data
+     */
+    public static <E> E read(File file, String sheetName, Class<E> targetClass) {
+        if (file == null) {
+            throw new POIRuntimeException("InputSteam could not be null");
+        }
+        if (StringUtils.isNullOrEmpty(sheetName)) {
+            throw new POIRuntimeException("Sheet name could not be null");
+        }
+        try (Workbook wb = WorkbookFactory.create(file)) {
             Sheet sheet = wb.getSheet(sheetName);
             return read(sheet, targetClass);
         } catch (Exception e) {

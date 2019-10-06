@@ -1,19 +1,25 @@
 package com.sombrainc.excelorm.e2.impl;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.function.Function;
 
-@Data
+@EqualsAndHashCode
+@Setter(AccessLevel.PROTECTED)
 @Accessors(chain = true)
 public class Bind {
     // field name
+    @Getter(AccessLevel.PROTECTED)
     private final String field;
+    @Getter(AccessLevel.PUBLIC)
     private final String initialCell;
 
+    @Getter(AccessLevel.PROTECTED)
     private Function<BindField, Boolean> filter;
+    @Getter(AccessLevel.PROTECTED)
     private Function<BindField, Object> mapper;
+    @Getter(AccessLevel.PROTECTED)
     private Function<BindField, Boolean> until;
 
     /**

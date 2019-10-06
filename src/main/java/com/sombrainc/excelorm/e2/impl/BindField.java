@@ -35,7 +35,7 @@ public class BindField {
         return parse(double.class);
     }
 
-    public Cell cell() {
+    public Cell poi() {
         return cell;
     }
 
