@@ -104,7 +104,7 @@ public class EReader extends EReaderContext {
     }
 
     /**
-     * Load items from the spreadsheet into the Map of single or custom objects (Map<K, V>)
+     * Load items from the spreadsheet into the Map
      *
      * @param key   key class
      * @param value value class
@@ -117,7 +117,7 @@ public class EReader extends EReaderContext {
     }
 
     /**
-     * Load items from the spreadsheet into the Map of Lists (Map<K, List<V>)
+     * Load items from the spreadsheet into the Map of Lists
      *
      * @param key   key class
      * @param value value class
