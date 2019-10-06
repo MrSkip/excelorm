@@ -149,7 +149,7 @@ Let’s take a look at a few more examples:
     ```
     ```java
     Foo foo = new EReader(file, DEFAULT_SHEET)
-          .single(Foo.class).binds(new Bind("name", "E2")) .go();
+          .single(Foo.class).binds(new Bind("name", "E2")).go();
     ```
     *OUTPUT:* **Bill Gates**
     
@@ -294,8 +294,6 @@ Let’s use the **id** column as a key.
 As usual, you have access to map, filter, 
 and special conditions to which point it will be iterating.
     
-    ![Excel](https://i.ibb.co/kScxLRL/Selection-027.png "Excel doc")
-    
     ```java
     Map<Long, Foo> map = new EReader(file, DEFAULT_SHEET)
            .mapOf(Long.class, Foo.class)
@@ -367,10 +365,10 @@ and special conditions to which point it will be iterating.
    
     *OUTPUT:* {**1**=[2, 3, 10, 11, 12], **4**=[5, 6, 13, 14, 15], **7**=[8, 9, 16, 17, 18]}
 
-More examples with annotation processing you can find at file annotations.md or go to the test folder to explore even more test examples.
+More examples with annotation processing can be found at file `annotations.md` or go to the test folder to explore even more test examples.
 
-If you like it, please give a star to the project 
-and feel free to submit a pull request to any part of the project what 
+If you like it, _please give a star_ to the project 
+and feel free to submit a pull request to any part of the project that 
 can be improved. 
 
 `Enjoy :)`
