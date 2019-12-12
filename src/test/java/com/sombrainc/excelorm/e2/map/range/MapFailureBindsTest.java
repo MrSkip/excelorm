@@ -9,6 +9,7 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
@@ -30,6 +31,21 @@ public class MapFailureBindsTest {
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
             }, "/json/e2/map/range/bind/_1.json"));
+        });
+    }
+
+    @Test(expectedExceptions = POIRuntimeException.class)
+    public void _1_1() {
+        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
+            e2
+                    .mapOf(LocalDate.class, User.class)
+                    .pick("B3:B7", "D9")
+                    .binds(
+                            new Bind("symbol", ""),
+                            new Bind("integer", "B3"),
+                            new Bind("integer1", "B3")
+                    )
+                    .go();
         });
     }
 

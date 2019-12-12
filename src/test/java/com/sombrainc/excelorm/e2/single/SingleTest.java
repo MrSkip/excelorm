@@ -1,8 +1,11 @@
 package com.sombrainc.excelorm.e2.single;
 
 import com.sombrainc.excelorm.e2.impl.BindField;
+import com.sombrainc.excelorm.exception.POIRuntimeException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.time.LocalDate;
 
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
 
@@ -132,6 +135,17 @@ public class SingleTest {
                     .pick("AZ1")
                     .go();
             Assert.assertEquals(value, "");
+        });
+    }
+
+    public void customType_mappingIsPresent() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            LocalDate value = e2
+                    .single(LocalDate.class)
+                    .map(field -> LocalDate.parse(field.toText()))
+                    .pick("A63")
+                    .go();
+            Assert.assertEquals(value, LocalDate.parse("2019-10-10"));
         });
     }
 

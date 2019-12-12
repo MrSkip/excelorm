@@ -7,6 +7,7 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -41,6 +42,18 @@ public class MapTest {
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, String>>() {
             }, "/json/e2/map/range/_2.json"));
+        });
+    }
+
+    public void _2_1() {
+        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
+            Map<Integer, LocalDate> value = e2
+                    .mapOf(int.class, LocalDate.class)
+                    .pick("B3:B4", "A40:A41")
+                    .mapValue(field -> LocalDate.parse(field.toText()))
+                    .go();
+            Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<Integer, LocalDate>>() {
+            }, "/json/e2/map/range/_2_1.json"));
         });
     }
 

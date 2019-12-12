@@ -25,7 +25,7 @@ import static com.sombrainc.excelorm.Excelorm.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isIteratingOverColumns;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
-import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isAmongDefinedTypes;
 
 public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler {
 
@@ -87,7 +87,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             Object valueInKeyCell = readSingleValueFromSheet(clazzKey, keyCell);
 
             // if object is composite then go ever all its fields
-            if (!isPureObject(clazzValue)) {
+            if (!isAmongDefinedTypes(clazzValue)) {
                 Object nestedObject = read(
                         sheet, clazzValue, new CellIndexTracker(indexTracker, strategy, pair.getKey())
                 );
@@ -139,7 +139,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
             Object valueInKeyCell = readSingleValueFromSheet(clazzKey, keyCell);
 
             // if object is composite then go ever all its fields
-            if (!isPureObject(clazzValue)) {
+            if (!isAmongDefinedTypes(clazzValue)) {
                 Object nestedObject = read(
                         sheet, clazzValue, new CellIndexTracker(simpleCounter, qualifier, pair.getKey())
                 );
@@ -173,7 +173,7 @@ public class CellTypeMap<E> extends AbstractTactic<E> implements CellTypeHandler
                                                      CellStrategy strategy, CellRangeAddress keyRange) {
         if (presenter.getValueRange() != null) {
             return arrangeCell(strategy, presenter.getValueRange());
-        } else if (TypesUtils.isPureObject(valueType)) {
+        } else if (TypesUtils.isAmongDefinedTypes(valueType)) {
             if (strategy == CellStrategy.COLUMN_UNTIL_NULL
                     || (strategy == CellStrategy.FIXED && isIteratingOverColumns(keyRange))) {
                 return new CellRangeAddress(

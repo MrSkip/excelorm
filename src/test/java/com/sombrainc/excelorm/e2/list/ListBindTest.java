@@ -1,6 +1,7 @@
 package com.sombrainc.excelorm.e2.list;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.sombrainc.excelorm.e2.dto.DatesDTO;
 import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.utils.EFilters;
@@ -9,6 +10,10 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,6 +36,26 @@ public class ListBindTest {
                     .go();
             Assert.assertEquals(value, Stream.of("Test", "Test2", "Test3")
                     .map(s -> new UserDTO().setName(s)).collect(Collectors.toList()));
+        });
+    }
+
+    public void undefinedTypesInsideAttachedObject() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            List<DatesDTO> value = e2
+                    .listOf(DatesDTO.class)
+                    .binds(
+                            new Bind("dates", "A78:A79")
+                                    .map(field -> LocalDate.parse(field.toText())),
+                            new Bind("date", "A78")
+                                    .map(field -> LocalDate.parse(field.toText()))
+                    )
+                    .pick("A78")
+                    .go();
+            final List<LocalDate> dates = Stream.of(LocalDate.parse("2019-10-10"), LocalDate.parse("2019-10-14"))
+                    .collect(Collectors.toList());
+            final DatesDTO datesDTO = new DatesDTO().setDate(LocalDate.parse("2019-10-10")).setDates(dates);
+
+            Assert.assertEquals(value, new ArrayList<>(Collections.singleton(datesDTO)));
         });
     }
 

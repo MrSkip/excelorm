@@ -4,7 +4,9 @@ import com.sombrainc.excelorm.e2.dto.UserDTO;
 import com.sombrainc.excelorm.e2.impl.Bind;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.util.Strings;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -49,6 +51,27 @@ public class SingleBindTests {
                                     IntStream.rangeClosed(1, 6)
                                             .mapToObj(v -> v + "").collect(Collectors.toList()))
                     , value);
+        });
+    }
+
+    public void stringsOfList_allowNullsInsideList() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            UserDTO value = e2.single(UserDTO.class)
+                    .binds(
+                            new Bind("name", "A4"),
+                            new Bind("intAsStr", "A1"),
+                            new Bind("listOfIntAsStr", "B68:B74")
+                                .map(field -> Strings.isNullOrEmpty(field.toText()) ? null : field.toText())
+                    ).go();
+            final List<String> list = IntStream.rangeClosed(1, 6)
+                    .mapToObj(v -> v + "").collect(Collectors.toList());
+            list.add(null);
+            Assert.assertEquals(
+                    new UserDTO()
+                            .setName("name")
+                            .setIntAsStr("1")
+                            .setListOfIntAsStr(list),
+                    value);
         });
     }
 

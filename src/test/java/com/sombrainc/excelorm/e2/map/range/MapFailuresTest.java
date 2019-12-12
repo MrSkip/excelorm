@@ -6,6 +6,7 @@ import com.sombrainc.excelorm.exception.POIRuntimeException;
 import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static com.sombrainc.excelorm.utils.ModelReader.executeForE2;
@@ -19,6 +20,16 @@ public class MapFailuresTest {
             e2
                     .mapOf(String.class, String.class)
                     .pick(null, "H37:J39")
+                    .go();
+        });
+    }
+
+    @Test(expectedExceptions = POIRuntimeException.class)
+    public void _1_1() {
+        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
+            e2
+                    .mapOf(String.class, LocalDate.class)
+                    .pick("B3:B7", "D9")
                     .go();
         });
     }
@@ -53,7 +64,7 @@ public class MapFailuresTest {
         });
     }
 
-    @Test(expectedExceptions = TypeIsNotSupportedException.class)
+    @Test(expectedExceptions = POIRuntimeException.class)
     public void mapOf_1() {
         executeForE2(DEFAULT_MAP_SHEET, e2 -> {
             e2

@@ -7,6 +7,7 @@ import com.sombrainc.excelorm.exception.TypeIsNotSupportedException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -118,6 +119,16 @@ public class SingleTestFailures {
                 .single(int.class)
                 .pick("AX1")
                 .go());
+    }
+
+    @Test(expectedExceptions = POIRuntimeException.class)
+    public void customType_mappingIsMissing() {
+        executeForE2(DEFAULT_SHEET, e2 -> {
+            LocalDate value = e2
+                    .single(LocalDate.class)
+                    .pick("AZ1")
+                    .go();
+        });
     }
 
 }

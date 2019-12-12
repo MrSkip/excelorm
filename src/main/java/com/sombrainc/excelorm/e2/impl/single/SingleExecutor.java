@@ -5,7 +5,6 @@ import com.sombrainc.excelorm.e2.impl.Bind;
 import com.sombrainc.excelorm.e2.impl.BindField;
 import com.sombrainc.excelorm.e2.impl.MiddleExecutor;
 import com.sombrainc.excelorm.exception.POIRuntimeException;
-import com.sombrainc.excelorm.utils.ExcelUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,10 +16,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.sombrainc.excelorm.utils.ExcelUtils.getOrCreateCell;
-import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
+import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isOneCellSelected;
-import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isAmongDefinedTypes;
 
 @Getter
 public class SingleExecutor<T> extends MiddleExecutor<T> {
@@ -35,24 +33,41 @@ public class SingleExecutor<T> extends MiddleExecutor<T> {
 
     @Override
     public T execute() {
-        if (!isPureObject(target.aClass)) {
-            if (target.binds.isEmpty()) {
-                // assuming that annotations are on the object
-                return Excelorm.read(loadSheet(), target.aClass);
-            }
-            // custom user definition of the object
-            List<Pair<Bind, CellRangeAddress>> bindOfPairs = target.binds.stream()
-                    .map(buildPair()).collect(Collectors.toList());
-            return readForSingleObject(bindOfPairs, target.aClass, createFormulaEvaluator());
+        if (!isAmongDefinedTypes(target.aClass)) {
+            return processUndefinedTypes();
         }
+        final Cell cell = obtainCell();
+        if (target.mapper == null) {
+            return readGenericValueFromSheet(target.aClass, cell, createFormulaEvaluator());
+        }
+        return target.mapper.apply(new BindField(cell, createFormulaEvaluator()));
+    }
+
+    private Cell obtainCell() {
         CellRangeAddress cellAddresses = obtainRange(target.cell);
         if (!isOneCellSelected(cellAddresses)) {
-            LOGGER.info("Non-single cell found. Only the first cell will be processed");
+            LOGGER.info("Range is found. Only the first cell will be processed");
         }
-        Cell cell = getOrCreateCell(loadSheet(), cellAddresses.getFirstRow(), cellAddresses.getFirstColumn());
+        return getOrCreateCell(loadSheet(), cellAddresses.getFirstRow(), cellAddresses.getFirstColumn());
+    }
+
+    private T processUndefinedTypes() {
+        if (target.binds.isEmpty()) {
+            return processMapperOrAnnotation();
+        }
+        // custom user definition of the object
+        List<Pair<Bind, CellRangeAddress>> bindOfPairs = target.binds.stream()
+                .map(buildPair()).collect(Collectors.toList());
+        return readForSingleObject(bindOfPairs, target.aClass, createFormulaEvaluator());
+    }
+
+    private T processMapperOrAnnotation() {
         if (target.mapper == null) {
-            return ExcelUtils.readGenericValueFromSheet(target.aClass, cell, createFormulaEvaluator());
+            // assuming that annotations are on the object
+            return Excelorm.read(loadSheet(), target.aClass);
         }
+        LOGGER.info("Trying to parse the value from spreadsheet based on user entered mapper");
+        final Cell cell = obtainCell();
         return target.mapper.apply(new BindField(cell, createFormulaEvaluator()));
     }
 

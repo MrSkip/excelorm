@@ -7,7 +7,10 @@ public class TypesUtils {
     private TypesUtils() {
     }
 
-    public static boolean isPureObject(Class<?> type) {
+    public static boolean isAmongDefinedTypes(Class<?> type) {
+        if (type == null) {
+            return false;
+        }
         return Double.class.equals(type) || double.class.equals(type)
                 || Integer.class.equals(type) || int.class.equals(type)
                 || Long.class.equals(type) || long.class.equals(type)

@@ -25,7 +25,7 @@ import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
 import static com.sombrainc.excelorm.utils.ExcelUtils.readGenericValueFromSheet;
 import static com.sombrainc.excelorm.utils.ExcelValidation.isOneCellSelected;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getInstance;
-import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isAmongDefinedTypes;
 
 public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
     protected MiddleExecutor(EReaderContext context) {
@@ -87,10 +87,21 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                 singleCell.getFirstColumn(), singleCell.getLastColumn() + (parent.getLastColumn() - parent.getFirstColumn()));
     }
 
+    private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator, final Class<?> aClass,
+                                       final Pair<Bind, CellRangeAddress> pair, final BindField userField) {
+        final Function<BindField, Object> mapper = pair.getKey().getMapper();
+        if (mapper == null) {
+            return readGenericValueFromSheet(aClass, userField.poi(), formulaEvaluator);
+        }
+        return mapper.apply(userField);
+    }
+
     protected static <R> R readRequestedType(FormulaEvaluator formulaEvaluator, BindField bindField,
                                              Function<BindField, R> keyMapper, Class<R> keyClass) {
-        return Optional.ofNullable(keyMapper).map(func -> func.apply(bindField))
-                .orElseGet(() -> readGenericValueFromSheet(keyClass, bindField.poi(), formulaEvaluator));
+        if (keyMapper == null) {
+            return readGenericValueFromSheet(keyClass, bindField.poi(), formulaEvaluator);
+        }
+        return keyMapper.apply(bindField);
     }
 
     protected <R> R readForSingleObject(List<Pair<Bind, CellRangeAddress>> pairOfFields, Class<R> aClass,
@@ -104,12 +115,13 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                 continue;
             }
             if (isCollection(field.getType())) {
-                readSingleFieldAsCollection(formulaEvaluator, instance, field, pair);
+                readFieldAsCollection(formulaEvaluator, instance, field, pair);
                 continue;
             }
-            if (!isPureObject(field.getType())) {
-                throw new TypeIsNotSupportedException(
-                        String.format("The field [%s] is not supported. Please see the list of supported objects for this method", pair.getKey().getField()));
+            if (!isAmongDefinedTypes(field.getType()) && pair.getKey().getMapper() == null) {
+                final String m = "The field [%s] is not supported. Please see the list of supported types for this method " +
+                                "or define custom mapper for this field";
+                throw new TypeIsNotSupportedException(String.format(m, pair.getKey().getField()));
             }
             final Object fieldValue = parseValueFromSheet(formulaEvaluator, field.getType(), pair,
                     new BindField(toCell(pair.getValue().iterator().next()), formulaEvaluator));
@@ -131,8 +143,8 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         return allFields;
     }
 
-    private <R> void readSingleFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
-                                                 Field field, Pair<Bind, CellRangeAddress> pair) {
+    private <R> void readFieldAsCollection(FormulaEvaluator formulaEvaluator, R instance,
+                                           Field field, Pair<Bind, CellRangeAddress> pair) {
         final Collection<Object> collection = new ArrayList<>();
         for (CellAddress address : pair.getRight()) {
             final Cell cell = toCell(address);
@@ -161,7 +173,7 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
                                                final BindField bindField,
                                                final Function<BindField, T1> mapper,
                                                final Class<T1> aClass) {
-        if (isPureObject(aClass)) {
+        if (isAmongDefinedTypes(aClass) || mapper != null) {
             return readRequestedType(
                     evaluator, bindField, mapper, aClass);
         } else {
@@ -179,16 +191,12 @@ public abstract class MiddleExecutor<T> extends CoreExecutor<T> {
         return readForSingleObject(modifiedPairs, valueClass, evaluator);
     }
 
-    private Object parseValueFromSheet(final FormulaEvaluator formulaEvaluator,
-                                       final Class<?> aClass, Pair<Bind, CellRangeAddress> pair,
-                                       final BindField userField) {
-        return Optional.ofNullable(pair.getKey().getMapper()).map(func -> func.apply(userField))
-                .orElseGet(() -> readGenericValueFromSheet(aClass, userField.poi(), formulaEvaluator));
-    }
-
-    protected void validateOnPureObject(Class aClass, String message) {
-        if (aClass == null || !isPureObject(aClass)) {
-            throw new TypeIsNotSupportedException(message + ". Please see the list of supported objects for this method");
+    protected void validateOnPureObject(final Class aClass, final Function keyMapper, final String message) {
+        if (aClass == null) {
+            throw new POIRuntimeException("Key type could not be null");
+        }
+        if (!isAmongDefinedTypes(aClass) && keyMapper == null) {
+            throw new TypeIsNotSupportedException(message + ". Please see the list of supported types for key type");
         }
     }
 }

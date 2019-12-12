@@ -18,7 +18,7 @@ import java.util.List;
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.filterFunction;
 import static com.sombrainc.excelorm.e2.utils.FunctionUtils.untilFunction;
 import static com.sombrainc.excelorm.utils.ExcelUtils.obtainRange;
-import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isAmongDefinedTypes;
 
 public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {
     private final ListOfRange<T> target;
@@ -30,7 +30,7 @@ public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {
 
     @Override
     public List<T> execute() {
-        validate();
+        validateIncomingParams();
         final List<Pair<Bind, CellRangeAddress>> bindOfPairs = getBinds(target.binds);
         final CellRangeAddress addresses = obtainRange(target.range);
         final List<T> list = new ArrayList<>();
@@ -53,12 +53,12 @@ public class ListOfRangeExecutor<T> extends MiddleExecutor<List<T>> {
         return list;
     }
 
-    private void validate() {
+    private void validateIncomingParams() {
         if (target.aClass == null) {
             throw new POIRuntimeException("Generic class is null");
         }
-        if (!isPureObject(target.aClass)) {
-            if (target.binds.isEmpty()) {
+        if (!isAmongDefinedTypes(target.aClass)) {
+            if (target.binds.isEmpty() && target.mapper == null) {
                 throw new TypeIsNotSupportedException("Check if the mapped object is supported or define the object fields to be bind");
             }
             if (!isVector(obtainRange(target.range))) {

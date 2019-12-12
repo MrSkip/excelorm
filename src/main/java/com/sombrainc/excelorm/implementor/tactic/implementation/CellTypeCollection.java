@@ -21,7 +21,7 @@ import java.util.*;
 import static com.sombrainc.excelorm.Excelorm.read;
 import static com.sombrainc.excelorm.utils.ExcelUtils.*;
 import static com.sombrainc.excelorm.utils.ReflectionUtils.getClassFromGenericField;
-import static com.sombrainc.excelorm.utils.TypesUtils.isPureObject;
+import static com.sombrainc.excelorm.utils.TypesUtils.isAmongDefinedTypes;
 
 public class CellTypeCollection<E> extends AbstractTactic<E> implements CellTypeHandler {
 
@@ -80,7 +80,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
         for (CellAddress cellAddress : range) {
             org.apache.poi.ss.usermodel.Cell cell = getOrCreateCell(sheet, cellAddress);
             Object cellValue;
-            if (!isPureObject(clazz)) {
+            if (!isAmongDefinedTypes(clazz)) {
                 cellValue = read(
                         sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
             } else {
@@ -120,7 +120,7 @@ public class CellTypeCollection<E> extends AbstractTactic<E> implements CellType
             }
 
             Object cellValue;
-            if (!isPureObject(clazz)) {
+            if (!isAmongDefinedTypes(clazz)) {
                 cellValue = read(
                         sheet, clazz, new CellIndexTracker(counter, annotation.strategy(), range));
             } else {

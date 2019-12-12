@@ -13,9 +13,10 @@ public abstract class CoreMapExecutor<K, V> extends MiddleExecutor<Map<K, V>> {
     }
 
     protected void validateOnPureObjects(MapHolder holder) {
-        validateOnPureObject(holder.getKeyClass(), "Key object is not supported.");
+        validateOnPureObject(holder.getKeyClass(), holder.getKeyMapper(), "Key type is not supported " +
+                "or you should define a custom mapper for a key");
         if (holder.getValueClass() == null) {
-            throw new POIRuntimeException("Value object could not be null");
+            throw new POIRuntimeException("Value type should not be null");
         }
     }
 

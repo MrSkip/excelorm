@@ -8,6 +8,7 @@ import com.sombrainc.excelorm.utils.Jackson;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static com.sombrainc.excelorm.e2.utils.EFilters.isBlank;
@@ -29,6 +30,22 @@ public class MapBindsTest {
                     .go();
             Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<String, User>>() {
             }, "/json/e2/map/range/bind/_1.json"));
+        });
+    }
+
+    public void _1_1() {
+        executeForE2(DEFAULT_MAP_SHEET, e2 -> {
+            Map<LocalDate, User> value = e2
+                    .mapOf(LocalDate.class, User.class)
+                    .pick("a21:a22", "D9")
+                    .binds(
+                            new Bind("symbol", "D9"),
+                            new Bind("integer", "B3")
+                    )
+                    .map(field -> LocalDate.parse(field.toText()))
+                    .go();
+            Assert.assertEquals(value, Jackson.parseTo(new TypeReference<Map<LocalDate, User>>() {
+            }, "/json/e2/map/range/bind/_1_1.json"));
         });
     }
 
